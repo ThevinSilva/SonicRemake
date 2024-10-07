@@ -13,16 +13,13 @@ var window = new RenderWindow(new VideoMode(200, 200), "Title");
 
 var world = World.Create();
 
-var idleTexture = new Texture("idle_1.png");
-var sonic = new SFML.Graphics.Sprite();
 var inputs = new Inputs();
 var movement = new Movement();
-sonic.Texture = idleTexture;
 
 var clock = new Clock();
 clock.Restart();
 
-var sonicEntity = world.Create(new Position(0, 0), new Velocity(0, 0), new Sprite("idle_1.png"));
+var sonicEntity = world.Create(new Position(0, 0), new Velocity(0, 0), new Sprite("sonic.png"));
 
 while (window.IsOpen)
 {
@@ -49,8 +46,9 @@ void OnTick()
 	{
 		var drawable = new SFML.Graphics.Sprite()
 		{
-			Texture = new Texture(sprite.SpriteId),
-			Position = new Vector2f(position.X, position.Y)
+			Texture = new Texture($"Assets/Sprites/{sprite.SpriteId}"),
+			Position = new Vector2f(position.X, position.Y),
+			Scale = new Vector2f(0.5f, 0.5f)
 		};
 
 		window.Draw(drawable);
