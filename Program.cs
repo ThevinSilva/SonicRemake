@@ -22,10 +22,11 @@ clock.Restart();
 
 // Create Sonic
 world.Create(
-	new Transform(new Vector2f(0, 0), new Vector2f(1, 1), 0), 
-	new Velocity(0, 0), 
-	new Sprite("sonic.png"), 
-	new Renderer());
+	new Transform(new Vector2f(0, 0), new Vector2f(1, 1), 0),
+	new Velocity(0, 0),
+	new Sprite("sonic.png"),
+	new Renderer()
+);
 
 while (window.IsOpen)
 {
@@ -43,6 +44,8 @@ while (window.IsOpen)
 	// Console.WriteLine(JsonConvert.SerializeObject(thing));
 }
 
+const int WIDTH = 192; 
+
 void OnTick()
 {
 	// Draw all entities with a position and a sprite
@@ -50,19 +53,20 @@ void OnTick()
 	world.Query(spriteAndPositionQuery, (Entity entity, ref Renderer renderer, ref Sprite sprite, ref Transform transform) =>
 	{
 		renderer.Texture ??= new Texture($"Assets/Sprites/{sprite.SpriteId}");
-		
+
 		window.Draw(new SFML.Graphics.Sprite
 		{
 			Texture = renderer.Texture,
 			Position = transform.Position,
 			Scale = transform.Scale,
-			Rotation = transform.Rotation
+			Rotation = transform.Rotation,
+			TextureRect = new IntRect(((clock.ElapsedTime.AsMilliseconds() / WIDTH) % 17 ) * WIDTH, 0, WIDTH, WIDTH)
 		});
 	});
-	
+
 	var positionQuery = new QueryDescription().WithAll<Transform>();
 	world.Query(positionQuery, (Entity entity, ref Transform transform) =>
 	{
-		transform.Position = transform.Position with { Y = (float)Math.Sin(clock.ElapsedTime.AsSeconds() * 10) * 100 };
+		//transform.Position = transform.Position with { Y = (float)Math.Sin(clock.ElapsedTime.AsSeconds() * 10) * 100 };
 	});
 }
