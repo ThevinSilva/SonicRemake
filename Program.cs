@@ -7,6 +7,7 @@ using Arch.Core;
 using SonicRemake.Components;
 using Sprite = SonicRemake.Components.Sprite;
 using SFML.System;
+using Transform = SonicRemake.Components.Transform;
 
 var window = new RenderWindow(new VideoMode(200, 200), "Title");
 
@@ -19,7 +20,12 @@ var movement = new Movement();
 var clock = new Clock();
 clock.Restart();
 
-var sonicEntity = world.Create(new Position(0, 0), new Velocity(0, 0), new Sprite("sonic.png"));
+// Create Sonic
+world.Create(
+	new Transform(new Vector2f(0, 0), new Vector2f(1, 1), 0), 
+	new Velocity(0, 0), 
+	new Sprite("sonic.png"), 
+	new Renderer());
 
 while (window.IsOpen)
 {
@@ -31,33 +37,32 @@ while (window.IsOpen)
 
 	window.Display();
 
-	var thing = inputs.HandleInput();
-	movement.HandleMovement(thing);
-	Console.WriteLine(movement.GroundSpeed);
-	Console.WriteLine(JsonConvert.SerializeObject(thing));
+	// var thing = inputs.HandleInput();
+	// movement.HandleMovement(thing);
+	// Console.WriteLine(movement.GroundSpeed);
+	// Console.WriteLine(JsonConvert.SerializeObject(thing));
 }
-
 
 void OnTick()
 {
 	// Draw all entities with a position and a sprite
-	var spriteAndPositionQuery = new QueryDescription().WithAll<Sprite, Position>();
-	world.Query(spriteAndPositionQuery, (Entity entity, ref Sprite sprite, ref Position position) =>
+	var spriteAndPositionQuery = new QueryDescription().WithAll<Renderer, Sprite, Transform>();
+	world.Query(spriteAndPositionQuery, (Entity entity, ref Renderer renderer, ref Sprite sprite, ref Transform transform) =>
 	{
-		var drawable = new SFML.Graphics.Sprite()
+		renderer.Texture ??= new Texture($"Assets/Sprites/{sprite.SpriteId}");
+		
+		window.Draw(new SFML.Graphics.Sprite
 		{
-			Texture = new Texture($"Assets/Sprites/{sprite.SpriteId}"),
-			Position = new Vector2f(position.X, position.Y),
-			Scale = new Vector2f(0.5f, 0.5f)
-		};
-
-		window.Draw(drawable);
+			Texture = renderer.Texture,
+			Position = transform.Position,
+			Scale = transform.Scale,
+			Rotation = transform.Rotation
+		});
 	});
-
-	// Move all entities with a position slowly up and down
-	var positionQuery = new QueryDescription().WithAll<Position>();
-	world.Query(positionQuery, (Entity entity, ref Position position) =>
+	
+	var positionQuery = new QueryDescription().WithAll<Transform>();
+	world.Query(positionQuery, (Entity entity, ref Transform transform) =>
 	{
-		position.Y = (float)Math.Sin(clock.ElapsedTime.AsSeconds() * 10) * 10;
+		transform.Position = transform.Position with { Y = (float)Math.Sin(clock.ElapsedTime.AsSeconds() * 10) * 100 };
 	});
 }
