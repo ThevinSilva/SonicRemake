@@ -1,72 +1,67 @@
 ﻿using SFML.Graphics;
 using SFML.Window;
 using SonicRemake.Inputs;
-using Newtonsoft.Json;
 using SonicRemake.Movement;
 using Arch.Core;
 using SonicRemake.Components;
 using Sprite = SonicRemake.Components.Sprite;
 using SFML.System;
 using Transform = SonicRemake.Components.Transform;
+using SonicRemake.Systems;
+using System.Collections.Immutable;
 
-var window = new RenderWindow(new VideoMode(200, 200), "Title");
-
-
-var world = World.Create();
+const float physicsTimeStep = 1.0f / 40.0f;
 
 var inputs = new Inputs();
 var movement = new Movement();
 
+var window = new RenderWindow(new VideoMode(200, 200), "Sonic");
+
+var world = World.Create();
+
 var clock = new Clock();
 clock.Restart();
+
+ImmutableList<GameSystem> systems = [new RenderSystem(), new FpsDebugSystem()];
+
 
 // Create Sonic
 world.Create(
 	new Transform(new Vector2f(0, 0), new Vector2f(1, 1), 0),
 	new Velocity(0, 0),
 	new Sprite("sonic.png"),
+	new SpriteSheet(0, 192, 17),
 	new Renderer()
 );
 
+// Run OnStart for all systems
+systems.ForEach(system => system.OnStart(world));
+
+float physicsTimeAccumulator = 0.0f;
+
 while (window.IsOpen)
 {
+	float deltaTime = clock.Restart().AsSeconds();
+	physicsTimeAccumulator += deltaTime;
+
+	var context = new GameContext { DeltaTime = deltaTime, PhysicsDeltaTime = physicsTimeStep };
+
+	// Handle window events
 	window.DispatchEvents();
 
+	// Clear window
 	window.Clear();
 
-	OnTick();
+	// Run OnRender for all systems
+	systems.ForEach(system => system.OnRender(world, window, context));
 
+	// Display frame
 	window.Display();
 
-	// var thing = inputs.HandleInput();
-	// movement.HandleMovement(thing);
-	// Console.WriteLine(movement.GroundSpeed);
-	// Console.WriteLine(JsonConvert.SerializeObject(thing));
-}
-
-const int WIDTH = 192; 
-
-void OnTick()
-{
-	// Draw all entities with a position and a sprite
-	var spriteAndPositionQuery = new QueryDescription().WithAll<Renderer, Sprite, Transform>();
-	world.Query(spriteAndPositionQuery, (Entity entity, ref Renderer renderer, ref Sprite sprite, ref Transform transform) =>
+	while (physicsTimeAccumulator >= physicsTimeStep)
 	{
-		renderer.Texture ??= new Texture($"Assets/Sprites/{sprite.SpriteId}");
-
-		window.Draw(new SFML.Graphics.Sprite
-		{
-			Texture = renderer.Texture,
-			Position = transform.Position,
-			Scale = transform.Scale,
-			Rotation = transform.Rotation,
-			TextureRect = new IntRect(((clock.ElapsedTime.AsMilliseconds() / WIDTH) % 17 ) * WIDTH, 0, WIDTH, WIDTH)
-		});
-	});
-
-	var positionQuery = new QueryDescription().WithAll<Transform>();
-	world.Query(positionQuery, (Entity entity, ref Transform transform) =>
-	{
-		//transform.Position = transform.Position with { Y = (float)Math.Sin(clock.ElapsedTime.AsSeconds() * 10) * 100 };
-	});
+		// Run OnPhysics for all systems
+		systems.ForEach(system => system.OnPhysics(world, context));
+		physicsTimeAccumulator -= physicsTimeStep;
+	}
 }
