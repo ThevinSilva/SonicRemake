@@ -31,7 +31,8 @@ world.Create(
 	new Velocity(0, 0),
 	new Sprite("sonic.png"),
 	new SpriteSheet(0, 192, 17),
-	new Renderer()
+	new Renderer(),
+	new Sonic()
 );
 
 // Run OnStart for all systems
