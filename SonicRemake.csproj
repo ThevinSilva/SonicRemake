@@ -14,9 +14,13 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="Assets/Sprites/sonic.png">
+    <Content Include="Assets\*.*">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
+    </Content>  
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Assets\Fonts\" />
   </ItemGroup>
 
 </Project>
