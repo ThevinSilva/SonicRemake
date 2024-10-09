@@ -16,6 +16,11 @@ public abstract class GameSystem
 	public virtual void OnRender(World world, RenderWindow window, GameContext context) { }
 
 	/// <summary>
+	/// Called every animation frame.
+	/// </summary>
+	public virtual void OnAnimation(World world, RenderWindow window, GameContext context) { }
+
+	/// <summary>
 	/// Called every game tick.
 	/// </summary>
 	public virtual void OnPhysics(World world, GameContext context) { }
@@ -26,4 +31,6 @@ public readonly struct GameContext
 	public float DeltaTime { get; init; }
 
 	public float PhysicsDeltaTime { get; init; }
+
+	public float AnimationDeltaTime { get; init; }
 }

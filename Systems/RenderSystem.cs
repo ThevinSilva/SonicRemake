@@ -24,7 +24,6 @@ public class RenderSystem : GameSystem
 			{
 				ref var spriteSheet = ref entity.Get<SpriteSheet>();
 				textureRect = CalculateSpriteInSheet(spriteSheet.SpriteIndex, spriteSheet.SpriteWidth, spriteSheet.SpritesPerRow);
-				spriteSheet.SpriteIndex = 0;
 			}
 
 			// Draw the sprite

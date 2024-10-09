@@ -9,8 +9,13 @@ using SFML.System;
 using Transform = SonicRemake.Components.Transform;
 using SonicRemake.Systems;
 using System.Collections.Immutable;
+using SonicRemake.Systems.Characters;
 
 const float physicsTimeStep = 1.0f / 40.0f;
+float physicsTimeAccumulator = 0.0f;
+
+const float animationTimeStep = 1.0f / 60.0f;
+float animationTimeAccumulator = 0.0f;
 
 var inputs = new Inputs();
 var movement = new Movement();
@@ -22,7 +27,7 @@ var world = World.Create();
 var clock = new Clock();
 clock.Restart();
 
-ImmutableList<GameSystem> systems = [new RenderSystem(), new FpsDebugSystem()];
+ImmutableList<GameSystem> systems = [new RenderSystem(), new FpsDebugSystem(), new SonicAnimationSystem()];
 
 
 // Create Sonic
@@ -38,14 +43,19 @@ world.Create(
 // Run OnStart for all systems
 systems.ForEach(system => system.OnStart(world));
 
-float physicsTimeAccumulator = 0.0f;
-
 while (window.IsOpen)
 {
 	float deltaTime = clock.Restart().AsSeconds();
 	physicsTimeAccumulator += deltaTime;
+	animationTimeAccumulator += deltaTime;
 
-	var context = new GameContext { DeltaTime = deltaTime, PhysicsDeltaTime = physicsTimeStep };
+	// Build the context that will be passed to all systems
+	var context = new GameContext 
+	{ 
+		DeltaTime = deltaTime,
+		PhysicsDeltaTime = physicsTimeAccumulator,
+		AnimationDeltaTime = animationTimeAccumulator
+	};
 
 	// Handle window events
 	window.DispatchEvents();
@@ -59,9 +69,16 @@ while (window.IsOpen)
 	// Display frame
 	window.Display();
 
+	// Run OnAnimation for all systems if enough time has passed
+	while (animationTimeAccumulator >= animationTimeStep)
+	{
+		systems.ForEach(system => system.OnAnimation(world, window, context));
+		animationTimeAccumulator -= animationTimeStep;
+	}
+
+	// Run OnPhysics for all systems if enough time has passed
 	while (physicsTimeAccumulator >= physicsTimeStep)
 	{
-		// Run OnPhysics for all systems
 		systems.ForEach(system => system.OnPhysics(world, context));
 		physicsTimeAccumulator -= physicsTimeStep;
 	}
