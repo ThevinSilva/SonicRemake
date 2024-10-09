@@ -1,40 +1,40 @@
-﻿using SFML.Window;
+﻿using Newtonsoft.Json;
+using SFML.Window;
 namespace SonicRemake.Inputs;
 
 
 
-public class Inputs
+public static class InputSystem
 {
-    Dictionary<Direction, Keyboard.Key[]> Map { get; set; }
 
-    public Inputs()
-    {
-        Map = new()
-        { 
-            {Direction.Up , [Keyboard.Key.W]}, 
+    public static Dictionary<Direction, Keyboard.Key[]> Map = new()
+        {
+            {Direction.Up , [Keyboard.Key.W]},
             {Direction.Backward, [Keyboard.Key.A]},
             {Direction.Down, [Keyboard.Key.S] },
             {Direction.Forward,[Keyboard.Key.D]},
             {Direction.Space, [Keyboard.Key.Space]},
 
         };
-    }
 
-    public HashSet<Direction> HandleInput() 
+
+    public static HashSet<Direction> HandleInput()
     {
-        HashSet<Direction> dirrections = [];
+        HashSet<Direction> directions = [];
 
-        foreach(Direction input in this.Map.Keys)
+        foreach (Direction input in Map.Keys)
         {
-            foreach (Keyboard.Key key in Map[input]) 
+            foreach (Keyboard.Key key in Map[input])
             {
-                if (Keyboard.IsKeyPressed(key)) 
+                if (Keyboard.IsKeyPressed(key))
                 {
-                    dirrections.Add(input);
+                    directions.Add(input);
                 }
             }
         }
 
-        return dirrections;
-    } 
+        Console.WriteLine(JsonConvert.SerializeObject(directions));
+
+        return directions;
+    }
 }

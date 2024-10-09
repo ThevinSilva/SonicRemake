@@ -7,7 +7,7 @@ namespace SonicRemake.Systems.Characters;
 
 public class SonicAnimationSystem : GameSystem
 {
-	private QueryDescription Query = new QueryDescription().WithAll<Sonic, SpriteSheet, Velocity>();
+	private QueryDescription Query = new QueryDescription().WithAll<Sonic, SpriteSheet>();
 
 	private readonly Queue<(Range frameRange, int frameDuration, bool loopIfLast)> _animationQueue = new();
 	private (Range frameRange, int currentFrameIndex, bool loopIfLast, int frameDuration, int framesLeft)? _currentAnimation = null;
@@ -27,11 +27,10 @@ public class SonicAnimationSystem : GameSystem
 				requestedAnimation.frameDuration
 			);
 
-		world.Query(in Query, (Entity entity, ref Sonic sonic, ref SpriteSheet spriteSheet, ref Velocity velocity) =>
+		world.Query(in Query, (Entity entity, ref Sonic sonic, ref SpriteSheet spriteSheet) =>
 		{
 			// Impatience
-			if (velocity.X == 0 && velocity.Y == 0) _impatienceCounter++;
-			else _impatienceCounter = 0;
+			_impatienceCounter++;
 
 			if (_impatienceCounter == _impatienceThreshold)
 			{

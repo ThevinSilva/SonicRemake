@@ -17,7 +17,7 @@ public abstract class GameSystem
 
 	/// <summary>
 	/// Called every animation frame.
-	/// </summary>
+	/// </summary>	
 	public virtual void OnAnimation(World world, RenderWindow window, GameContext context) { }
 
 	/// <summary>

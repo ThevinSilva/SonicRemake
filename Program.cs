@@ -17,23 +17,22 @@ float physicsTimeAccumulator = 0.0f;
 const float animationTimeStep = 1.0f / 60.0f;
 float animationTimeAccumulator = 0.0f;
 
-var inputs = new Inputs();
-var movement = new Movement();
+// var inputs = new Inputs();
+var movement = new Movement(1920f / 2, 1080f / 2);
 
-var window = new RenderWindow(new VideoMode(200, 200), "Sonic");
+var window = new RenderWindow(new VideoMode(1920, 1080), "Sonic");
 
 var world = World.Create();
 
 var clock = new Clock();
 clock.Restart();
 
-ImmutableList<GameSystem> systems = [new RenderSystem(), new FpsDebugSystem(), new SonicAnimationSystem()];
+ImmutableList<GameSystem> systems = [new RenderSystem(), new FpsDebugSystem(), new SonicAnimationSystem(), new Movement(1920f / 2, 1080f / 2)];
 
 
 // Create Sonic
 world.Create(
 	new Transform(new Vector2f(0, 0), new Vector2f(1, 1), 0),
-	new Velocity(0, 0),
 	new Sprite("sonic.png"),
 	new SpriteSheet(0, 192, 17),
 	new Renderer(),
@@ -50,8 +49,8 @@ while (window.IsOpen)
 	animationTimeAccumulator += deltaTime;
 
 	// Build the context that will be passed to all systems
-	var context = new GameContext 
-	{ 
+	var context = new GameContext
+	{
 		DeltaTime = deltaTime,
 		PhysicsDeltaTime = physicsTimeAccumulator,
 		AnimationDeltaTime = animationTimeAccumulator

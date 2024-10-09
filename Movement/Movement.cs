@@ -1,12 +1,19 @@
 ﻿
+using Arch.Core;
+using SFML.System;
+using SonicRemake.Components;
+using SonicRemake.Systems;
+using SonicRemake.Inputs;
+
 namespace SonicRemake.Movement;
 
 // IMPLEMENT CONTROL LOCK https://info.sonicretro.org/SPG:Running [bottom]
 
-public class Movement
+public class Movement : GameSystem
 {
-    public float Xpos { set; get; }
-    public float Ypos { set; get; }
+    private QueryDescription Query = new QueryDescription().WithAll<Sonic, Transform>();
+
+    public Vector2f Position { set; get; }
 
 
     // Horizontal Movement Constants https://info.sonicretro.org/SPG:Running
@@ -26,12 +33,13 @@ public class Movement
     public float YSpeed { set; get; }
     public bool ControlLock { set; get; }
 
+    private Direction[] inputs;
+
     public Movement(float xpos, float ypos)
     {
         GroundSpeed = 0;
         XSpeed = 0;
-        Xpos = xpos;
-        Ypos = ypos;
+        Position = new Vector2f(0, 0);
     }
 
     public void HandleMovement(HashSet<Direction> inputs, ushort groundAngle)
@@ -50,8 +58,11 @@ public class Movement
             YSpeed = GroundSpeed * -(float)Math.Sin(groundAngle);
         }
 
-        Xpos += XSpeed;
-        Ypos += XSpeed;
+        Position = new Vector2f(Position.X + XSpeed, Position.Y + YSpeed);
+
+        if (Position.Y >= 500) OnGround = true;
+
+
     }
 
     public void HandleHorizontalMovement(bool backward, bool forward)
@@ -105,7 +116,7 @@ public class Movement
         {
             // Air Drag Added
             if (YSpeed < 0 && YSpeed > -4)
-                XSpeed -= (XSpeed / 0.125f) / 256;
+                XSpeed -= XSpeed / 0.125f / 256;
 
             // Gravity Force Added
             YSpeed = YSpeed > 16 ? 16 : YSpeed + GRAVITY;
@@ -117,8 +128,17 @@ public class Movement
                 XSpeed -= AIR_ACCELERATION_SPEED;
         }
 
+    }
 
+    public override void OnPhysics(World world, GameContext context)
+    {
+        Console.WriteLine(Position.ToString());
+        HandleMovement(InputSystem.HandleInput(), 0);
+        world.Query(in Query, (Entity e, ref Sonic s, ref Transform t) =>
+        {
 
+            t.Position = Position;
+        });
     }
 
 
