@@ -5,7 +5,9 @@ using SonicRemake.Animations;
 
 namespace SonicRemake.Components
 {
-  public record struct Transform(Vector2f Position, Vector2f Scale, float Rotation);
+  public record struct Transform(Vector2f Position, Vector2f Scale, bool IsOnGround = false, float Rotation = 0, ushort GroundAngle = 0);
+
+  public record struct Velocity(Vector2f Speed, float GroundSpeed);
 
   public record struct Sprite(string SpriteId, params Color[] MaskColors);
 

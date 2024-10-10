@@ -4,7 +4,7 @@
 
 idle: 1, 13
 bored_1: 
-  - transition: 50, 13, 5
+  - transition: 50, 13, 5, 9999999999
   - main: 295, 13
 
 bored_2:
@@ -13,4 +13,5 @@ bored_2:
   - main: 99, 84, 7
   - end: 442, 84, 4
 
+      #  start frame X, start frame Y, <number of sprites>, <amount of loops>
 peelout: 1, 270, 4, 99999

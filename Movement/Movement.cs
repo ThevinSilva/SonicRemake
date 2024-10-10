@@ -13,9 +13,7 @@ namespace SonicRemake.Movement
     {
         private static Log _log = new(typeof(Movement));
 
-        private QueryDescription Query = new QueryDescription().WithAll<Sonic, Transform>();
-
-        public Vector2f Position { set; get; }
+        private QueryDescription Query = new QueryDescription().WithAll<Sonic, Transform, Velocity>();
 
         public static byte Scale { set; get; }
 
@@ -25,134 +23,122 @@ namespace SonicRemake.Movement
         private const float DECELERATION_SPEED = 0.5f;
         private const float FRICTION_SPEED = ACCELERATION_SPEED;
         private const float TOP_SPEED = 6;
-        public float GroundSpeed { private set; get; }
 
 
         // Vertical Movement Constants https://info.sonicretro.org/SPG:Air_State 
         private const float AIR_ACCELERATION_SPEED = ACCELERATION_SPEED * 2;
         private const float GRAVITY = 0.21875f;
         private const float JUMP_FORCE = 6.5f;
-        public bool OnGround { set; get; }
-        public float XSpeed { set; get; }
-        public float YSpeed { set; get; }
         public bool ControlLock { set; get; }
-        public ushort GroundAngle { set; get; }
 
         private Direction[] inputs;
 
-        public Movement(float xpos, float ypos, byte scale = 4)
+        public Movement(byte scale = 4)
         {
-            GroundSpeed = 0;
-            XSpeed = 0;
-            Position = new Vector2f(xpos, ypos);
             Scale = scale;
         }
 
-        public void HandleMovement(HashSet<Direction> inputs)
+        public void HandleMovement(HashSet<Direction> inputs, ref Transform transform, ref Velocity velocity)
         {
-            HandleHorizontalMovement(inputs.Contains(Direction.Backward), inputs.Contains(Direction.Forward));
+            HandleHorizontalMovement(inputs.Contains(Direction.Backward), inputs.Contains(Direction.Forward), ref velocity);
 
             HandleVerticalMovement(
                 inputs.Contains(Direction.Space),
                 inputs.Contains(Direction.Backward),
-                inputs.Contains(Direction.Forward)
+                inputs.Contains(Direction.Forward),
+                ref transform, ref velocity
             );
 
-
-            Position = new Vector2f(Position.X + (XSpeed * Scale), Position.Y + (YSpeed * Scale));
-
-            if (Position.Y >= 500) OnGround = true;
-            else OnGround = false;
-
-
+            transform.Position = new Vector2f(transform.Position.X + (velocity.Speed.X * Scale), transform.Position.Y + (velocity.Speed.Y * Scale));
+            transform.IsOnGround = transform.Position.Y >= 500;
         }
 
-        public void HandleHorizontalMovement(bool backward, bool forward)
+        public void HandleHorizontalMovement(bool backward, bool forward, ref Velocity velocity)
         {
 
             if (forward)
             {
-                if (GroundSpeed < 0) // going backwards
+                if (velocity.GroundSpeed < 0) // going backwards
                 {
-                    GroundSpeed += DECELERATION_SPEED;
+                    velocity.GroundSpeed += DECELERATION_SPEED;
 
-                    if (GroundSpeed >= 0)
-                        GroundSpeed = DECELERATION_SPEED;
+                    if (velocity.GroundSpeed >= 0)
+                        velocity.GroundSpeed = DECELERATION_SPEED;
                 }
-                else if (GroundSpeed < TOP_SPEED)
+                else if (velocity.GroundSpeed < TOP_SPEED)
                 {
-                    GroundSpeed += ACCELERATION_SPEED;
+                    velocity.GroundSpeed += ACCELERATION_SPEED;
 
-                    if (GroundSpeed >= TOP_SPEED)
-                        GroundSpeed = TOP_SPEED; //impose top speed limit
+                    if (velocity.GroundSpeed >= TOP_SPEED)
+                        velocity.GroundSpeed = TOP_SPEED; //impose top speed limit
                 }
             }
             else if (backward)
             {
-                if (GroundSpeed > 0) // going forwards
+                if (velocity.GroundSpeed > 0) // going forwards
                 {
-                    GroundSpeed -= DECELERATION_SPEED;
+                    velocity.GroundSpeed -= DECELERATION_SPEED;
 
-                    if (GroundSpeed <= 0)
-                        GroundSpeed = -DECELERATION_SPEED;
+                    if (velocity.GroundSpeed <= 0)
+                        velocity.GroundSpeed = -DECELERATION_SPEED;
                 }
-                else if (GroundSpeed > -TOP_SPEED)
+                else if (velocity.GroundSpeed > -TOP_SPEED)
                 {
-                    GroundSpeed -= ACCELERATION_SPEED;
+                    velocity.GroundSpeed -= ACCELERATION_SPEED;
 
                     //impose top speed limit
-                    if (GroundSpeed <= -TOP_SPEED)
-                        GroundSpeed = -TOP_SPEED;
+                    if (velocity.GroundSpeed <= -TOP_SPEED)
+                        velocity.GroundSpeed = -TOP_SPEED;
                 }
             }
             // no horizontal movement
             else
             {
-                GroundSpeed -= Math.Sign(GroundSpeed) * FRICTION_SPEED;
+                velocity.GroundSpeed -= Math.Sign(velocity.GroundSpeed) * FRICTION_SPEED;
             }
         }
 
-        public void HandleVerticalMovement(bool space, bool backward, bool forward)
+        public void HandleVerticalMovement(bool space, bool backward, bool forward, ref Transform transform, ref Velocity velocity)
         {
+            var vX = velocity.Speed.X;
+            var vY = velocity.Speed.Y;
 
-            if (OnGround)
+            if (transform.IsOnGround)
             {
-                XSpeed = GroundSpeed * (float)Math.Cos(GroundAngle);
-                YSpeed = GroundSpeed * -(float)Math.Sin(GroundAngle);
+                vX = velocity.GroundSpeed * (float)Math.Cos(transform.GroundAngle);
+                vY = velocity.GroundSpeed * -(float)Math.Sin(transform.GroundAngle);
             }
             else
             {
                 // Air Drag Added
-                if (YSpeed < 0 && YSpeed > -4)
-                    XSpeed -= XSpeed / 0.125f / 256;
+                if (vY < 0 && vY > -4)
+                    vX -= vX / 0.125f / 256;
 
                 // Gravity Force Added
-                YSpeed = YSpeed > 16 ? 16 : YSpeed + GRAVITY;
+                vY = vY > 16 ? 16 : vY + GRAVITY;
 
                 if (forward)
-                    XSpeed += AIR_ACCELERATION_SPEED;
+                    vX += AIR_ACCELERATION_SPEED;
 
                 if (backward)
-                    XSpeed -= AIR_ACCELERATION_SPEED;
+                    vX -= AIR_ACCELERATION_SPEED;
             }
 
-            if (space && OnGround)
+            if (space && transform.IsOnGround)
             {
                 _log.Debug("bruhhh");
-                XSpeed -= JUMP_FORCE * MathF.Sin(GroundAngle);
-                YSpeed -= JUMP_FORCE * MathF.Cos(GroundAngle);
+                vX -= JUMP_FORCE * MathF.Sin(transform.GroundAngle);
+                vY -= JUMP_FORCE * MathF.Cos(transform.GroundAngle);
             }
 
-
+            velocity.Speed = new Vector2f(vX, vY);
         }
 
         public override void OnPhysics(World world, GameContext context)
         {
-            _log.Debug(Position);
-            world.Query(in Query, (Entity e, ref Sonic s, ref Transform t) =>
+            world.Query(in Query, (Entity e, ref Sonic s, ref Transform t, ref Velocity v) =>
             {
-                HandleMovement(InputSystem.HandleInput());
-                t.Position = Position;
+                HandleMovement(InputSystem.HandleInput(), ref t, ref v);
             });
         }
 

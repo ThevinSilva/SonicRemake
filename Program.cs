@@ -18,7 +18,7 @@ using SonicRemake.Systems.Rendering.Animations;
 AnimationHelper.LoadAnimationsFromYaml("Assets/Animations/sonic_mania.yaml");
 
 // Limit the delta time to 120fps
-const float deltaTimeLimit = 1f / 60f;
+const float deltaTimeLimit = 1.0f / 120.0f;
 
 const float physicsTimeStep = 1.0f / 40.0f;
 float physicsTimeAccumulator = 0.0f;
@@ -27,7 +27,6 @@ const float animationTimeStep = 1.0f / 60.0f;
 float animationTimeAccumulator = 0.0f;
 
 // var inputs = new Inputs();
-var movement = new Movement(1920f / 2, 1080f / 2);
 
 var window = new RenderWindow(new VideoMode(1920, 1080), "Sonic");
 
@@ -42,19 +41,20 @@ ImmutableList<GameSystem> systems = [
 	new FpsDebugSystem(),
 	new AnimationSystem(),
 	new AnimationLoadSystem(),
- 	new Movement(1920f / 2, 1080f / 2)
+ 	new Movement()
 ];
 
 // Create Sonic
 world.Create(
-	new Transform(new Vector2f(0, 0), new Vector2f(1, 1), 0),
-	new Sprite("sonic_mania.png", new Color(0, 240, 0), new Color(0, 170, 0), new Color(0, 138, 0), new Color(0, 111, 0)),
-	new SpriteSheet(1, 13, 48),
-	new Animator(),
-	new AnimationQueue(new Queue<string>(["peelout"])),
-	new Renderer(),
-	new Sonic()
-);
+		new Transform(new Vector2f(1920 / 2, 1080 / 2), new Vector2f(1, 1)),
+		new Velocity(),
+		new Sprite("sonic_mania.png", new Color(0, 240, 0), new Color(0, 170, 0), new Color(0, 138, 0), new Color(0, 111, 0)),
+		new SpriteSheet(1, 13, 48),
+		new Animator(),
+		new AnimationQueue(new Queue<string>(["peelout"])),
+		new Renderer(),
+		new Sonic()
+	);
 
 // Run OnStart for all systems
 systems.ForEach(system => system.OnStart(world));
