@@ -17,6 +17,9 @@
 *.userosscache
 *.sln.docstates
 
+# MacBook be like
+*.DS_Store
+
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
 
