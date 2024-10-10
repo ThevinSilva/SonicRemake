@@ -57,7 +57,10 @@ while (window.IsOpen)
 	};
 
 	// Handle window events
-	window.DispatchEvents();
+	window.WaitAndDispatchEvents();
+
+	// Close the window if the window wants to be closed
+	window.Closed += (sender, e) => window.Close();
 
 	// Clear window
 	window.Clear();
