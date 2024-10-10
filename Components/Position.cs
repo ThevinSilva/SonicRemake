@@ -7,7 +7,7 @@ namespace SonicRemake.Components
 {
   public record struct Transform(Vector2f Position, Vector2f Scale, float Rotation);
 
-  public record struct Sprite(string SpriteId, Color? MaskColor = null);
+  public record struct Sprite(string SpriteId, params Color[] MaskColors);
 
   public record struct SpriteSheet(int X, int Y, int SpriteSize);
 

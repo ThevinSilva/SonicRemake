@@ -17,8 +17,8 @@ namespace SonicRemake.Systems.Rendering.Textures
         {
           var image = new Image($"Assets/Sprites/{sprite.SpriteId}");
 
-          if (sprite.MaskColor.HasValue)
-            image.CreateMaskFromColor(sprite.MaskColor.Value);
+          foreach (var color in sprite.MaskColors)
+            image.CreateMaskFromColor(color);
 
           renderer.Texture = new Texture(image);
         }

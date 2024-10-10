@@ -45,7 +45,7 @@ ImmutableList<GameSystem> systems = [
 // Create Sonic
 world.Create(
 	new Transform(new Vector2f(0, 0), new Vector2f(1, 1), 0),
-	new Sprite("sonic_mania.png", new Color(0, 240, 0)),
+	new Sprite("sonic_mania.png", new Color(0, 240, 0), new Color(0, 170, 0), new Color(0, 138, 0), new Color(0, 111, 0)),
 	new SpriteSheet(1, 13, 48),
 	new Animator(),
 	new AnimationQueue(new Queue<string>(["peelout"])),
