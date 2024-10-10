@@ -2,7 +2,7 @@ using System;
 using Arch.Core;
 using SFML.Graphics;
 
-namespace SonicRemake.Systems
+namespace SonicRemake.Systems.Rendering.Debugging
 {
 	public class FpsDebugSystem : GameSystem
 	{

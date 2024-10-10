@@ -5,7 +5,7 @@ using SonicRemake.Components;
 using Sprite = SonicRemake.Components.Sprite;
 using Transform = SonicRemake.Components.Transform;
 
-namespace SonicRemake.Systems
+namespace SonicRemake.Systems.Rendering
 {
 	public class RenderSystem : GameSystem
 	{

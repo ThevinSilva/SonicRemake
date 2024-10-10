@@ -9,8 +9,11 @@ using SFML.System;
 using Transform = SonicRemake.Components.Transform;
 using SonicRemake.Systems;
 using System.Collections.Immutable;
-using SonicRemake.Systems.Characters;
 using SonicRemake.Animations;
+using SonicRemake.Systems.Rendering;
+using SonicRemake.Systems.Rendering.Textures;
+using SonicRemake.Systems.Rendering.Debugging;
+using SonicRemake.Systems.Rendering.Animations;
 
 AnimationHelper.LoadAnimationsFromYaml("Assets/Animations/sonic_mania.yaml");
 
@@ -35,8 +38,8 @@ ImmutableList<GameSystem> systems = [
 	new TextureLoaderSystem(),
 	new FpsDebugSystem(),
 	new AnimationSystem(),
-	new AnimationLoadSystem()
- 	//new Movement(1920f / 2, 1080f / 2)
+	new AnimationLoadSystem(),
+ 	new Movement(1920f / 2, 1080f / 2)
 ];
 
 // Create Sonic

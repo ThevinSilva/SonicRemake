@@ -3,7 +3,7 @@ using SFML.Graphics;
 using SonicRemake.Components;
 using Sprite = SonicRemake.Components.Sprite;
 
-namespace SonicRemake.Systems
+namespace SonicRemake.Systems.Rendering.Textures
 {
   public class TextureLoaderSystem : GameSystem
   {

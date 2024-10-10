@@ -2,7 +2,7 @@ using Arch.Core;
 using SFML.Graphics;
 using SonicRemake.Components;
 
-namespace SonicRemake.Systems.Characters
+namespace SonicRemake.Systems.Rendering.Animations
 {
   public class AnimationSystem : GameSystem
   {
@@ -29,7 +29,7 @@ namespace SonicRemake.Systems.Characters
           animation.SpritesLeft = animation.AnimationData.NumberOfSprites;
         }
 
-        spriteSheet.X = animation.AnimationData.StartFrameX + (spriteSheet.SpriteSize * (animation.AnimationData.NumberOfSprites - animation.SpritesLeft)) + (animation.AnimationData.NumberOfSprites - animation.SpritesLeft);
+        spriteSheet.X = animation.AnimationData.StartFrameX + spriteSheet.SpriteSize * (animation.AnimationData.NumberOfSprites - animation.SpritesLeft) + (animation.AnimationData.NumberOfSprites - animation.SpritesLeft);
         spriteSheet.Y = animation.AnimationData.StartFrameY;
       });
     }

@@ -25,13 +25,4 @@ namespace SonicRemake.Systems
 		/// </summary>
 		public virtual void OnPhysics(World world, GameContext context) { }
 	}
-
-	public readonly struct GameContext
-	{
-		public float DeltaTime { get; init; }
-
-		public float PhysicsDeltaTime { get; init; }
-
-		public float AnimationDeltaTime { get; init; }
-	}
 }

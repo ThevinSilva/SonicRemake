@@ -4,7 +4,7 @@ using SonicRemake.Animations;
 using SonicRemake.Components;
 using Range = System.Range;
 
-namespace SonicRemake.Systems.Characters
+namespace SonicRemake.Systems.Rendering.Animations
 {
 	public class AnimationLoadSystem : GameSystem
 	{

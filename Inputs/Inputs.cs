@@ -2,8 +2,6 @@
 using SFML.Window;
 namespace SonicRemake.Inputs
 {
-
-
     public static class InputSystem
     {
 

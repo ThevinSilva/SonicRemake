@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 
+namespace SonicRemake;
 
 [JsonConverter(typeof(StringEnumConverter))]
 public enum Direction
