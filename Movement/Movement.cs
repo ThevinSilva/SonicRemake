@@ -33,7 +33,7 @@ namespace SonicRemake.Movement
 
         private Direction[] inputs;
 
-        public Movement(byte scale = 4)
+        public Movement(byte scale = 1)
         {
             Scale = scale;
         }
@@ -73,7 +73,8 @@ namespace SonicRemake.Movement
                         velocity.GroundSpeed = TOP_SPEED; //impose top speed limit
                 }
             }
-            else if (backward)
+
+            if (backward)
             {
                 if (velocity.GroundSpeed > 0) // going forwards
                 {
@@ -92,9 +93,9 @@ namespace SonicRemake.Movement
                 }
             }
             // no horizontal movement
-            else
+            if (!backward && !forward)
             {
-                velocity.GroundSpeed -= Math.Sign(velocity.GroundSpeed) * FRICTION_SPEED;
+                velocity.GroundSpeed -= Math.Min(Math.Abs(velocity.GroundSpeed), FRICTION_SPEED) * Math.Sign(velocity.GroundSpeed);
             }
         }
 
@@ -126,7 +127,7 @@ namespace SonicRemake.Movement
 
             if (space && transform.IsOnGround)
             {
-                _log.Debug("bruhhh");
+                // _log.Debug("bruhhh");
                 vX -= JUMP_FORCE * MathF.Sin(transform.GroundAngle);
                 vY -= JUMP_FORCE * MathF.Cos(transform.GroundAngle);
             }
