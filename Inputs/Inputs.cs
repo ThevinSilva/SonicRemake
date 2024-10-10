@@ -32,8 +32,6 @@ namespace SonicRemake.Inputs
                 }
             }
 
-            _log.Debug(directions);
-
             return directions;
         }
     }

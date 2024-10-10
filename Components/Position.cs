@@ -13,11 +13,11 @@ namespace SonicRemake.Components
 
   public record struct SpriteSheet(int X, int Y, int SpriteSize);
 
-  public record struct Renderer(Texture? Texture);
+  public record struct Renderer(Texture? Texture, bool FlipX = false, bool FlipY = false);
 
   public record struct Animator(AnimationData AnimationData, int SpritesLeft, int FramesLeft, int LoopsLeft);
 
-  public record struct AnimationQueue(Queue<string> Animations);
+  public record struct AnimationQueue(string Animation = "idle", int FramesPerSprite = 6);
 
   public record struct Sonic();
 }

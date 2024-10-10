@@ -15,14 +15,11 @@ namespace SonicRemake.Movement
 
         private QueryDescription Query = new QueryDescription().WithAll<Sonic, Transform, Velocity>();
 
-        public static byte Scale { set; get; }
-
-
         // Horizontal Movement Constants https://info.sonicretro.org/SPG:Running
         private const float ACCELERATION_SPEED = 0.046875f;
         private const float DECELERATION_SPEED = 0.5f;
         private const float FRICTION_SPEED = ACCELERATION_SPEED;
-        private const float TOP_SPEED = 6;
+        private const float TOP_SPEED = 6.5f;
 
 
         // Vertical Movement Constants https://info.sonicretro.org/SPG:Air_State 
@@ -30,13 +27,6 @@ namespace SonicRemake.Movement
         private const float GRAVITY = 0.21875f;
         private const float JUMP_FORCE = 6.5f;
         public bool ControlLock { set; get; }
-
-        private Direction[] inputs;
-
-        public Movement(byte scale = 1)
-        {
-            Scale = scale;
-        }
 
         public void HandleMovement(HashSet<Direction> inputs, ref Transform transform, ref Velocity velocity)
         {
@@ -49,8 +39,8 @@ namespace SonicRemake.Movement
                 ref transform, ref velocity
             );
 
-            transform.Position = new Vector2f(transform.Position.X + (velocity.Speed.X * Scale), transform.Position.Y + (velocity.Speed.Y * Scale));
-            transform.IsOnGround = transform.Position.Y >= 500;
+            transform.Position = new Vector2f(transform.Position.X + velocity.Speed.X, transform.Position.Y + velocity.Speed.Y);
+            transform.IsOnGround = transform.Position.Y >= 110;
         }
 
         public void HandleHorizontalMovement(bool backward, bool forward, ref Velocity velocity)
@@ -97,6 +87,7 @@ namespace SonicRemake.Movement
             {
                 velocity.GroundSpeed -= Math.Min(Math.Abs(velocity.GroundSpeed), FRICTION_SPEED) * Math.Sign(velocity.GroundSpeed);
             }
+
         }
 
         public void HandleVerticalMovement(bool space, bool backward, bool forward, ref Transform transform, ref Velocity velocity)

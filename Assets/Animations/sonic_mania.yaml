@@ -18,6 +18,13 @@ walk: 1, 142, 12
 jog: 1, 210, 10
 run: 491, 210, 8
 dash: 883, 210, 5
+peelout: 1, 270, 4
 
-      #  start frame X, start frame Y, <number of sprites>, <amount of loops>
-peelout: 1, 270, 4, 99999
+# Jumping
+jump: 197, 270, 16
+
+# Braking
+skid: 589, 330, 9
+skid_turn: 1030, 330, 3
+
+spin_dash: 1, 398, 16
