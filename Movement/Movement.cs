@@ -15,6 +15,8 @@ public class Movement : GameSystem
 
     public Vector2f Position { set; get; }
 
+    public static byte Scale { set; get; }
+
 
     // Horizontal Movement Constants https://info.sonicretro.org/SPG:Running
     private const float ACCELERATION_SPEED = 0.046875f;
@@ -32,17 +34,19 @@ public class Movement : GameSystem
     public float XSpeed { set; get; }
     public float YSpeed { set; get; }
     public bool ControlLock { set; get; }
+    public ushort GroundAngle { set; get; }
 
     private Direction[] inputs;
 
-    public Movement(float xpos, float ypos)
+    public Movement(float xpos, float ypos, byte scale = 4)
     {
         GroundSpeed = 0;
         XSpeed = 0;
-        Position = new Vector2f(0, 0);
+        Position = new Vector2f(xpos, ypos);
+        Scale = scale;
     }
 
-    public void HandleMovement(HashSet<Direction> inputs, ushort groundAngle)
+    public void HandleMovement(HashSet<Direction> inputs)
     {
         HandleHorizontalMovement(inputs.Contains(Direction.Backward), inputs.Contains(Direction.Forward));
 
@@ -52,15 +56,11 @@ public class Movement : GameSystem
             inputs.Contains(Direction.Forward)
         );
 
-        if (OnGround)
-        {
-            XSpeed = GroundSpeed * (float)Math.Cos(groundAngle);
-            YSpeed = GroundSpeed * -(float)Math.Sin(groundAngle);
-        }
 
-        Position = new Vector2f(Position.X + XSpeed, Position.Y + YSpeed);
+        Position = new Vector2f(Position.X + (XSpeed * Scale), Position.Y + (YSpeed * Scale));
 
         if (Position.Y >= 500) OnGround = true;
+        else OnGround = false;
 
 
     }
@@ -112,7 +112,13 @@ public class Movement : GameSystem
 
     public void HandleVerticalMovement(bool space, bool backward, bool forward)
     {
-        if (!OnGround)
+
+        if (OnGround)
+        {
+            XSpeed = GroundSpeed * (float)Math.Cos(GroundAngle);
+            YSpeed = GroundSpeed * -(float)Math.Sin(GroundAngle);
+        }
+        else
         {
             // Air Drag Added
             if (YSpeed < 0 && YSpeed > -4)
@@ -128,15 +134,22 @@ public class Movement : GameSystem
                 XSpeed -= AIR_ACCELERATION_SPEED;
         }
 
+        if (space && OnGround)
+        {
+            Console.WriteLine("bruhhh");
+            XSpeed -= JUMP_FORCE * MathF.Sin(GroundAngle);
+            YSpeed -= JUMP_FORCE * MathF.Cos(GroundAngle);
+        }
+
+
     }
 
     public override void OnPhysics(World world, GameContext context)
     {
         Console.WriteLine(Position.ToString());
-        HandleMovement(InputSystem.HandleInput(), 0);
         world.Query(in Query, (Entity e, ref Sonic s, ref Transform t) =>
         {
-
+            HandleMovement(InputSystem.HandleInput());
             t.Position = Position;
         });
     }
