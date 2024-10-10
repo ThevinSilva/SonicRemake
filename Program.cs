@@ -10,6 +10,9 @@ using Transform = SonicRemake.Components.Transform;
 using SonicRemake.Systems;
 using System.Collections.Immutable;
 using SonicRemake.Systems.Characters;
+using SonicRemake.Animations;
+
+AnimationHelper.LoadAnimationsFromYaml("Assets/Animations/sonic_mania.yaml");
 
 const float physicsTimeStep = 1.0f / 40.0f;
 float physicsTimeAccumulator = 0.0f;
@@ -27,14 +30,22 @@ var world = World.Create();
 var clock = new Clock();
 clock.Restart();
 
-ImmutableList<GameSystem> systems = [new RenderSystem(), new FpsDebugSystem(), new SonicAnimationSystem(), new Movement(1920f / 2, 1080f / 2)];
-
+ImmutableList<GameSystem> systems = [
+	new RenderSystem(),
+	new TextureLoaderSystem(),
+	new FpsDebugSystem(),
+	new AnimationSystem(),
+	new AnimationLoadSystem()
+ 	//new Movement(1920f / 2, 1080f / 2)
+];
 
 // Create Sonic
 world.Create(
 	new Transform(new Vector2f(0, 0), new Vector2f(1, 1), 0),
-	new Sprite("sonic.png"),
-	new SpriteSheet(0, 192, 17),
+	new Sprite("sonic_mania.png", new Color(0, 240, 0)),
+	new SpriteSheet(1, 13, 48),
+	new Animator(),
+	new AnimationQueue(new Queue<string>(["peelout"])),
 	new Renderer(),
 	new Sonic()
 );
