@@ -31,6 +31,8 @@ public class CameraSystem : GameSystem
       var lerp = 0.01f;
       var newX = currentX + (targetX - currentX) * lerp;
 
+      newX = targetX;
+
       transform.Position = new Vector2f(newX, transform.Position.Y);
     });
   }
