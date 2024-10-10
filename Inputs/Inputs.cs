@@ -4,6 +4,7 @@ namespace SonicRemake.Inputs
 {
     public static class InputSystem
     {
+        private static Log _log = new(typeof(InputSystem));
 
         public static Dictionary<Direction, Keyboard.Key[]> Map = new()
             {
@@ -31,7 +32,7 @@ namespace SonicRemake.Inputs
                 }
             }
 
-            Console.WriteLine(JsonConvert.SerializeObject(directions));
+            _log.Debug(directions);
 
             return directions;
         }

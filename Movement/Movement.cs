@@ -11,6 +11,8 @@ namespace SonicRemake.Movement
 
     public class Movement : GameSystem
     {
+        private static Log _log = new(typeof(Movement));
+
         private QueryDescription Query = new QueryDescription().WithAll<Sonic, Transform>();
 
         public Vector2f Position { set; get; }
@@ -136,7 +138,7 @@ namespace SonicRemake.Movement
 
             if (space && OnGround)
             {
-                Console.WriteLine("bruhhh");
+                _log.Debug("bruhhh");
                 XSpeed -= JUMP_FORCE * MathF.Sin(GroundAngle);
                 YSpeed -= JUMP_FORCE * MathF.Cos(GroundAngle);
             }
@@ -146,7 +148,7 @@ namespace SonicRemake.Movement
 
         public override void OnPhysics(World world, GameContext context)
         {
-            Console.WriteLine(Position.ToString());
+            _log.Debug(Position);
             world.Query(in Query, (Entity e, ref Sonic s, ref Transform t) =>
             {
                 HandleMovement(InputSystem.HandleInput());

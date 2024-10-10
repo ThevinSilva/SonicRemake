@@ -7,6 +7,8 @@ namespace SonicRemake
 {
   public class Log
   {
+    private static int _longestClassName = 0;
+
     private const string Gray = "\u001B[90m";
     private const string Red = "\u001B[31m";
     private const string Green = "\u001B[32m";
@@ -23,6 +25,7 @@ namespace SonicRemake
     public Log(Type callerType)
     {
       _callerType = callerType;
+      _longestClassName = Math.Max(_longestClassName, callerType.Name.Length);
     }
 
     public static Log Send()
@@ -34,7 +37,7 @@ namespace SonicRemake
       return new Log(type);
     }
 
-    private void LogMessage(LogLevel level, Exception? exception, string message)
+    private void LogMessage(LogLevel level, Exception? exception, object message)
     {
       if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
       {
@@ -49,23 +52,27 @@ namespace SonicRemake
       var builder = new StringBuilder();
 
       // [FATAL]
-      builder.Append(Gray);
-      builder.Append(' ');
-      builder.Append(GetColorCode(level));
-      builder.Append(GetLevel(level));
-      builder.Append(Gray);
-      builder.Append(" |");
+      // builder.Append(Gray);
+      // builder.Append(' ');
+      // builder.Append(GetColorCode(level));
+      // builder.Append(GetLevel(level));
+      // builder.Append(Gray);
+      // builder.Append(" |");
 
       // [Class.Method:line]
       builder.Append(Gray);
       builder.Append(' ');
       builder.Append(BuildStackTraceElement());
       builder.Append(Gray);
-      builder.Append(": ");
+      builder.Append(" ");
 
       // Message
       builder.Append(GetColorCode(level));
-      builder.Append(message);
+
+      if (message is string str)
+        builder.Append(str);
+      else
+        builder.Append(JsonConvert.SerializeObject(message));
 
       if (exception != null)
       {
@@ -131,52 +138,52 @@ namespace SonicRemake
       }
     }
 
-    public void Debug(Exception exception, string message)
+    public void Debug(Exception exception, object message)
     {
       LogMessage(LogLevel.Debug, exception, message);
     }
 
-    public void Debug(string message)
+    public void Debug(object message)
     {
       LogMessage(LogLevel.Debug, null, message);
     }
 
-    public void Information(Exception exception, string message)
+    public void Information(Exception exception, object message)
     {
       LogMessage(LogLevel.Information, exception, message);
     }
 
-    public void Information(string message)
+    public void Information(object message)
     {
       LogMessage(LogLevel.Information, null, message);
     }
 
-    public void Warning(Exception exception, string message)
+    public void Warning(Exception exception, object message)
     {
       LogMessage(LogLevel.Warning, exception, message);
     }
 
-    public void Warning(string message)
+    public void Warning(object message)
     {
       LogMessage(LogLevel.Warning, null, message);
     }
 
-    public void Error(Exception exception, string message)
+    public void Error(Exception exception, object message)
     {
       LogMessage(LogLevel.Error, exception, message);
     }
 
-    public void Error(string message)
+    public void Error(object message)
     {
       LogMessage(LogLevel.Error, null, message);
     }
 
-    public void Critical(Exception exception, string message)
+    public void Critical(Exception exception, object message)
     {
       LogMessage(LogLevel.Critical, exception, message);
     }
 
-    public void Critical(string message)
+    public void Critical(object message)
     {
       LogMessage(LogLevel.Critical, null, message);
     }
@@ -199,7 +206,8 @@ namespace SonicRemake
       var builder = new StringBuilder();
 
       builder.Append(Green);
-      builder.Append(_callerType.Name);
+      //_callerType.Name with padding to align all class names
+      builder.Append(string.Format("{0," + _longestClassName + "}", _callerType.Name));
 
       return builder.ToString();
     }
