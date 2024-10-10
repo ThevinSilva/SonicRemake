@@ -20,4 +20,6 @@ namespace SonicRemake.Components
   public record struct AnimationQueue(string Animation = "idle", int FramesPerSprite = 6);
 
   public record struct Sonic();
+
+  public record struct Camera(float Zoom = 4f);
 }

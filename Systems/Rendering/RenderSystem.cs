@@ -8,19 +8,28 @@ using Transform = SonicRemake.Components.Transform;
 
 namespace SonicRemake.Systems.Rendering
 {
-	public class RenderSystem(float scale) : GameSystem
+	public class RenderSystem : GameSystem
 	{
 		private static Log _log = new(typeof(RenderSystem));
-
-		private readonly float _scale = scale;
 		private static QueryDescription Query = new QueryDescription().WithAll<Renderer, Transform>();
+
+		private static QueryDescription CameraQuery = new QueryDescription().WithAll<Components.Camera, Transform>();
 
 		public override void OnRender(World world, RenderWindow window, GameContext context)
 		{
+			var cameraPosition = new Vector2f();
+			var cameraZoom = 1f;
+
+			world.Query(in CameraQuery, (Entity entity, ref Components.Camera camera, ref Transform transform) =>
+			{
+				cameraPosition = transform.Position;
+				cameraZoom = camera.Zoom;
+			});
+
 			world.Query(in Query, (Entity entity, ref Renderer renderer, ref Transform transform) =>
 			{
 				// If the entity has a SpriteSheet component, calculate the texture rect mask
-				Vector2f origin;
+				Vector2f origin = new Vector2f(0, 0);
 
 				var textureRect = new IntRect();
 				if (entity.Has<SpriteSheet>())
@@ -29,25 +38,24 @@ namespace SonicRemake.Systems.Rendering
 					textureRect = CalculateSpriteInSheet(spriteSheet, renderer.FlipX, renderer.FlipY);
 					origin = new Vector2f(spriteSheet.SpriteSize / 2, spriteSheet.SpriteSize / 2);
 				}
-				else
+				else if (renderer.Texture != null)
 				{
-					origin = new Vector2f(renderer.Texture.Size.X / 2, renderer.Texture.Size.Y / 2);
+					//origin = new Vector2f(renderer.Texture.Size.X / 2, renderer.Texture.Size.Y / 2);
+					textureRect = new IntRect(0, 0, (int)renderer.Texture.Size.X, (int)renderer.Texture.Size.Y);
 				}
 
-				_log.Debug($"Position: {transform.Position}, Scale: {transform.Scale}, Rotation: {transform.Rotation}");
-
 				var position = transform.Position;
-				position.X *= _scale;
-				position.Y *= _scale;
+				position.X -= cameraPosition.X;
+				position.Y -= cameraPosition.Y;
+
+				position.X *= cameraZoom;
+				position.Y *= cameraZoom;
 
 				position.X += window.Size.X / 2;
 				position.Y += window.Size.Y / 2;
 
 
-
-				var scale = transform.Scale * _scale;
-
-
+				var scale = transform.Scale * cameraZoom;
 
 				// Draw the sprite
 				window.Draw(new SFML.Graphics.Sprite

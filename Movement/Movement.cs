@@ -40,7 +40,15 @@ namespace SonicRemake.Movement
             );
 
             transform.Position = new Vector2f(transform.Position.X + velocity.Speed.X, transform.Position.Y + velocity.Speed.Y);
-            transform.IsOnGround = transform.Position.Y >= 110;
+            if (transform.Position.Y >= 100)
+            {
+                transform.Position = new Vector2f(transform.Position.X, 100);
+                transform.IsOnGround = true;
+            }
+            else
+            {
+                transform.IsOnGround = false;
+            }
         }
 
         public void HandleHorizontalMovement(bool backward, bool forward, ref Velocity velocity)
