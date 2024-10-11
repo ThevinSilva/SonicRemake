@@ -19,18 +19,17 @@ using SonicRemake.Systems.Rendering.Camera;
 
 AnimationHelper.LoadAnimationsFromYaml("Assets/Animations/sonic_mania.yaml");
 
-// Limit the delta time to 120fps
-const float deltaTimeLimit = 1.0f / 120.0f;
 
-const float physicsTimeStep = 1.0f / 45.0f;
+const float physicsTimeStep = 1.0f / 60.0f;
 float physicsTimeAccumulator = 0.0f;
 
-const float animationTimeStep = 1.0f / 45.0f;
+const float animationTimeStep = 1.0f / 60.0f;
 float animationTimeAccumulator = 0.0f;
 
 // var inputs = new Inputs();
 
 var window = new RenderWindow(new VideoMode(1920, 1080), "Sonic");
+window.SetFramerateLimit(120);
 
 var world = World.Create();
 
