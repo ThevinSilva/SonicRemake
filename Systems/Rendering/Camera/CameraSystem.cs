@@ -25,15 +25,15 @@ public class CameraSystem : GameSystem
     world.Query(in CameraQuery, (Entity entity, ref Components.Camera camera, ref Transform transform) =>
     {
       // Lerp the camera to the Sonic's position
-      var targetX = sonicPosition.X;
-      var currentX = transform.Position.X;
+      var lerp = 0.1f;
+      var cameraPosition = transform.Position;
+      var targetPosition = new Vector2f(sonicPosition.X, sonicPosition.Y);
+      var newPosition = new Vector2f(
+        cameraPosition.X + (targetPosition.X - cameraPosition.X) * lerp,
+        cameraPosition.Y + (targetPosition.Y - cameraPosition.Y) * lerp
+      );
 
-      var lerp = 0.01f;
-      var newX = currentX + (targetX - currentX) * lerp;
-
-      //newX = targetX;
-
-      transform.Position = new Vector2f(newX, transform.Position.Y);
+      transform.Position = newPosition;
     });
   }
 }
