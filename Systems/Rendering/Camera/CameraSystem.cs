@@ -13,7 +13,7 @@ public class CameraSystem : GameSystem
   private QueryDescription CameraQuery = new QueryDescription().WithAll<Components.Camera, Transform>();
   private QueryDescription SonicQuery = new QueryDescription().WithAll<Sonic, Transform>();
 
-  public override void OnRender(World world, RenderWindow window, GameContext context)
+  public override void OnPhysics(World world, GameContext context)
   {
     var sonicPosition = new Vector2f();
 
