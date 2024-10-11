@@ -8,11 +8,11 @@ namespace SonicRemake.Systems.Rendering.Animations
   {
     private static Log _log = new(typeof(AnimationSystem));
 
-    private QueryDescription Query = new QueryDescription().WithAll<Animator, SpriteSheet, AnimationQueue>();
+    private QueryDescription Query = new QueryDescription().WithAll<SpriteAnimator, SpriteSheet, SpriteAnimation>();
 
     public override void OnAnimation(World world, RenderWindow window, GameContext context)
     {
-      world.Query(in Query, (Entity entity, ref Animator animation, ref SpriteSheet spriteSheet, ref AnimationQueue queue) =>
+      world.Query(in Query, (Entity entity, ref SpriteAnimator animation, ref SpriteSheet spriteSheet, ref SpriteAnimation queue) =>
       {
         // _log.Debug($"Frames left: {animation.FramesLeft}, Sprites left: {animation.SpritesLeft}, Loops left: {animation.LoopsLeft}");
 

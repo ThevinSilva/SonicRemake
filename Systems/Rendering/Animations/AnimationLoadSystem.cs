@@ -10,11 +10,11 @@ namespace SonicRemake.Systems.Rendering.Animations
 	{
 		private static Log _log = new(typeof(AnimationLoadSystem));
 
-		private QueryDescription Query = new QueryDescription().WithAll<AnimationQueue, Animator>();
+		private QueryDescription Query = new QueryDescription().WithAll<SpriteAnimation, SpriteAnimator>();
 
 		public override void OnAnimation(World world, RenderWindow window, GameContext context)
 		{
-			world.Query(in Query, (Entity entity, ref AnimationQueue queue, ref Animator animation) =>
+			world.Query(in Query, (Entity entity, ref SpriteAnimation queue, ref SpriteAnimator animation) =>
 			{
 				// Check if a new animation was requested
 				if (queue.Animation != animation.AnimationData.Name)

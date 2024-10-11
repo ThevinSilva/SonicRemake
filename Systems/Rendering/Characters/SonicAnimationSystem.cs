@@ -11,11 +11,11 @@ public class SonicAnimationSystem : GameSystem
 {
     private static Log _log = new(typeof(SonicAnimationSystem));
 
-    private QueryDescription Query = new QueryDescription().WithAll<Sonic, AnimationQueue, Velocity, Transform, Renderer>();
+    private QueryDescription Query = new QueryDescription().WithAll<Sonic, SpriteAnimation, Velocity, Transform, Renderer>();
 
     public override void OnAnimation(World world, RenderWindow window, GameContext context)
     {
-        world.Query(in Query, (Entity entity, ref Sonic sonic, ref AnimationQueue queue, ref Velocity velocity, ref Transform transform, ref Renderer renderer) =>
+        world.Query(in Query, (Entity entity, ref Sonic sonic, ref SpriteAnimation queue, ref Velocity velocity, ref Transform transform, ref Renderer renderer) =>
         {
             // Flip the sprite based on the direction
             if (velocity.GroundSpeed < 0)
