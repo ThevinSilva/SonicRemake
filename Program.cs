@@ -38,13 +38,15 @@ clock.Restart();
 
 ImmutableList<GameSystem> systems = [
 	new TextureLoaderSystem(),
-	new FpsDebugSystem(),
+
 	new AnimationSystem(),
 	new AnimationLoadSystem(),
  	new Movement(),
 	new SonicAnimationSystem(),
 	new CameraSystem(),
 	new RenderSystem(),
+	new FpsDebugSystem(),
+
 ];
 
 world.Create(
