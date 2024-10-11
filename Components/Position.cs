@@ -5,7 +5,7 @@ using SonicRemake.Animations;
 
 namespace SonicRemake.Components;
 
-public record struct Transform(Vector2f Position, Vector2f Scale, bool IsOnGround = false, float Rotation = 0, ushort GroundAngle = 0);
+public record struct Transform(Vector2f Position, Vector2f Scale, float Rotation = 0, ushort GroundAngle = 0);
 
 public record struct Velocity(Vector2f Speed, float GroundSpeed);
 
@@ -19,7 +19,8 @@ public record struct SpriteAnimator(AnimationData AnimationData, int SpritesLeft
 
 public record struct SpriteAnimation(string Animation = "idle", int FramesPerSprite = 6);
 
-public record struct Sonic(SonicState State);
+public record struct Sonic(SonicState State, bool IsOnGround, float SpinRef, Facing Facing, int BoredCount
+);
 
 public record struct Camera(float Zoom = 4f);
 
@@ -31,4 +32,11 @@ public enum SonicState
   Jumping,
   Falling,
   Charging,
+  SpinRoll
+}
+
+public enum Facing
+{
+  Right,
+  Left
 }

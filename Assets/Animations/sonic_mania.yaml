@@ -17,7 +17,7 @@ bored_2:
 walk: 1, 142, 12
 jog: 1, 210, 10
 run: 491, 210, 8
-dash: 883, 210, 5
+dash: 932, 210, 4
 peelout: 1, 270, 4
 
 # Jumping
