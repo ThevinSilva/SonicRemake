@@ -15,22 +15,29 @@ public class CameraSystem : GameSystem
 
   public override void OnPhysics(World world, GameContext context)
   {
-    var sonicPosition = new Vector2f();
-    var sonicVelocity = 0f;
+    Sonic sonic = default;
+    Transform sonicTransform = default;
+    Velocity sonicVelocity = default;
 
-    world.Query(in SonicQuery, (Entity entity, ref Sonic sonic, ref Transform transform, ref Velocity velocity) =>
+    world.Query(in SonicQuery, (Entity entity, ref Sonic s, ref Transform t, ref Velocity v) =>
     {
-      sonicPosition = transform.Position;
-      sonicVelocity = velocity.Speed.X;
+      sonic = s;
+      sonicVelocity = v;
+      sonicTransform = t;
     });
 
     world.Query(in CameraQuery, (Entity entity, ref Components.Camera camera, ref Transform transform) =>
     {
-      var multiplier = sonicVelocity > 0 ? 1 : -1;
-      var cameraXOffset = sonicVelocity * 30;
+      var multiplier = sonic.Facing == Facing.Right ? 1 : -1;
+
+      var spinDashOffset = MathF.Floor(sonic.SpinRef) / 2f * multiplier * 30;
+      var velocityOffset = sonicVelocity.GroundSpeed * 15;
+
+      var cameraXOffset = spinDashOffset + velocityOffset;
+
 
       var cameraPosition = transform.Position;
-      var targetPosition = new Vector2f(sonicPosition.X, sonicPosition.Y);
+      var targetPosition = new Vector2f(sonicTransform.Position.X, sonicTransform.Position.Y);
       var newPosition = new Vector2f(
         Lerp(cameraPosition.X, targetPosition.X + cameraXOffset, 0.05f),
         Lerp(cameraPosition.Y, targetPosition.Y, 0.1f)
