@@ -24,7 +24,7 @@ namespace SonicRemake.Systems.Rendering.Animations
 					var newAnimation = AnimationHelper.Animations[queue.Animation];
 					animation.AnimationData = newAnimation;
 					animation.LoopsLeft = newAnimation.Loops;
-					animation.FramesLeft = 6;
+					animation.FramesLeft = queue.FramesPerSprite;
 					animation.SpritesLeft = newAnimation.NumberOfSprites;
 				}
 
