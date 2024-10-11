@@ -23,8 +23,7 @@ public class SonicAnimationSystem : GameSystem
 
             if (sonic.IsOnGround)
             {
-                var duration = (int)Math.Floor(Math.Max(1, 8 - Math.Abs(velocity.GroundSpeed)));
-
+                var duration = (int)Math.Floor(Math.Max(0, 8 - Math.Abs(velocity.GroundSpeed)));
                 queue.FramesPerSprite = duration;
 
                 var inputs = InputSystem.HandleInput();
@@ -33,7 +32,7 @@ public class SonicAnimationSystem : GameSystem
                 {
                     case SonicState.Charging:
                         queue.Animation = "spin_dash";
-                        queue.FramesPerSprite = (int)Math.Floor(Math.Max(1, 8 - sonic.SpinRef));
+                        queue.FramesPerSprite = (int)Math.Floor(Math.Max(0, 8 - sonic.SpinRef));
                         break;
                     case SonicState.Skidding:
                         queue.Animation = "skid";
@@ -57,7 +56,7 @@ public class SonicAnimationSystem : GameSystem
             }
             else
             {
-                var duration = (int)Math.Floor(Math.Max(1, 6 - Math.Abs(velocity.Speed.X)));
+                var duration = (int)Math.Floor(Math.Max(0, 6 - Math.Abs(velocity.Speed.X)));
                 queue.Animation = "jump";
                 queue.FramesPerSprite = duration;
             }

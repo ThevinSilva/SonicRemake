@@ -71,11 +71,14 @@ namespace SonicRemake.Movement
 
         private void HandleHorizontalMovement(bool backward, bool forward, ref Velocity velocity, ref Sonic sonic)
         {
+            if (Math.Abs(velocity.GroundSpeed) > 0)
+                sonic.State = SonicState.Running;
 
             if (forward && sonic.State != SonicState.Charging)
             {
                 if (velocity.GroundSpeed < 0) // going backwards
                 {
+                    sonic.State = SonicState.Skidding;
                     velocity.GroundSpeed += DECELERATION_SPEED;
 
                     if (velocity.GroundSpeed >= 0)
@@ -94,6 +97,7 @@ namespace SonicRemake.Movement
             {
                 if (velocity.GroundSpeed > 0) // going forwards
                 {
+                    sonic.State = SonicState.Skidding;
                     velocity.GroundSpeed -= DECELERATION_SPEED;
 
                     if (velocity.GroundSpeed <= 0)
