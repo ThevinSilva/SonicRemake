@@ -53,8 +53,9 @@ public class SonicAnimationSystem : GameSystem
             }
             else
             {
+                var duration = (int)Math.Floor(Math.Max(0, 6 - Math.Abs(velocity.Speed.X)));
                 queue.Animation = "jump";
-                queue.FramesPerSprite = 6;
+                queue.FramesPerSprite = duration;
             }
         });
     }
