@@ -72,8 +72,6 @@ world.Create(
 	new Camera(4)
 );
 
-
-
 // Run OnStart for all systems
 systems.ForEach(system => system.OnStart(world));
 
@@ -118,11 +116,5 @@ while (window.IsOpen)
 	{
 		systems.ForEach(system => system.OnPhysics(world, context));
 		physicsTimeAccumulator -= physicsTimeStep;
-	}
-
-	// Limit the delta time to 120fps
-	if (deltaTime < deltaTimeLimit)
-	{
-		Thread.Sleep((int)((deltaTimeLimit - deltaTime) * 1000));
 	}
 }
