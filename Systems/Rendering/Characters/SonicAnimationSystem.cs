@@ -18,9 +18,9 @@ public class SonicAnimationSystem : GameSystem
         world.Query(in Query, (Entity entity, ref Sonic sonic, ref SpriteAnimation queue, ref Velocity velocity, ref Transform transform, ref Renderer renderer) =>
         {
             // Flip the sprite based on the direction
-            if (velocity.GroundSpeed < 0)
+            if (velocity.Speed.X < 0)
                 renderer.FlipX = true;
-            else if (velocity.GroundSpeed > 0)
+            else if (velocity.Speed.X > 0)
                 renderer.FlipX = false;
 
             if (transform.IsOnGround)
