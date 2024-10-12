@@ -20,11 +20,8 @@ using SonicRemake.Systems.Rendering.Camera;
 AnimationHelper.LoadAnimationsFromYaml("Assets/Animations/sonic_mania.yaml");
 
 
-const float physicsTimeStep = 1.0f / 60.0f;
-float physicsTimeAccumulator = 0.0f;
-
-const float animationTimeStep = 1.0f / 60.0f;
-float animationTimeAccumulator = 0.0f;
+const float tickTimeStep = 1.0f / 60.0f;
+float tickTimeStepAccumulator = 0.0f;
 
 // var inputs = new Inputs();
 
@@ -78,15 +75,13 @@ systems.ForEach(system => system.OnStart(world));
 while (window.IsOpen)
 {
 	float deltaTime = clock.Restart().AsSeconds();
-	physicsTimeAccumulator += deltaTime;
-	animationTimeAccumulator += deltaTime;
+	tickTimeStepAccumulator += deltaTime;
 
 	// Build the context that will be passed to all systems
 	var context = new GameContext
 	{
 		DeltaTime = deltaTime,
-		PhysicsDeltaTime = physicsTimeAccumulator,
-		AnimationDeltaTime = animationTimeAccumulator
+		TickDeltaTime = tickTimeStep,
 	};
 
 	// Handle window events
@@ -104,17 +99,11 @@ while (window.IsOpen)
 	// Display frame
 	window.Display();
 
-	// Run OnAnimation for all systems if enough time has passed
-	while (animationTimeAccumulator >= animationTimeStep)
-	{
-		systems.ForEach(system => system.OnAnimation(world, window, context));
-		animationTimeAccumulator -= animationTimeStep;
-	}
-
 	// Run OnPhysics for all systems if enough time has passed
-	while (physicsTimeAccumulator >= physicsTimeStep)
+	while (tickTimeStepAccumulator >= tickTimeStep)
 	{
-		systems.ForEach(system => system.OnPhysics(world, context));
-		physicsTimeAccumulator -= physicsTimeStep;
+		Input.UpdateInputState();
+		systems.ForEach(system => system.OnTick(world, context));
+		tickTimeStepAccumulator -= tickTimeStep;
 	}
 }

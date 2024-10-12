@@ -11,18 +11,13 @@ namespace SonicRemake.Systems
 		public virtual void OnStart(World world) { }
 
 		/// <summary>
+		/// Called every game tick.
+		/// </summary>	
+		public virtual void OnTick(World world, GameContext context) { }
+
+		/// <summary>
 		/// Called every frame.
 		/// </summary>
 		public virtual void OnRender(World world, RenderWindow window, GameContext context) { }
-
-		/// <summary>
-		/// Called every animation frame.
-		/// </summary>	
-		public virtual void OnAnimation(World world, RenderWindow window, GameContext context) { }
-
-		/// <summary>
-		/// Called every game tick.
-		/// </summary>
-		public virtual void OnPhysics(World world, GameContext context) { }
 	}
 }

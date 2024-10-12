@@ -26,7 +26,7 @@ namespace SonicRemake.Systems.Rendering.Debugging
 			});
 		}
 
-		public override void OnPhysics(World world, GameContext context)
+		public override void OnTick(World world, GameContext context)
 		{
 			// Smooth delta time
 			_deltaTimeBuffer[_deltaTimeBufferIndex] = context.DeltaTime;

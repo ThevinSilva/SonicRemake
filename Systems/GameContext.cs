@@ -4,8 +4,6 @@ namespace SonicRemake.Systems
   {
     public float DeltaTime { get; init; }
 
-    public float PhysicsDeltaTime { get; init; }
-
-    public float AnimationDeltaTime { get; init; }
+    public float TickDeltaTime { get; init; }
   }
 }

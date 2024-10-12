@@ -13,7 +13,7 @@ public class SonicAnimationSystem : GameSystem
 
     private QueryDescription Query = new QueryDescription().WithAll<Sonic, SpriteAnimation, Velocity, Transform, Renderer>();
 
-    public override void OnAnimation(World world, RenderWindow window, GameContext context)
+    public override void OnTick(World world, GameContext context)
     {
         world.Query(in Query, (Entity entity, ref Sonic sonic, ref SpriteAnimation queue, ref Velocity velocity, ref Transform transform, ref Renderer renderer) =>
         {
@@ -25,8 +25,6 @@ public class SonicAnimationSystem : GameSystem
             {
                 var duration = (int)Math.Floor(Math.Max(0, 8 - Math.Abs(velocity.GroundSpeed)));
                 queue.FramesPerSprite = duration;
-
-                var inputs = InputSystem.HandleInput();
 
                 switch (sonic.State)
                 {

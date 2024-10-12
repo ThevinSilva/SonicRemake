@@ -27,26 +27,19 @@ namespace SonicRemake.Movement
         private const float GRAVITY = 0.21875f;
         private const float JUMP_FORCE = 6.5f;
 
-        public override void OnPhysics(World world, GameContext context)
+        public override void OnTick(World world, GameContext context)
         {
             world.Query(in Query, (Entity e, ref Sonic s, ref Transform t, ref Velocity v, ref Sonic sonic) =>
             {
-                HandleMovement(InputSystem.HandleInput(), ref t, ref v, ref sonic);
+                HandleMovement(ref t, ref v, ref sonic);
             });
         }
 
-        private void HandleMovement(HashSet<Direction> inputs, ref Transform transform, ref Velocity velocity, ref Sonic sonic)
+        private void HandleMovement(ref Transform transform, ref Velocity velocity, ref Sonic sonic)
         {
-            HandleSpinDashCharge(inputs, ref transform, ref velocity, ref sonic);
-
-            HandleHorizontalMovement(inputs.Contains(Direction.Backward), inputs.Contains(Direction.Forward), ref velocity, ref sonic);
-
-            HandleVerticalMovement(
-                inputs.Contains(Direction.Space),
-                inputs.Contains(Direction.Backward),
-                inputs.Contains(Direction.Forward),
-                ref transform, ref velocity, ref sonic
-            );
+            HandleSpinDashCharge(ref transform, ref velocity, ref sonic);
+            HandleHorizontalMovement(ref velocity, ref sonic);
+            HandleVerticalMovement(ref transform, ref velocity, ref sonic);
 
             transform.Position = new Vector2f(transform.Position.X + velocity.Speed.X, transform.Position.Y + velocity.Speed.Y);
             if (transform.Position.Y >= 100)
@@ -63,14 +56,17 @@ namespace SonicRemake.Movement
                 sonic.Facing = Facing.Right;
             else if (velocity.Speed.X < 0)
                 sonic.Facing = Facing.Left;
-            else if (velocity.Speed.X == 0 && inputs.Contains(Direction.Forward))
+            else if (velocity.Speed.X == 0 && Input.IsKeyPressed(Direction.Forward))
                 sonic.Facing = Facing.Right;
-            else if (velocity.Speed.X == 0 && inputs.Contains(Direction.Backward))
+            else if (velocity.Speed.X == 0 && Input.IsKeyPressed(Direction.Backward))
                 sonic.Facing = Facing.Left;
         }
 
-        private void HandleHorizontalMovement(bool backward, bool forward, ref Velocity velocity, ref Sonic sonic)
+        private void HandleHorizontalMovement(ref Velocity velocity, ref Sonic sonic)
         {
+            var forward = Input.IsKeyPressed(Direction.Forward);
+            var backward = Input.IsKeyPressed(Direction.Backward);
+
             if (Math.Abs(velocity.GroundSpeed) > 0)
                 sonic.State = SonicState.Running;
 
@@ -120,8 +116,12 @@ namespace SonicRemake.Movement
 
         }
 
-        private void HandleVerticalMovement(bool space, bool backward, bool forward, ref Transform transform, ref Velocity velocity, ref Sonic sonic)
+        private void HandleVerticalMovement(ref Transform transform, ref Velocity velocity, ref Sonic sonic)
         {
+            var forward = Input.IsKeyPressed(Direction.Forward);
+            var backward = Input.IsKeyPressed(Direction.Backward);
+            var space = Input.IsKeyStarted(Direction.Space);
+
             var vX = velocity.Speed.X;
             var vY = velocity.Speed.Y;
 
@@ -156,21 +156,24 @@ namespace SonicRemake.Movement
             velocity.Speed = new Vector2f(vX, vY);
         }
 
-        private void HandleSpinDashCharge(HashSet<Direction> inputs, ref Transform transform, ref Velocity velocity, ref Sonic sonic)
+        private void HandleSpinDashCharge(ref Transform transform, ref Velocity velocity, ref Sonic sonic)
         {
-            if (inputs.Contains(Direction.Down) && sonic.IsOnGround && velocity.GroundSpeed == 0 && sonic.SpinRef == 0)
+            var space = Input.IsKeyStarted(Direction.Space);
+            var down = Input.IsKeyPressed(Direction.Down);
+
+            if (down && sonic.IsOnGround && velocity.GroundSpeed == 0 && sonic.SpinRef == 0)
                 sonic.State = SonicState.Charging;
 
             if (sonic.SpinRef > 0)
                 sonic.SpinRef -= sonic.SpinRef / 0.125f / 256;
 
-            if (inputs.Contains(Direction.Space) && sonic.State == SonicState.Charging)
+            if (space && sonic.State == SonicState.Charging)
                 sonic.SpinRef += 2;
 
             if (sonic.SpinRef > 8)
                 sonic.SpinRef = 8;
 
-            if (!inputs.Contains(Direction.Down) && sonic.State == SonicState.Charging)
+            if (!down && sonic.State == SonicState.Charging)
             {
                 var multiplier = sonic.Facing == Facing.Right ? 1 : -1;
                 velocity.GroundSpeed = (8f + MathF.Floor(sonic.SpinRef) / 2f) * multiplier;

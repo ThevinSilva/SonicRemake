@@ -13,7 +13,7 @@ public class CameraSystem : GameSystem
   private QueryDescription CameraQuery = new QueryDescription().WithAll<Components.Camera, Transform>();
   private QueryDescription SonicQuery = new QueryDescription().WithAll<Sonic, Transform, Velocity>();
 
-  public override void OnPhysics(World world, GameContext context)
+  public override void OnTick(World world, GameContext context)
   {
     Sonic sonic = default;
     Transform sonicTransform = default;

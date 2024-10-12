@@ -12,7 +12,7 @@ namespace SonicRemake.Systems.Rendering.Animations
 
 		private QueryDescription Query = new QueryDescription().WithAll<SpriteAnimation, SpriteAnimator>();
 
-		public override void OnAnimation(World world, RenderWindow window, GameContext context)
+		public override void OnTick(World world, GameContext context)
 		{
 			world.Query(in Query, (Entity entity, ref SpriteAnimation queue, ref SpriteAnimator animation) =>
 			{
