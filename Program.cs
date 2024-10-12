@@ -16,6 +16,7 @@ using SonicRemake.Systems.Rendering.Debugging;
 using SonicRemake.Systems.Rendering.Animations;
 using SonicRemake.Systems.Rendering.Characters;
 using SonicRemake.Systems.Rendering.Camera;
+using SonicRemake.Levels;
 
 AnimationHelper.LoadAnimationsFromYaml("Assets/Animations/sonic_mania.yaml");
 
@@ -28,14 +29,11 @@ float tickTimeStepAccumulator = 0.0f;
 var window = new RenderWindow(new VideoMode(1920, 1080), "Sonic");
 window.SetFramerateLimit(120);
 
-var world = World.Create();
-
 var clock = new Clock();
 clock.Restart();
 
 ImmutableList<GameSystem> systems = [
 	new TextureLoaderSystem(),
-
 	new AnimationSystem(),
 	new AnimationLoadSystem(),
  	new Movement(),
@@ -43,10 +41,10 @@ ImmutableList<GameSystem> systems = [
 	new CameraSystem(),
 	new RenderSystem(),
 	new FpsDebugSystem(),
-
 ];
 
-world.Create(
+var sandbox = new Level("Sandbox");
+sandbox.Entities.Create(
 		new Transform(new Vector2f(0, 0), new Vector2f(1, 1)),
 		new Velocity(),
 		new Sprite("sonic_mania.png", new Color(0, 240, 0), new Color(0, 170, 0), new Color(0, 138, 0), new Color(0, 111, 0)),
@@ -57,20 +55,18 @@ world.Create(
 		new Sonic()
 	);
 
-
-world.Create(
+sandbox.Entities.Create(
 	new Transform(new Vector2f(-240, -135), new Vector2f(1, 1)),
 	new Renderer(),
 	new Sprite("Green Hill Zone/Scene1-BG Outside.png")
 );
 
-world.Create(
+sandbox.Entities.Create(
 	new Transform(new Vector2f(0, 0), new Vector2f(1, 1)),
 	new Camera(4)
 );
 
-// Run OnStart for all systems
-systems.ForEach(system => system.OnStart(world));
+LevelManager.LoadLevel(sandbox);
 
 while (window.IsOpen)
 {
@@ -93,8 +89,12 @@ while (window.IsOpen)
 	// Clear window
 	window.Clear();
 
+	// Check if a new level has been loaded
+	if (LevelManager.HasLevelChanged())
+		systems.ForEach(system => system.OnStart(LevelManager.Active.Entities));
+
 	// Run OnRender for all systems
-	systems.ForEach(system => system.OnRender(world, window, context));
+	systems.ForEach(system => system.OnRender(LevelManager.Active.Entities, window, context));
 
 	// Display frame
 	window.Display();
@@ -103,7 +103,7 @@ while (window.IsOpen)
 	while (tickTimeStepAccumulator >= tickTimeStep)
 	{
 		Input.UpdateInputState();
-		systems.ForEach(system => system.OnTick(world, context));
+		systems.ForEach(system => system.OnTick(LevelManager.Active.Entities, context));
 		tickTimeStepAccumulator -= tickTimeStep;
 	}
 }
