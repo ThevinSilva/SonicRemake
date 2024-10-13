@@ -34,7 +34,8 @@ public enum SonicState
   Jumping,
   Falling,
   Charging,
-  SpinRoll
+  SpinRoll,
+  Crouching
 }
 
 public enum Facing

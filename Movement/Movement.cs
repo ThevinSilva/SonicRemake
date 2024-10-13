@@ -37,6 +37,10 @@ namespace SonicRemake.Movement
 
         private void HandleMovement(ref Transform transform, ref Velocity velocity, ref Sonic sonic)
         {
+            if (sonic.State != SonicState.Charging)
+                sonic.State = SonicState.Idle;
+
+            HandleCrouch(ref sonic, ref velocity);
             HandleSpinDashCharge(ref transform, ref velocity, ref sonic);
             HandleHorizontalMovement(ref velocity, ref sonic);
             HandleVerticalMovement(ref transform, ref velocity, ref sonic);
@@ -147,7 +151,7 @@ namespace SonicRemake.Movement
                     vX -= AIR_ACCELERATION_SPEED;
             }
 
-            if (space && sonic.IsOnGround && sonic.State != SonicState.Charging)
+            if (space && sonic.IsOnGround && sonic.State != SonicState.Charging && sonic.State != SonicState.Crouching)
             {
                 // _log.Debug("bruhhh");
                 vX -= JUMP_FORCE * MathF.Sin(transform.GroundAngle);
@@ -162,8 +166,11 @@ namespace SonicRemake.Movement
             var space = Input.IsKeyStarted(Direction.Space);
             var down = Input.IsKeyPressed(Direction.Down);
 
-            if (down && sonic.IsOnGround && velocity.GroundSpeed == 0 && sonic.SpinRef == 0)
+            if (space && sonic.IsOnGround && velocity.GroundSpeed == 0 && sonic.SpinRef == 0 && sonic.State == SonicState.Crouching)
                 sonic.State = SonicState.Charging;
+
+            if (sonic.State != SonicState.Charging)
+                sonic.SpinRef = 0;
 
             if (sonic.SpinRef > 0)
                 sonic.SpinRef -= sonic.SpinRef / 0.125f / 256;
@@ -176,11 +183,21 @@ namespace SonicRemake.Movement
 
             if (!down && sonic.State == SonicState.Charging)
             {
+                _log.Debug("bruh");
                 var multiplier = sonic.Facing == Facing.Right ? 1 : -1;
                 velocity.GroundSpeed = (8f + MathF.Floor(sonic.SpinRef) / 2f) * multiplier;
                 sonic.State = SonicState.Running;
                 sonic.SpinRef = 0;
             }
+        }
+
+        private void HandleCrouch(ref Sonic sonic, ref Velocity velocity)
+        {
+            var down = Input.IsKeyPressed(Direction.Down);
+
+            if (down && sonic.IsOnGround && velocity.GroundSpeed == 0 && sonic.State != SonicState.Charging)
+                sonic.State = SonicState.Crouching;
+
         }
     }
 }
