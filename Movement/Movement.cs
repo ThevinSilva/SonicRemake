@@ -49,9 +49,10 @@ namespace SonicRemake.Movement
             );
 
             transform.Position = new Vector2f(transform.Position.X + velocity.Speed.X, transform.Position.Y + velocity.Speed.Y);
-            if (transform.Position.Y >= 100)
+            // TODO - GET RID OF THIS WORK AROUND 
+            if (transform.Position.Y >= 30 * 16)
             {
-                transform.Position = new Vector2f(transform.Position.X, 100);
+                transform.Position = new Vector2f(transform.Position.X, 30 * 16);
                 sonic.IsOnGround = true;
             }
             else

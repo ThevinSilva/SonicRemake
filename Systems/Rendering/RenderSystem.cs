@@ -6,6 +6,8 @@ using SonicRemake.Components;
 using Sprite = SonicRemake.Components.Sprite;
 using Transform = SonicRemake.Components.Transform;
 
+// TODO - correct the shift for Tiles
+
 namespace SonicRemake.Systems.Rendering
 {
 	public class RenderSystem : GameSystem

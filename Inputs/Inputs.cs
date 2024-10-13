@@ -13,9 +13,7 @@ namespace SonicRemake.Inputs
                 {Direction.Down, [Keyboard.Key.S] },
                 {Direction.Forward,[Keyboard.Key.D]},
                 {Direction.Space, [Keyboard.Key.Space]},
-
             };
-
 
         public static HashSet<Direction> HandleInput()
         {

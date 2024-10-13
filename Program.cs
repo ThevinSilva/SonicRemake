@@ -16,6 +16,7 @@ using SonicRemake.Systems.Rendering.Debugging;
 using SonicRemake.Systems.Rendering.Animations;
 using SonicRemake.Systems.Rendering.Characters;
 using SonicRemake.Systems.Rendering.Camera;
+using SonicRemake.Maps;
 
 AnimationHelper.LoadAnimationsFromYaml("Assets/Animations/sonic_mania.yaml");
 
@@ -25,8 +26,6 @@ float physicsTimeAccumulator = 0.0f;
 
 const float animationTimeStep = 1.0f / 60.0f;
 float animationTimeAccumulator = 0.0f;
-
-// var inputs = new Inputs();
 
 var window = new RenderWindow(new VideoMode(1920, 1080), "Sonic");
 window.SetFramerateLimit(120);
@@ -38,7 +37,6 @@ clock.Restart();
 
 ImmutableList<GameSystem> systems = [
 	new TextureLoaderSystem(),
-
 	new AnimationSystem(),
 	new AnimationLoadSystem(),
  	new Movement(),
@@ -46,7 +44,7 @@ ImmutableList<GameSystem> systems = [
 	new CameraSystem(),
 	new RenderSystem(),
 	new FpsDebugSystem(),
-
+	new SensorDebug(),
 ];
 
 world.Create(
@@ -61,16 +59,20 @@ world.Create(
 	);
 
 
-world.Create(
-	new Transform(new Vector2f(-240, -135), new Vector2f(1, 1)),
-	new Renderer(),
-	new Sprite("Green Hill Zone/Scene1-BG Outside.png")
-);
+// world.Create(
+// 	new Transform(new Vector2f(-240, -135), new Vector2f(1, 1)),
+// 	new Renderer(),
+// 	new Sprite("Green Hill Zone/Scene1-BG Outside.png")
+// );
 
 world.Create(
 	new Transform(new Vector2f(0, 0), new Vector2f(1, 1)),
 	new Camera(4)
 );
+
+var Map = new TileManagementSystem();
+Map.CreateDrawableEntities(world);
+
 
 // Run OnStart for all systems
 systems.ForEach(system => system.OnStart(world));
