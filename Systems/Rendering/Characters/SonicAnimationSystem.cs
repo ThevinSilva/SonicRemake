@@ -28,13 +28,20 @@ public class SonicAnimationSystem : GameSystem
 
                 switch (sonic.State)
                 {
+                    case SonicState.Crouching:
+                        queue.Animation = "crouch";
+                        queue.FramesPerSprite = 6;
+                        queue.Loop = false;
+                        break;
                     case SonicState.Charging:
                         queue.Animation = "spin_dash";
                         queue.FramesPerSprite = (int)Math.Floor(Math.Max(0, 8 - sonic.SpinRef));
+                        queue.Loop = true;
                         break;
                     case SonicState.Skidding:
                         queue.Animation = "skid";
                         queue.FramesPerSprite = 6;
+                        queue.Loop = false;
                         break;
                     case SonicState.Running:
                         queue.Animation = Math.Abs(velocity.GroundSpeed) switch
@@ -46,9 +53,11 @@ public class SonicAnimationSystem : GameSystem
                             < 15 => "dash",
                             _ => "peelout",
                         };
+                        queue.Loop = true;
                         break;
                     case SonicState.Idle:
                         queue.Animation = "idle";
+                        queue.Loop = false;
                         break;
                 }
             }
@@ -57,6 +66,7 @@ public class SonicAnimationSystem : GameSystem
                 var duration = (int)Math.Floor(Math.Max(0, 6 - Math.Abs(velocity.Speed.X)));
                 queue.Animation = "jump";
                 queue.FramesPerSprite = duration;
+                queue.Loop = true;
             }
         });
     }

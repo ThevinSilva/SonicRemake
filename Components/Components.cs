@@ -17,7 +17,7 @@ public record struct Renderer(Texture? Texture, bool FlipX = false, bool FlipY =
 
 public record struct SpriteAnimator(AnimationData AnimationData, int SpritesLeft, int FramesLeft, int LoopsLeft);
 
-public record struct SpriteAnimation(string Animation = "idle", int FramesPerSprite = 6);
+public record struct SpriteAnimation(string Animation = "idle", int FramesPerSprite = 6, bool Loop = true);
 
 public record struct Sonic(SonicState State, bool IsOnGround, float SpinRef, Facing Facing, int BoredCount
 );

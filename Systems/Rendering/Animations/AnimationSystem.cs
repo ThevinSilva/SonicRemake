@@ -29,9 +29,17 @@ namespace SonicRemake.Systems.Rendering.Animations
 
         if (animation.SpritesLeft == 0 && animation.LoopsLeft == 0)
         {
-          // Restart the animation
-          animation.LoopsLeft = animation.AnimationData.Loops;
-          animation.SpritesLeft = animation.AnimationData.NumberOfSprites;
+          if (queue.Loop)
+          {
+            // Restart the animation
+            animation.LoopsLeft = animation.AnimationData.Loops;
+            animation.SpritesLeft = animation.AnimationData.NumberOfSprites;
+          }
+          else
+          {
+            animation.SpritesLeft = 1;
+
+          }
         }
 
         // if (animation.SpritesLeft == 0 && animation.LoopsLeft > 0)
