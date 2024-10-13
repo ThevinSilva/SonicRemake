@@ -17,14 +17,13 @@ using SonicRemake.Systems.Rendering.Animations;
 using SonicRemake.Systems.Rendering.Characters;
 using SonicRemake.Systems.Rendering.Camera;
 using SonicRemake.Levels;
+using SonicRemake.Maps;
 
 AnimationHelper.LoadAnimationsFromYaml("Assets/Animations/sonic_mania.yaml");
 
 
 const float tickTimeStep = 1.0f / 60.0f;
 float tickTimeStepAccumulator = 0.0f;
-
-// var inputs = new Inputs();
 
 var window = new RenderWindow(new VideoMode(1920, 1080), "Sonic");
 window.SetFramerateLimit(120);
@@ -41,6 +40,7 @@ ImmutableList<GameSystem> systems = [
 	new CameraSystem(),
 	new RenderSystem(),
 	new FpsDebugSystem(),
+	new SensorDebug(),
 ];
 
 var sandbox = new Level("Sandbox");
@@ -67,6 +67,8 @@ sandbox.Entities.Create(
 );
 
 LevelManager.LoadLevel(sandbox);
+var Map = new TileManagementSystem();
+Map.CreateDrawableEntities(LevelManager.Active.Entities);
 
 while (window.IsOpen)
 {
