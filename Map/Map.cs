@@ -105,9 +105,6 @@ public class TileManagementSystem
 
 	public void CreateDrawableEntities(World world)
 	{
-		_log.Information("0 = " + TileMap.GetLength(0));
-		_log.Information("1 = " + TileMap.GetLength(1));
-
 		for (int y = 0; y < TileMap.GetLength(0); y++)
 		{
 			for (int x = 0; x < TileMap.GetLength(1); x++)
@@ -119,13 +116,12 @@ public class TileManagementSystem
 
 				if (idx <= 0) continue;
 
-				_log.Information($"x:{x} \n y:{y} \n idx : {idx}");
 				world.Create(
 					new Transform(pos, scale),
 					new Renderer(),
 					new Sprite(
 						$"BaseTileSet/block_{idx}.png",
-						new SFML.Graphics.Color(0)
+						new SFML.Graphics.Color(0, 0, 0)
 					)
 				);
 			}
