@@ -11,7 +11,7 @@ namespace SonicRemake.Systems.Rendering.Characters;
 
 public class SensorDebug : GameSystem
 {
-	private static Log _log = new(typeof(SonicAnimationSystem));
+	private static Log _log = new(typeof(SensorDebug));
 
 	private QueryDescription Query = new QueryDescription().WithAll<Sonic, Transform, SpriteSheet>();
 	private QueryDescription CameraQuery = new QueryDescription().WithAll<Components.Camera, Transform>();
@@ -37,9 +37,6 @@ public class SensorDebug : GameSystem
 			var origin = transform.Position;
 			var widthRadius = sheet.SpriteSize / 2f;
 			var heightRadius = sheet.SpriteSize / 2f;
-
-			_log.Debug(origin);
-			_log.Debug(widthRadius);
 
 			// FIXME: This functionality is repeated in the RenderSystem, it
 			//        should probably be extracted to a helper function somewhere
