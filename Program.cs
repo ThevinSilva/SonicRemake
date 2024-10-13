@@ -44,8 +44,10 @@ ImmutableList<GameSystem> systems = [
 ];
 
 var sandbox = new Level("Sandbox");
+LevelManager.LoadLevel(sandbox);
+
 sandbox.Entities.Create(
-		new Transform(new Vector2f(0, 0), new Vector2f(1, 1)),
+		new Transform(new Vector2f(0, 500), new Vector2f(1, 1)),
 		new Velocity(),
 		new Sprite("sonic_mania.png", new Color(0, 240, 0), new Color(0, 170, 0), new Color(0, 138, 0), new Color(0, 111, 0)),
 		new SpriteSheet(1, 13, 48),
@@ -55,20 +57,22 @@ sandbox.Entities.Create(
 		new Sonic()
 	);
 
-sandbox.Entities.Create(
-	new Transform(new Vector2f(-240, -135), new Vector2f(1, 1)),
-	new Renderer(),
-	new Sprite("Green Hill Zone/Scene1-BG Outside.png")
-);
 
 sandbox.Entities.Create(
 	new Transform(new Vector2f(0, 0), new Vector2f(1, 1)),
 	new Camera(4)
 );
 
-LevelManager.LoadLevel(sandbox);
+
+
 var Map = new TileManagementSystem();
 Map.CreateDrawableEntities(LevelManager.Active.Entities);
+
+sandbox.Entities.Create(
+	new Transform(new Vector2f(-300, 300), new Vector2f(1, 1)),
+	new Renderer(),
+	new Sprite("Green Hill Zone/Scene1-BG Outside.png")
+);
 
 while (window.IsOpen)
 {
