@@ -27,4 +27,6 @@ jump: 197, 270, 16
 skid: 589, 330, 9
 skid_turn: 1030, 330, 3
 
+crouch: 981, 84, 4
+
 spin_dash: 1, 398, 16
