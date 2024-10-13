@@ -37,7 +37,7 @@ namespace SonicRemake
       return new Log(type);
     }
 
-    private void LogMessage(LogLevel level, Exception? exception, object message)
+    private void LogMessage(LogLevel level, Exception? exception, params object[] message)
     {
       if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
       {
@@ -69,10 +69,20 @@ namespace SonicRemake
       // Message
       builder.Append(GetColorCode(level));
 
-      if (message is string str)
-        builder.Append(str);
-      else
-        builder.Append(JsonConvert.SerializeObject(message));
+      foreach (var part in message)
+      {
+        if (part is string str)
+          builder.Append(str);
+        else
+        {
+          builder.Append('[');
+          builder.Append(part.GetType().Name);
+          builder.Append("] ");
+          builder.Append(JsonConvert.SerializeObject(part));
+        }
+
+        builder.Append(' ');
+      }
 
       if (exception != null)
       {
@@ -138,52 +148,52 @@ namespace SonicRemake
       }
     }
 
-    public void Debug(Exception exception, object message)
+    public void Debug(Exception exception, params object[] message)
     {
       LogMessage(LogLevel.Debug, exception, message);
     }
 
-    public void Debug(object message)
+    public void Debug(params object[] message)
     {
       LogMessage(LogLevel.Debug, null, message);
     }
 
-    public void Information(Exception exception, object message)
+    public void Information(Exception exception, params object[] message)
     {
       LogMessage(LogLevel.Information, exception, message);
     }
 
-    public void Information(object message)
+    public void Information(params object[] message)
     {
       LogMessage(LogLevel.Information, null, message);
     }
 
-    public void Warning(Exception exception, object message)
+    public void Warning(Exception exception, params object[] message)
     {
       LogMessage(LogLevel.Warning, exception, message);
     }
 
-    public void Warning(object message)
+    public void Warning(params object[] message)
     {
       LogMessage(LogLevel.Warning, null, message);
     }
 
-    public void Error(Exception exception, object message)
+    public void Error(Exception exception, params object[] message)
     {
       LogMessage(LogLevel.Error, exception, message);
     }
 
-    public void Error(object message)
+    public void Error(params object[] message)
     {
       LogMessage(LogLevel.Error, null, message);
     }
 
-    public void Critical(Exception exception, object message)
+    public void Critical(Exception exception, params object[] message)
     {
       LogMessage(LogLevel.Critical, exception, message);
     }
 
-    public void Critical(object message)
+    public void Critical(params object[] message)
     {
       LogMessage(LogLevel.Critical, null, message);
     }

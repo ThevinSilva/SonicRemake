@@ -30,8 +30,7 @@ namespace SonicRemake.Systems.Rendering
 
 			world.Query(in Query, (Entity entity, ref Renderer renderer, ref Transform transform) =>
 			{
-				// If the entity has a SpriteSheet component, calculate the texture rect mask
-				Vector2f origin = new Vector2f(0, 0);
+				var origin = new Vector2f(0, 0);
 
 				var textureRect = new IntRect();
 				if (entity.Has<SpriteSheet>())
@@ -40,10 +39,15 @@ namespace SonicRemake.Systems.Rendering
 					textureRect = CalculateSpriteInSheet(spriteSheet, renderer.FlipX, renderer.FlipY);
 					origin = new Vector2f(spriteSheet.SpriteSize / 2, spriteSheet.SpriteSize / 2);
 				}
-				else if (renderer.Texture != null)
+				else if (renderer.Drawable != null && renderer.Drawable is SFML.Graphics.Sprite sprite)
 				{
-					//origin = new Vector2f(renderer.Texture.Size.X / 2, renderer.Texture.Size.Y / 2);
-					textureRect = new IntRect(0, 0, (int)renderer.Texture.Size.X, (int)renderer.Texture.Size.Y);
+					origin = new Vector2f(sprite.Texture.Size.X / 2, sprite.Texture.Size.Y / 2);
+					textureRect = new IntRect(0, 0, (int)sprite.Texture.Size.X, (int)sprite.Texture.Size.Y);
+				}
+				else if (renderer.Drawable != null && renderer.Drawable is SFML.Graphics.RectangleShape rectangle)
+				{
+					origin = new Vector2f(rectangle.Size.X / 2, rectangle.Size.Y / 2);
+					textureRect = new IntRect(0, 0, (int)rectangle.Size.X, (int)rectangle.Size.Y);
 				}
 
 				var position = transform.Position;
@@ -56,19 +60,44 @@ namespace SonicRemake.Systems.Rendering
 				position.X += window.Size.X / 2;
 				position.Y += window.Size.Y / 2;
 
-
 				var scale = transform.Scale * cameraZoom;
 
+				if (scale == new Vector2f(0, 0))
+					_log.Warning("Scale is 0, 0, object will not be visible");
+
 				// Draw the sprite
-				window.Draw(new SFML.Graphics.Sprite
+				if (renderer.Drawable is SFML.Graphics.Sprite s)
 				{
-					Texture = renderer.Texture,
-					Position = position,
-					Scale = scale,
-					Rotation = transform.Rotation,
-					TextureRect = textureRect,
-					Origin = origin
-				});
+					s.Origin = origin;
+					s.Position = position;
+					s.Scale = scale;
+					s.TextureRect = textureRect;
+					s.Rotation = transform.Rotation;
+					window.Draw(s);
+				}
+
+				// Draw the rectangle
+				// FIXME: Something about the original rectangle makes it not render correctly
+				///       Temporarily replaced with a new RectangleShape
+				else if (renderer.Drawable is SFML.Graphics.RectangleShape r)
+				{
+					r.Origin = origin;
+					r.Position = position;
+					r.Scale = scale;
+					r.TextureRect = textureRect;
+					r.Rotation = transform.Rotation;
+					window.Draw(r);
+					// window.Draw(new SFML.Graphics.RectangleShape()
+					// {
+					// 	Size = r.Size,
+					// 	FillColor = r.FillColor,
+					// 	OutlineColor = r.OutlineColor,
+					// 	OutlineThickness = r.OutlineThickness,
+					// 	Position = position,
+					// 	Origin = origin,
+					// 	Scale = scale,
+					// });
+				}
 			});
 		}
 

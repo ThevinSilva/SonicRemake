@@ -13,14 +13,14 @@ namespace SonicRemake.Systems.Rendering.Textures
     {
       world.Query(in Query, (Entity entity, ref Renderer renderer, ref Sprite sprite) =>
       {
-        if (renderer.Texture == null)
+        if (renderer.Drawable == null)
         {
           var image = new Image($"Assets/Sprites/{sprite.SpriteId}");
 
           foreach (var color in sprite.MaskColors)
             image.CreateMaskFromColor(color);
 
-          renderer.Texture = new Texture(image);
+          renderer.Drawable = new SFML.Graphics.Sprite() { Texture = new Texture(image) };
         }
       });
     }

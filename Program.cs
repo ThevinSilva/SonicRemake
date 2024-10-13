@@ -33,6 +33,7 @@ clock.Restart();
 
 ImmutableList<GameSystem> systems = [
 	new TextureLoaderSystem(),
+	new RectangleLoaderSystem(),
 	new AnimationSystem(),
 	new AnimationLoadSystem(),
  	new Movement(),
@@ -41,13 +42,14 @@ ImmutableList<GameSystem> systems = [
 	new RenderSystem(),
 	new FpsDebugSystem(),
 	new SensorDebug(),
+	new GridDebugSystem()
 ];
 
 var sandbox = new Level("Sandbox");
 LevelManager.LoadLevel(sandbox);
 
 sandbox.Entities.Create(
-		new Transform(new Vector2f(0, 500), new Vector2f(1, 1)),
+		new Transform(new Vector2f(0, 0), new Vector2f(1, 1)),
 		new Velocity(),
 		new Sprite("sonic_mania.png", new Color(0, 240, 0), new Color(0, 170, 0), new Color(0, 138, 0), new Color(0, 111, 0)),
 		new SpriteSheet(1, 13, 48),
@@ -57,22 +59,19 @@ sandbox.Entities.Create(
 		new Sonic()
 	);
 
-
 sandbox.Entities.Create(
 	new Transform(new Vector2f(0, 0), new Vector2f(1, 1)),
-	new Camera(4)
+	new Camera(4f)
 );
-
-
 
 var Map = new TileManagementSystem();
 Map.CreateDrawableEntities(LevelManager.Active.Entities);
 
-sandbox.Entities.Create(
-	new Transform(new Vector2f(-300, 300), new Vector2f(1, 1)),
-	new Renderer(),
-	new Sprite("Green Hill Zone/Scene1-BG Outside.png")
-);
+// sandbox.Entities.Create(
+// 	new Transform(new Vector2f(0, 28 * 16), new Vector2f(1, 1)),
+// 	new Renderer(),
+// 	new Sprite("Green Hill Zone/Scene1-BG Outside.png")
+// );
 
 while (window.IsOpen)
 {

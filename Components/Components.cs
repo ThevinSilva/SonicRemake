@@ -11,9 +11,11 @@ public record struct Velocity(Vector2f Speed, float GroundSpeed);
 
 public record struct Sprite(string SpriteId, params Color[] MaskColors);
 
+public record struct Rectangle(Vector2f Size, Color FillColor, Color OutlineColor, float OutlineThickness);
+
 public record struct SpriteSheet(int X, int Y, int SpriteSize);
 
-public record struct Renderer(Texture? Texture, bool FlipX = false, bool FlipY = false);
+public record struct Renderer(Drawable? Drawable, bool FlipX = false, bool FlipY = false);
 
 public record struct SpriteAnimator(AnimationData AnimationData, int SpritesLeft, int FramesLeft, int LoopsLeft);
 

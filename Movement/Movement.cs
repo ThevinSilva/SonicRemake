@@ -153,7 +153,6 @@ namespace SonicRemake.Movement
 
             if (space && sonic.IsOnGround && sonic.State != SonicState.Charging && sonic.State != SonicState.Crouching)
             {
-                // _log.Debug("bruhhh");
                 vX -= JUMP_FORCE * MathF.Sin(transform.GroundAngle);
                 vY -= JUMP_FORCE * MathF.Cos(transform.GroundAngle);
             }
@@ -183,7 +182,6 @@ namespace SonicRemake.Movement
 
             if (!down && sonic.State == SonicState.Charging)
             {
-                _log.Debug("bruh");
                 var multiplier = sonic.Facing == Facing.Right ? 1 : -1;
                 velocity.GroundSpeed = (8f + MathF.Floor(sonic.SpinRef) / 2f) * multiplier;
                 sonic.State = SonicState.Running;

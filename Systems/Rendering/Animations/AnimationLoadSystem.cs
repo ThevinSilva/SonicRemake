@@ -19,8 +19,6 @@ namespace SonicRemake.Systems.Rendering.Animations
 				// Check if a new animation was requested
 				if (queue.Animation != animation.AnimationData.Name)
 				{
-					_log.Information($"Changing animation from {animation.AnimationData.Name} to {queue.Animation}");
-
 					var newAnimation = AnimationHelper.Animations[queue.Animation];
 					animation.AnimationData = newAnimation;
 					animation.LoopsLeft = newAnimation.Loops;
@@ -30,7 +28,6 @@ namespace SonicRemake.Systems.Rendering.Animations
 
 				if (queue.FramesPerSprite != animation.AnimationData.FramesPerSprite)
 				{
-					_log.Information($"Changing frames per sprite from {animation.AnimationData.FramesPerSprite} to {queue.FramesPerSprite}");
 					animation.AnimationData = animation.AnimationData with { FramesPerSprite = queue.FramesPerSprite };
 					animation.FramesLeft = queue.FramesPerSprite;
 				}
