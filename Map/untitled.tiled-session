@@ -20,7 +20,7 @@
             "selectedLayer": 0,
             "viewCenter": {
                 "x": 397,
-                "y": 246
+                "y": 159
             }
         },
         "block_100.tsx": {
@@ -51,15 +51,14 @@
     "map.tileWidth": 16,
     "map.width": 640,
     "openFiles": [
-        "BaseTileSet/BaseTileSet.tsx",
         "Stage.tmx",
         "slopes.tsx"
     ],
     "project": "untitled.tiled-project",
     "recentFiles": [
-        "BaseTileSet/BaseTileSet.tsx",
         "slopes.tsx",
         "Stage.tmx",
+        "BaseTileSet/BaseTileSet.tsx",
         "slope.tsx"
     ],
     "tileset.lastUsedFormat": "tsx",

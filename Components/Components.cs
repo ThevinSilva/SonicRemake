@@ -2,6 +2,7 @@ using System;
 using SFML.Graphics;
 using SFML.System;
 using SonicRemake.Animations;
+using SonicRemake.Maps;
 
 namespace SonicRemake.Components;
 
@@ -21,10 +22,11 @@ public record struct SpriteAnimator(AnimationData AnimationData, int SpritesLeft
 
 public record struct SpriteAnimation(string Animation = "idle", int FramesPerSprite = 6, bool Loop = true);
 
-public record struct Sonic(SonicState State, bool IsOnGround, float SpinRef, Facing Facing, int BoredCount
-);
+public record struct Sonic(SonicState State, bool IsOnGround, float SpinRef, Facing Facing, int BoredCount, Vector2f Origin, int WidthRadius, int HeightRadius);
 
 public record struct Sensor();
+
+public record struct SolidTiles(int[,] TileMap, Tile[] TileSet);
 
 public record struct Camera(float Zoom = 4f);
 

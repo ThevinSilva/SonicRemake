@@ -18,6 +18,7 @@ using SonicRemake.Systems.Rendering.Characters;
 using SonicRemake.Systems.Rendering.Camera;
 using SonicRemake.Levels;
 using SonicRemake.Maps;
+using SonicRemake.Systems.Sensors;
 
 AnimationHelper.LoadAnimationsFromYaml("Assets/Animations/sonic_mania.yaml");
 
@@ -32,6 +33,7 @@ var clock = new Clock();
 clock.Restart();
 
 ImmutableList<GameSystem> systems = [
+	new TileManagementSystem(),
 	new TextureLoaderSystem(),
 	new RectangleLoaderSystem(),
 	new AnimationSystem(),
@@ -42,6 +44,7 @@ ImmutableList<GameSystem> systems = [
 	new RenderSystem(),
 	new FpsDebugSystem(),
 	new SensorDebug(),
+	new SensorSystem(),
 	new GridDebugSystem()
 ];
 
@@ -56,22 +59,23 @@ sandbox.Entities.Create(
 		new SpriteAnimator(),
 		new SpriteAnimation(),
 		new Renderer(),
-		new Sonic()
+		new Sonic(),
+		new SolidTiles()
 	);
 
 sandbox.Entities.Create(
 	new Transform(new Vector2f(0, 0), new Vector2f(1, 1)),
-	new Camera(4f)
+	new Camera(8f)
 );
 
-var Map = new TileManagementSystem();
-Map.CreateDrawableEntities(LevelManager.Active.Entities);
 
 // sandbox.Entities.Create(
 // 	new Transform(new Vector2f(0, 28 * 16), new Vector2f(1, 1)),
 // 	new Renderer(),
 // 	new Sprite("Green Hill Zone/Scene1-BG Outside.png")
 // );
+
+
 
 while (window.IsOpen)
 {

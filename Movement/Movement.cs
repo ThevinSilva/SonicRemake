@@ -13,7 +13,7 @@ namespace SonicRemake.Movement
     {
         private static Log _log = new(typeof(Movement));
 
-        private QueryDescription Query = new QueryDescription().WithAll<Sonic, Transform, Velocity, Sonic>();
+        private QueryDescription Query = new QueryDescription().WithAll<Sonic, Transform, Velocity>();
 
         // Horizontal Movement Constants https://info.sonicretro.org/SPG:Running
         private const float ACCELERATION_SPEED = 0.046875f;
@@ -37,7 +37,7 @@ namespace SonicRemake.Movement
 
         private void HandleMovement(ref Transform transform, ref Velocity velocity, ref Sonic sonic)
         {
-            if (sonic.State != SonicState.Charging)
+            if (sonic.State != SonicState.Charging && sonic.IsOnGround)
                 sonic.State = SonicState.Idle;
 
             HandleCrouch(ref sonic, ref velocity);
@@ -72,7 +72,7 @@ namespace SonicRemake.Movement
             var forward = Input.IsKeyPressed(Direction.Forward);
             var backward = Input.IsKeyPressed(Direction.Backward);
 
-            if (Math.Abs(velocity.GroundSpeed) > 0)
+            if (Math.Abs(velocity.GroundSpeed) > 0 && sonic.IsOnGround)
                 sonic.State = SonicState.Running;
 
             if (forward && sonic.State != SonicState.Charging)
@@ -155,6 +155,7 @@ namespace SonicRemake.Movement
             {
                 vX -= JUMP_FORCE * MathF.Sin(transform.GroundAngle);
                 vY -= JUMP_FORCE * MathF.Cos(transform.GroundAngle);
+                sonic.State = SonicState.Jumping;
             }
 
             velocity.Speed = new Vector2f(vX, vY);

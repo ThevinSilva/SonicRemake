@@ -1,12 +1,13 @@
 using System.Numerics;
 using System.Runtime.InteropServices;
 using Arch.Core;
+using CommunityToolkit.HighPerformance;
 using Newtonsoft.Json;
 using SFML.System;
 using SonicRemake.Components;
+using SonicRemake.Systems;
 
 namespace SonicRemake.Maps;
-
 
 // Solid Tiles Implementation https://info.sonicretro.org/SPG:Solid_Tiles#Height_Array
 public struct Tile
@@ -57,15 +58,25 @@ public struct Tile
 	}
 }
 
-public class TileManagementSystem
+public class TileManagementSystem : GameSystem
 {
 	private static Log _log = new Log(typeof(TileManagementSystem));
+	private QueryDescription Query = new QueryDescription().WithAll<SolidTiles>();
+
 	private Tile[] TileSet { get; set; }
 	private int[,] TileMap { get; set; }
-	public TileManagementSystem()
+
+	public override void OnStart(World world)
 	{
-		TileSet = LoadTileSet("./Assets/Map/Tiles.json");
-		TileMap = LoadTileMap("./Assets/Map/TestStage.csv");
+
+		world.Query(in Query, (ref SolidTiles map) =>
+		{
+			TileSet = LoadTileSet("./Assets/Map/Tiles.json");
+			TileMap = LoadTileMap("./Assets/Map/TestStage.csv");
+			map.TileMap = TileMap;
+			map.TileSet = TileSet;
+			CreateDrawableEntities(world);
+		});
 	}
 
 	private static Tile[] LoadTileSet(string location)
