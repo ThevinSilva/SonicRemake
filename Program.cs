@@ -60,7 +60,7 @@ sandbox.Entities.Create(
 		new SpriteAnimation(),
 		new Renderer(),
 		new Sonic(),
-		new SolidTiles()
+		new SolidTiles() // TODO:  Empty component for the Map System to work
 	);
 
 sandbox.Entities.Create(
