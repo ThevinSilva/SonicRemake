@@ -23,7 +23,7 @@ namespace SonicRemake.Systems.Rendering.Debugging
       {
         for (var y = -GridSize; y <= GridSize; y++)
         {
-          world.Create(new DebugGrid(x, y), new Transform(new Vector2f(0, 0), new Vector2f(1, 1)), new Rectangle(new Vector2f(16, 16), new Color(0, 0, 0, 0), new Color(255, 255, 255, 50), 0.5f), new Renderer());
+          world.Create(new DebugGrid(x, y), new Transform(new Vector2f(0, 0), new Vector2f(1, 1)), new Rectangle(new Vector2f(16, 16), new Color(0, 0, 0, 0), new Color(255, 255, 255, 50), 0.5f), new Renderer(Layer.Background));
         }
       }
     }

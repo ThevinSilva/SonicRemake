@@ -41,11 +41,12 @@ ImmutableList<GameSystem> systems = [
  	new Movement(),
 	new SonicAnimationSystem(),
 	new CameraSystem(),
-	new RenderSystem(),
+
 	new FpsDebugSystem(),
 	new SensorDebug(),
 	new SensorSystem(),
-	new GridDebugSystem()
+	new GridDebugSystem(),
+	new RenderSystem(),
 ];
 
 var sandbox = new Level("Sandbox");
@@ -58,8 +59,9 @@ sandbox.Entities.Create(
 		new SpriteSheet(1, 13, 48),
 		new SpriteAnimator(),
 		new SpriteAnimation(),
-		new Renderer(),
+		new Renderer(Layer.Characters),
 		new Sonic(),
+		new Sensors(),
 		new SolidTiles() // TODO:  Empty component for the Map System to work
 	);
 

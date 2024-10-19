@@ -129,7 +129,7 @@ public class TileManagementSystem : GameSystem
 
 				world.Create(
 					new Transform(pos, scale),
-					new Renderer(),
+					new Renderer(Layer.BackgroundTiles),
 					new Sprite(
 						$"BaseTileSet/block_{idx}.png",
 						new SFML.Graphics.Color(0, 0, 0)
