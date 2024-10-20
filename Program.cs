@@ -65,7 +65,7 @@ sandbox.Entities.Create(
 
 sandbox.Entities.Create(
 	new Transform(new Vector2f(0, 0), new Vector2f(1, 1)),
-	new Camera(8f)
+	new Camera(4f)
 );
 
 

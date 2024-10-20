@@ -50,26 +50,35 @@ namespace SonicRemake.Systems.Rendering.Characters
 			sonic.Origin = sonic.Origin;
 			window.Draw(CreateRectangleShape(CameraFix(world, window, sonic.Origin), new Vector2f(1, 1), new Color(255, 255, 255), scale));
 
+
 			// // Draw left vertical sensor
-			var verticalLeftSensorPosition = new Vector2f(sonic.Origin.X - sonic.WidthRadius, sonic.Origin.Y);
-			window.Draw(CreateRectangleShape(CameraFix(world, window, verticalLeftSensorPosition), new Vector2f(sonic.WidthRadius, 1), new Color(255, 0, 255), scale));
+			var horizontalLeftSensorPosition = new Vector2f(sonic.Origin.X - sonic.WidthRadius, sonic.Origin.Y);
 
 			// Draw right vertical sensor
-			var verticalRightSensorPosition = new Vector2f(sonic.Origin.X + sonic.WidthRadius + 1, sonic.Origin.Y);
-			window.Draw(CreateRectangleShape(CameraFix(world, window, verticalRightSensorPosition), new Vector2f(-sonic.WidthRadius, 1), new Color(255, 0, 0), scale));
+			var horizontalRightSensorPosition = new Vector2f(sonic.Origin.X + sonic.WidthRadius, sonic.Origin.Y);
 
-			var upperRightSensorPosition = new Vector2f(sonic.Origin.X - sonic.WidthRadius, sonic.Origin.Y + sonic.HeightRadius);
-			window.Draw(CreateRectangleShape(CameraFix(world, window, upperRightSensorPosition), new Vector2f(1, -sonic.HeightRadius - 10), new Color(0, 255, 0), scale));
+			var upperRightSensorPosition = new Vector2f(sonic.Origin.X - sonic.WidthRadius, sonic.Origin.Y - sonic.HeightRadius);
 
 			var upperLeftSensorPosition = new Vector2f(sonic.Origin.X + sonic.WidthRadius, upperRightSensorPosition.Y);
-			window.Draw(CreateRectangleShape(CameraFix(world, window, upperLeftSensorPosition), new Vector2f(1, -sonic.HeightRadius), new Color(0, 255, 255), scale));
 
-
-			var lowerRightSensorPosition = new Vector2f(upperRightSensorPosition.X, sonic.Origin.Y - sonic.HeightRadius);
-			window.Draw(CreateRectangleShape(CameraFix(world, window, lowerRightSensorPosition), new Vector2f(1, sonic.HeightRadius), new Color(0, 0, 255), scale));
+			var lowerRightSensorPosition = new Vector2f(upperRightSensorPosition.X, sonic.Origin.Y + sonic.HeightRadius);
 
 			var lowerLeftSensorPosition = new Vector2f(upperLeftSensorPosition.X, lowerRightSensorPosition.Y);
-			window.Draw(CreateRectangleShape(CameraFix(world, window, lowerLeftSensorPosition), new Vector2f(1, sonic.HeightRadius), new Color(255, 255, 0), scale));
+
+			// // Draw left vertical sensor
+			window.Draw(CreateRectangleShape(CameraFix(world, window, horizontalLeftSensorPosition), new Vector2f(1, 1), new Color(255, 0, 255), scale));
+
+			// Draw right vertical sensor
+			window.Draw(CreateRectangleShape(CameraFix(world, window, horizontalRightSensorPosition), new Vector2f(-1, 1), new Color(255, 0, 0), scale));
+
+			window.Draw(CreateRectangleShape(CameraFix(world, window, upperRightSensorPosition), new Vector2f(1, -1), new Color(0, 255, 0), scale));
+
+			window.Draw(CreateRectangleShape(CameraFix(world, window, upperLeftSensorPosition), new Vector2f(1, -1), new Color(0, 255, 255), scale));
+
+
+			window.Draw(CreateRectangleShape(CameraFix(world, window, lowerRightSensorPosition), new Vector2f(1, 1), new Color(0, 0, 255), scale));
+
+			window.Draw(CreateRectangleShape(CameraFix(world, window, lowerLeftSensorPosition), new Vector2f(1, 1), new Color(255, 255, 0), scale));
 
 		}
 
