@@ -4,6 +4,8 @@ using Color = SFML.Graphics.Color;
 using SFML.System;
 using SonicRemake.Components;
 using Transform = SonicRemake.Components.Transform;
+using System.ComponentModel;
+using Arch.Core.Extensions;
 
 namespace SonicRemake.Systems.Rendering.Characters
 {
@@ -12,19 +14,56 @@ namespace SonicRemake.Systems.Rendering.Characters
 		private static readonly Log _log = new(typeof(SensorDebug));
 
 		private readonly QueryDescription _sonicQuery = new QueryDescription()
-			.WithAll<Sonic, Transform, SpriteSheet>();
+			.WithAll<Sonic, Transform, SpriteSheet, Components.Sensors>();
 
-		private readonly QueryDescription _cameraQuery = new QueryDescription()
-			.WithAll<Components.Camera, Transform>();
+		private Entity _lowerLeftRect;
+		private Entity _lowerRightRect;
+		private Entity _upperLeftRect;
+		private Entity _upperRightRect;
+		private Entity _horizontalLeftRect;
+		private Entity _horizontalRightRect;
 
-		public override void OnRender(World world, RenderWindow window, GameContext context)
+		public override void OnStart(World world)
 		{
-			world.Query(in _sonicQuery, (Entity entity, ref Sonic sonic, ref Transform transform, ref SpriteSheet sheet) =>
+			_lowerLeftRect = world.Create(
+				new Transform(),
+				new Rectangle(new(1, 1), new(0, 240, 0), new(0), 0),
+				new Renderer(Layer.Debug));
+			_lowerRightRect = world.Create(
+				new Transform(),
+				new Rectangle(new(1, 1), new Color(50, 255, 162), new(0), 0),
+				new Renderer(Layer.Debug));
+			_upperLeftRect = world.Create(
+				new Transform(),
+				new Rectangle(new(1, 1), new Color(0, 174, 239), new(0), 0),
+				new Renderer(Layer.Debug));
+			_upperRightRect = world.Create(
+				new Transform(),
+				new Rectangle(new(1, 1), new Color(255, 242, 56), new(0), 0),
+				new Renderer(Layer.Debug));
+			_horizontalLeftRect = world.Create(
+				new Transform(),
+				new Rectangle(new(1, 1), new Color(255, 56, 255), new(0), 0),
+				new Renderer(Layer.Debug));
+			_horizontalRightRect = world.Create(
+				new Transform(),
+				new Rectangle(new(1, 1), new Color(255, 84, 84), new(0), 0),
+				new Renderer(Layer.Debug));
+		}
+
+		public override void OnTick(World world, GameContext context)
+		{
+			world.Query(in _sonicQuery, (Entity entity, ref Sonic sonic, ref Transform transform, ref SpriteSheet sheet, ref Components.Sensors sensors) =>
 			{
-				UpdateSonicSensorData(ref sonic, transform.Position, sheet.SpriteSize);
-				DrawSonicSensors(world, window, sonic);
+				world.Get<Transform>(_horizontalLeftRect).Position = sensors.HorizontalLeft;
+				world.Get<Transform>(_horizontalRightRect).Position = sensors.HorizontalRight;
+				world.Get<Transform>(_upperLeftRect).Position = sensors.UpperLeft;
+				world.Get<Transform>(_upperRightRect).Position = sensors.UpperRight;
+				world.Get<Transform>(_lowerLeftRect).Position = sensors.LowerLeft;
+				world.Get<Transform>(_lowerRightRect).Position = sensors.LowerRight;
 			});
 		}
+<<<<<<< HEAD
 
 		private void UpdateSonicSensorData(ref Sonic sonic, Vector2f origin, float spriteSize)
 		{
@@ -121,5 +160,7 @@ namespace SonicRemake.Systems.Rendering.Characters
 
 			return vector;
 		}
+=======
+>>>>>>> 6a90470ae872f1ddb406c24b32728f7f65881fa2
 	}
 }

@@ -75,7 +75,12 @@ namespace SonicRemake.Movement
             if (Math.Abs(velocity.GroundSpeed) > 0 && sonic.IsOnGround)
                 sonic.State = SonicState.Running;
 
-            if (forward && sonic.State != SonicState.Charging)
+            if ((!backward && !forward) || (forward && backward))
+            {
+                velocity.GroundSpeed -= Math.Min(Math.Abs(velocity.GroundSpeed), FRICTION_SPEED) * Math.Sign(velocity.GroundSpeed);
+            }
+
+            else if (forward && sonic.State != SonicState.Charging)
             {
                 if (velocity.GroundSpeed < 0) // going backwards
                 {
@@ -94,7 +99,7 @@ namespace SonicRemake.Movement
                 }
             }
 
-            if (backward && sonic.State != SonicState.Charging)
+            else if (backward && sonic.State != SonicState.Charging)
             {
                 if (velocity.GroundSpeed > 0) // going forwards
                 {
@@ -114,10 +119,7 @@ namespace SonicRemake.Movement
                 }
             }
             // no horizontal movement
-            if (!backward && !forward)
-            {
-                velocity.GroundSpeed -= Math.Min(Math.Abs(velocity.GroundSpeed), FRICTION_SPEED) * Math.Sign(velocity.GroundSpeed);
-            }
+
 
         }
 

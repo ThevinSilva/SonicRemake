@@ -28,7 +28,16 @@ namespace SonicRemake.Systems.Rendering
 				cameraZoom = camera.Zoom;
 			});
 
+			var renderQueue = new List<(Entity entity, Renderer renderer, Transform transform)>();
+
 			world.Query(in Query, (Entity entity, ref Renderer renderer, ref Transform transform) =>
+			{
+				renderQueue.Add((entity, renderer, transform));
+			});
+
+			renderQueue.Sort((a, b) => b.renderer.Layer.CompareTo(a.renderer.Layer));
+
+			foreach (var (entity, renderer, transform) in renderQueue)
 			{
 				var origin = new Vector2f(0, 0);
 
@@ -98,7 +107,7 @@ namespace SonicRemake.Systems.Rendering
 					// 	Scale = scale,
 					// });
 				}
-			});
+			}
 		}
 
 		private static IntRect CalculateSpriteInSheet(SpriteSheet spriteSheet, bool flipX, bool flipY)
