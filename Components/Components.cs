@@ -18,6 +18,8 @@ public record struct Sprite(string SpriteId, params Color[] MaskColors);
 
 public record struct Rectangle(Vector2f Size, Color FillColor, Color OutlineColor, float OutlineThickness);
 
+public record struct Line(Vector2f Start, Vector2f End, Color FillColor, float Thickness);
+
 public record struct SpriteSheet(int X, int Y, int SpriteSize);
 
 public record struct Renderer(Layer Layer, Drawable? Drawable = null, bool FlipX = false, bool FlipY = false);

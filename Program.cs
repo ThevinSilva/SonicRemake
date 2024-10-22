@@ -41,7 +41,7 @@ ImmutableList<GameSystem> systems = [
  	new Movement(),
 	new SonicAnimationSystem(),
 	new CameraSystem(),
-
+	new LineLoaderSystem(),
 	new FpsDebugSystem(),
 	new SensorDebug(),
 	new SensorSystem(),
