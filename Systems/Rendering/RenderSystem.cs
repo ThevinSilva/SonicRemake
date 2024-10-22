@@ -72,7 +72,9 @@ namespace SonicRemake.Systems.Rendering
 				var scale = transform.Scale * cameraZoom;
 
 				if (scale == new Vector2f(0, 0))
-					_log.Warning("Scale is 0, 0, object will not be visible");
+				{
+					// _log.Warning("Scale is 0, 0, object will not be visible");
+				}
 
 				// Draw the sprite
 				if (renderer.Drawable is SFML.Graphics.Sprite s)

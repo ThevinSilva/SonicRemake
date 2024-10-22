@@ -29,12 +29,15 @@ public record struct SpriteAnimation(string Animation = "idle", int FramesPerSpr
 
 public record struct Sonic(SonicState State, bool IsOnGround, float SpinRef, Facing Facing, int BoredCount, Vector2f Origin, int WidthRadius, int HeightRadius);
 
-public record struct Sensors(Vector2f UpperLeft, float UpperLeftDistance,
-                             Vector2f UpperRight, float UpperRightDistance,
-                             Vector2f LowerLeft, float LowerLeftDistance,
-                             Vector2f LowerRight, float LowerRightDistance,
-                             Vector2f HorizontalLeft, float HorizontalLeftDistance,
-                             Vector2f HorizontalRight, float HorizontalRightDistance);
+public record struct Sensors(SensorData UpperLeft, SensorData UpperRight, SensorData LowerLeft, SensorData LowerRight, SensorData HorizontalLeft, SensorData HorizontalRight);
+
+public struct SensorData
+{
+  public Vector2f Position;
+  public float? Distance;
+  public Vector2f? Intersection;
+  public Vector2i? DetectedTile;
+}
 
 public record struct SolidTiles(int[,] TileMap, Tile[] TileSet);
 
