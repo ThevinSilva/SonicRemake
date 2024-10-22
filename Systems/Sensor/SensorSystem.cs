@@ -37,7 +37,7 @@ public class SensorSystem : GameSystem
 				sonic.WidthRadius = 7;
 				sonic.HeightRadius = 14;
 			}
-			else if (sonic.State == SonicState.Crouching || sonic.State == SonicState.Charging)	
+			else if (sonic.State == SonicState.Crouching || sonic.State == SonicState.Charging)
 			{
 				sonic.WidthRadius = 9;
 				sonic.HeightRadius = 12;
@@ -55,6 +55,7 @@ public class SensorSystem : GameSystem
 			sensors.UpperLeft = new Vector2f(sonic.Origin.X - sonic.WidthRadius, sonic.Origin.Y + sonic.HeightRadius);
 			sensors.LowerRight = new Vector2f(sonic.Origin.X + sonic.WidthRadius, sonic.Origin.Y - sonic.HeightRadius);
 			sensors.LowerLeft = new Vector2f(sonic.Origin.X - sonic.WidthRadius, sonic.Origin.Y - sonic.HeightRadius);
+
 
 			if (sensors.HorizontalRight.X >= 0)
 				_log.Debug(FindTileIndex(sensors.HorizontalRight, map.TileMap, Dimension.Right));
