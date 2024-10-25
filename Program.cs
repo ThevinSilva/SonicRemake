@@ -22,18 +22,8 @@ using SonicRemake.Systems.Sensors;
 
 AnimationHelper.LoadAnimationsFromYaml("Assets/Animations/sonic_mania.yaml");
 
-
-const float tickTimeStep = 1.0f / 60.0f;
-float tickTimeStepAccumulator = 0.0f;
-
-var window = new RenderWindow(new VideoMode(1920, 1080), "Sonic");
-window.SetFramerateLimit(120);
-
-var clock = new Clock();
-clock.Restart();
-
-ImmutableList<GameSystem> systems = [
-	new TileManagementSystem(),
+var gameLevel = new Level("Game");
+gameLevel.AddSystems(new TileManagementSystem(),
 	new TextureLoaderSystem(),
 	new RectangleLoaderSystem(),
 	new AnimationSystem(),
@@ -46,13 +36,10 @@ ImmutableList<GameSystem> systems = [
 	new SensorDebug(),
 	new SensorSystem(),
 	new GridDebugSystem(),
-	new RenderSystem(),
-];
+	new RenderSystem()
+);
 
-var sandbox = new Level("Sandbox");
-LevelManager.LoadLevel(sandbox);
-
-sandbox.Entities.Create(
+gameLevel.Entities.Create(
 		new Transform(new Vector2f(0, 0), new Vector2f(1, 1)),
 		new Velocity(),
 		new Sprite("sonic_mania.png", new Color(0, 240, 0), new Color(0, 170, 0), new Color(0, 138, 0), new Color(0, 111, 0)),
@@ -65,11 +52,22 @@ sandbox.Entities.Create(
 		new SolidTiles() // TODO:  Empty component for the Map System to work
 	);
 
-sandbox.Entities.Create(
+gameLevel.Entities.Create(
 	new Transform(new Vector2f(0, 0), new Vector2f(1, 1)),
 	new Camera(4f)
 );
 
+
+const float tickTimeStep = 1.0f / 60.0f;
+float tickTimeStepAccumulator = 0.0f;
+
+var window = new RenderWindow(new VideoMode(1920, 1080), "Sonic");
+window.SetFramerateLimit(120);
+
+var clock = new Clock();
+clock.Restart();
+
+LevelManager.LoadLevel(gameLevel);
 
 // sandbox.Entities.Create(
 // 	new Transform(new Vector2f(0, 28 * 16), new Vector2f(1, 1)),
@@ -102,10 +100,12 @@ while (window.IsOpen)
 
 	// Check if a new level has been loaded
 	if (LevelManager.HasLevelChanged())
-		systems.ForEach(system => system.Start(LevelManager.Active.Entities));
+		foreach (var system in LevelManager.Active.Systems)
+			system.Start(LevelManager.Active.Entities);
 
 	// Run OnRender for all systems
-	systems.ForEach(system => system.Render(LevelManager.Active.Entities, window, context));
+	foreach (var system in LevelManager.Active.Systems)
+		system.Render(LevelManager.Active.Entities, window, context);
 
 	// Display frame
 	window.Display();
@@ -114,7 +114,8 @@ while (window.IsOpen)
 	while (tickTimeStepAccumulator >= tickTimeStep)
 	{
 		Input.UpdateInputState();
-		systems.ForEach(system => system.Tick(LevelManager.Active.Entities, context));
+		foreach (var system in LevelManager.Active.Systems)
+			system.Tick(LevelManager.Active.Entities, context);
 		tickTimeStepAccumulator -= tickTimeStep;
 	}
 }

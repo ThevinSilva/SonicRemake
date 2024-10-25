@@ -8,9 +8,11 @@ namespace SonicRemake.Systems.Rendering.Animations
 {
 	public class AnimationLoadSystem : GameSystem
 	{
-		private static Log _log = new(typeof(AnimationLoadSystem));
+
 
 		private QueryDescription Query = new QueryDescription().WithAll<SpriteAnimation, SpriteAnimator>();
+
+
 
 		public override void OnTick(World world, GameContext context)
 		{

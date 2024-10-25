@@ -58,8 +58,6 @@ public class SensorSystem : GameSystem
 			sensors.LowerLeft = CalculateSensorData(sonic, s => new Vector2f(s.Origin.X - s.WidthRadius, s.Origin.Y + s.HeightRadius), map, Dimension.Down);
 
 			_log.Critical(sensors.LowerLeft.DetectedTile);
-
-			throw new Exception("lol");
 		});
 	}
 
