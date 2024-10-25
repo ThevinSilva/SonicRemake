@@ -102,10 +102,10 @@ while (window.IsOpen)
 
 	// Check if a new level has been loaded
 	if (LevelManager.HasLevelChanged())
-		systems.ForEach(system => system.OnStart(LevelManager.Active.Entities));
+		systems.ForEach(system => system.Start(LevelManager.Active.Entities));
 
 	// Run OnRender for all systems
-	systems.ForEach(system => system.OnRender(LevelManager.Active.Entities, window, context));
+	systems.ForEach(system => system.Render(LevelManager.Active.Entities, window, context));
 
 	// Display frame
 	window.Display();
@@ -114,7 +114,7 @@ while (window.IsOpen)
 	while (tickTimeStepAccumulator >= tickTimeStep)
 	{
 		Input.UpdateInputState();
-		systems.ForEach(system => system.OnTick(LevelManager.Active.Entities, context));
+		systems.ForEach(system => system.Tick(LevelManager.Active.Entities, context));
 		tickTimeStepAccumulator -= tickTimeStep;
 	}
 }
