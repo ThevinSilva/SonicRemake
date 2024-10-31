@@ -57,9 +57,16 @@ public class SensorSystem : GameSystem
 			sensors.LowerRight = CalculateSensorData(sonic, s => new Vector2f(s.Origin.X + s.WidthRadius, s.Origin.Y + s.HeightRadius), map, Dimension.Down);
 			sensors.LowerLeft = CalculateSensorData(sonic, s => new Vector2f(s.Origin.X - s.WidthRadius, s.Origin.Y + s.HeightRadius), map, Dimension.Down);
 
-			_log.Critical(sensors.LowerLeft.DetectedTile);
+			// _log.Critical(sensors.LowerLeft.DetectedTile);
+
+
 		});
 	}
+
+	// Something that retrives tile data height array and width array
+	public Tile GetTile(int id, Tile[] tileset) => tileset[id];
+
+
 
 	private static SensorData CalculateSensorData(Sonic sonic, Func<Sonic, Vector2f> positionFunc, SolidTiles map, Dimension dimension)
 	{
@@ -70,13 +77,22 @@ public class SensorSystem : GameSystem
 
 		if (detectedTile.HasValue)
 		{
+			Tile tile = map.TileSet[map.TileMap[detectedTile.Value.Y, detectedTile.Value.X]];
+			var tileX = detectedTile.Value.X * 16;
+			var tileY = detectedTile.Value.Y * 16;
+			int offsetX;
+			int offsetY;
+
+
 			switch (dimension)
 			{
 				case Dimension.Right:
-					intersection = new Vector2f(detectedTile.Value.X * 16 - 8, position.Y);
+					_log.Critical(position.Y - tileY >= 0 ? tile.Widths[(int)Math.Floor(position.Y - tileY) + 1] : 0);
+					offsetX = position.Y - tileY >= 0 ? tile.Heights[(int)Math.Floor(position.Y - tileY) - 1] : 0;
+					intersection = new Vector2f(detectedTile.Value.X * 16 - 8 + offsetX, position.Y);
 					break;
-
 				case Dimension.Left:
+					// Requires the existence of Rotated Tiles
 					intersection = new Vector2f((detectedTile.Value.X + 1) * 16 - 8, position.Y);
 					break;
 
@@ -85,7 +101,8 @@ public class SensorSystem : GameSystem
 					break;
 
 				case Dimension.Down:
-					intersection = new Vector2f(position.X, detectedTile.Value.Y * 16 - 8);
+					offsetY = position.X - tileX + 8 >= 0 ? 16 - tile.Heights[(int)Math.Floor(position.X - tileX + 8)] : 0;
+					intersection = new Vector2f(position.X, detectedTile.Value.Y * 16 - 8 + offsetY);
 					break;
 			}
 		}
@@ -105,8 +122,6 @@ public class SensorSystem : GameSystem
 			Distance = distance
 		};
 	}
-
-	private static Vector2i GetIndex(Vector2f sensor) => new((int)Math.Floor(sensor.X / 16), (int)Math.Floor(sensor.Y / 16));
 
 	private static Vector2i? FindTileIndex(Vector2f sensor, int[,] map, Dimension dim)
 	{

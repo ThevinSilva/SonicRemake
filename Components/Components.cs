@@ -37,6 +37,8 @@ public struct SensorData
   public float? Distance;
   public Vector2f? Intersection;
   public Vector2i? DetectedTile;
+
+
 }
 
 public record struct SolidTiles(int[,] TileMap, Tile[] TileSet);
