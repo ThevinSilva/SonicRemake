@@ -125,7 +125,7 @@ public class SensorSystem : GameSystem
 
 	private static Vector2i? FindTileIndex(Vector2f sensor, int[,] map, Dimension dim)
 	{
-		int xPos = (int)Math.Round((sensor.X + ((int)dim)) / 16);
+		int xPos = (int)Math.Round(sensor.X / 16);
 		int yPos = (int)Math.Round(sensor.Y / 16);
 
 		if (xPos < 0 || yPos < 0 || xPos >= map.GetLength(1) || yPos >= map.GetLength(0)) return null;
