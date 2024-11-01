@@ -13,7 +13,7 @@ namespace SonicRemake.Movement
     {
         private static Log _log = new(typeof(Movement));
 
-        private QueryDescription Query = new QueryDescription().WithAll<Sonic, Transform, Velocity>();
+        private QueryDescription Query = new QueryDescription().WithAll<Sonic, Transform, Velocity, Sensors>();
 
         // Horizontal Movement Constants https://info.sonicretro.org/SPG:Running
         private const float ACCELERATION_SPEED = 0.046875f;
@@ -29,14 +29,20 @@ namespace SonicRemake.Movement
 
         public override void OnTick(World world, GameContext context)
         {
-            world.Query(in Query, (Entity e, ref Sonic s, ref Transform t, ref Velocity v, ref Sonic sonic) =>
+            world.Query(in Query, (Entity e, ref Sonic s, ref Transform t, ref Velocity v, ref Sonic sonic, ref Sensors sensors) =>
             {
-                HandleMovement(ref t, ref v, ref sonic);
+                HandleMovement(ref t, ref v, ref sonic, ref sensors);
             });
         }
 
-        private void HandleMovement(ref Transform transform, ref Velocity velocity, ref Sonic sonic)
+        private void HandleMovement(ref Transform transform, ref Velocity velocity, ref Sonic sonic, ref Sensors sensors)
         {
+            if (sensors.LowerLeft.Intersection.HasValue && sensors.LowerRight.Intersection.HasValue)
+            {
+                var angle = MathF.Atan2(sensors.LowerLeft.Intersection.Value.Y - sensors.LowerRight.Intersection.Value.Y, sensors.LowerLeft.Intersection.Value.X - sensors.LowerRight.Intersection.Value.X);
+                transform.Rotation = angle * 180 / MathF.PI + 180;
+            }
+
             if (sonic.State != SonicState.Charging && sonic.IsOnGround)
                 sonic.State = SonicState.Idle;
 
