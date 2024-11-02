@@ -37,10 +37,32 @@ namespace SonicRemake.Movement
 
         private void HandleMovement(ref Transform transform, ref Velocity velocity, ref Sonic sonic, ref Sensors sensors)
         {
-            if (sensors.LowerLeft.Intersection.HasValue && sensors.LowerRight.Intersection.HasValue)
+            // if (sensors.LowerLeft.Intersection.HasValue && sensors.LowerRight.Intersection.HasValue)
+            // {
+            //     var angle = MathF.Atan2(sensors.LowerLeft.Intersection.Value.Y - sensors.LowerRight.Intersection.Value.Y, sensors.LowerLeft.Intersection.Value.X - sensors.LowerRight.Intersection.Value.X);
+            //     transform.Rotation = angle * 180 / MathF.PI + 180;
+            // }
+
+            var position = sensors.LowerRight.Position;
+            var intersection = sonic.Facing == Facing.Left ? sensors.LowerLeft.Intersection ?? sensors.LowerRight.Intersection : sensors.LowerRight.Intersection ?? sensors.LowerLeft.Intersection;
+
+
+            if (intersection.HasValue)
             {
-                var angle = MathF.Atan2(sensors.LowerLeft.Intersection.Value.Y - sensors.LowerRight.Intersection.Value.Y, sensors.LowerLeft.Intersection.Value.X - sensors.LowerRight.Intersection.Value.X);
-                transform.Rotation = angle * 180 / MathF.PI + 180;
+
+                if (position.Y > intersection.Value.Y)
+                {
+                    transform.Position = new Vector2f(transform.Position.X, intersection.Value.Y - 48 / 2 - 1);
+                    sonic.IsOnGround = true;
+                }
+                else
+                {
+                    sonic.IsOnGround = Math.Abs(intersection.Value.Y - position.Y) > 2 ? false : true;
+                }
+            }
+            else
+            {
+                sonic.IsOnGround = false;
             }
 
             if (sonic.State != SonicState.Charging && sonic.IsOnGround)
@@ -52,16 +74,7 @@ namespace SonicRemake.Movement
             HandleVerticalMovement(ref transform, ref velocity, ref sonic);
 
             transform.Position = new Vector2f(transform.Position.X + velocity.Speed.X, transform.Position.Y + velocity.Speed.Y);
-            // TODO - GET RID OF THIS WORK AROUND 
-            if (transform.Position.Y >= 30 * 16)
-            {
-                transform.Position = new Vector2f(transform.Position.X, 30 * 16);
-                sonic.IsOnGround = true;
-            }
-            else
-            {
-                sonic.IsOnGround = false;
-            }
+
 
             if (velocity.Speed.X > 0)
                 sonic.Facing = Facing.Right;
