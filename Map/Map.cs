@@ -15,6 +15,8 @@ public struct Tile
 	private byte[] _heights;
 	private byte[] _widths;
 
+	public byte[,] Matrix { get; set; }
+
 	public float? Angle { get; set; }
 	public byte[] Heights
 	{

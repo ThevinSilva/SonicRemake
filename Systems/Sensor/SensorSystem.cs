@@ -56,10 +56,6 @@ public class SensorSystem : GameSystem
 			sensors.UpperLeft = CalculateSensorData(sonic, s => new Vector2f(s.Origin.X - s.WidthRadius, s.Origin.Y - s.HeightRadius), map, Dimension.Up);
 			sensors.LowerRight = CalculateSensorData(sonic, s => new Vector2f(s.Origin.X + s.WidthRadius, s.Origin.Y + s.HeightRadius), map, Dimension.Down);
 			sensors.LowerLeft = CalculateSensorData(sonic, s => new Vector2f(s.Origin.X - s.WidthRadius, s.Origin.Y + s.HeightRadius), map, Dimension.Down);
-
-			// _log.Critical(sensors.LowerLeft.DetectedTile);
-
-
 		});
 	}
 
@@ -82,26 +78,40 @@ public class SensorSystem : GameSystem
 			var tileY = detectedTile.Value.Y * 16;
 			int offsetX;
 			int offsetY;
-
+			int index;
+			byte[] offsets;
 
 			switch (dimension)
 			{
 				case Dimension.Right:
-					_log.Critical(position.Y - tileY >= 0 ? tile.Widths[(int)Math.Floor(position.Y - tileY) + 1] : 0);
-					offsetX = position.Y - tileY >= 0 ? tile.Heights[(int)Math.Floor(position.Y - tileY) - 1] : 0;
-					intersection = new Vector2f(detectedTile.Value.X * 16 - 8 + offsetX, position.Y);
+					index = Math.Clamp((int)Math.Floor(position.Y - tileY + 8) - 1, 0, 15);
+					offsets = tile.Matrix.GetRow(index).ToArray();
+					offsetX = offsets.TakeWhile(x => x == 0).Count();
+					intersection = new Vector2f(detectedTile.Value.X * 16 + offsetX - 8, position.Y);
+
+					_log.Value("index", index);
+					_log.Value("offsets", offsets);
+					_log.Value("offsetX", offsetX);
+					_log.Value("intersection", intersection);
 					break;
 				case Dimension.Left:
-					// Requires the existence of Rotated Tiles
-					intersection = new Vector2f((detectedTile.Value.X + 1) * 16 - 8, position.Y);
+					index = Math.Clamp((int)Math.Floor(position.Y - tileY + 8) - 1, 0, 15);
+					offsets = tile.Matrix.GetRow(index).ToArray().Reverse().ToArray();
+					offsetX = offsets.TakeWhile(x => x == 0).Count();
+					intersection = new Vector2f(detectedTile.Value.X * 16 + 8 - offsetX, position.Y);
 					break;
 
 				case Dimension.Up:
-					intersection = new Vector2f(position.X, (detectedTile.Value.Y + 1) * 16 - 8);
+					index = Math.Clamp((int)Math.Floor(position.X - tileX + 8), 0, 15);
+					offsets = tile.Matrix.GetColumn(index).ToArray().Reverse().ToArray();
+					offsetY = offsets.TakeWhile(x => x == 0).Count();
+					intersection = new Vector2f(position.X, detectedTile.Value.Y * 16 + offsetY + 8);
 					break;
 
 				case Dimension.Down:
-					offsetY = position.X - tileX + 8 >= 0 ? 16 - tile.Heights[(int)Math.Floor(position.X - tileX + 8)] : 0;
+					index = Math.Clamp((int)Math.Floor(position.X - tileX + 8), 0, 15);
+					offsets = tile.Matrix.GetColumn(index).ToArray();
+					offsetY = offsets.TakeWhile(x => x == 0).Count();
 					intersection = new Vector2f(position.X, detectedTile.Value.Y * 16 - 8 + offsetY);
 					break;
 			}

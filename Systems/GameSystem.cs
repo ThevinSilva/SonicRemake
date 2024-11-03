@@ -32,7 +32,7 @@ public abstract class GameSystem
 	{
 		try
 		{
-			Measure(() => OnStart(world));
+			OnStart(world);
 		}
 		catch (Exception e)
 		{
@@ -44,7 +44,7 @@ public abstract class GameSystem
 	{
 		try
 		{
-			Measure(() => OnTick(world, context));
+			OnTick(world, context);
 		}
 		catch (Exception e)
 		{
@@ -56,19 +56,12 @@ public abstract class GameSystem
 	{
 		try
 		{
-			Measure(() => OnRender(world, window, context));
+			OnRender(world, window, context);
 		}
 		catch (Exception e)
 		{
 			_log.Error(e);
 		}
-	}
 
-	private static TimeSpan Measure(Action action)
-	{
-		var stopwatch = Stopwatch.StartNew();
-		action();
-		stopwatch.Stop();
-		return stopwatch.Elapsed;
 	}
 }

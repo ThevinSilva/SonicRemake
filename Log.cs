@@ -7,6 +7,8 @@ namespace SonicRemake
 {
   public class Log
   {
+    public static Dictionary<string, object> Values = new();
+
     private static int _longestClassName = 0;
 
     private const string Gray = "\u001B[90m";
@@ -36,6 +38,17 @@ namespace SonicRemake
       var type = method.DeclaringType!;
 
       return new Log(type);
+    }
+
+    private string Serialize(object value)
+    {
+      if (value is null)
+        return "null";
+
+      if (value.GetType().IsPrimitive || value is string)
+        return value.ToString() ?? "";
+
+      return JsonConvert.SerializeObject(value);
     }
 
     private void LogMessage(LogLevel level, Exception? exception, params object?[] message)
@@ -82,10 +95,7 @@ namespace SonicRemake
           builder.Append(str);
         else
         {
-          builder.Append('[');
-          builder.Append(part.GetType().Name);
-          builder.Append("] ");
-          builder.Append(JsonConvert.SerializeObject(part));
+          builder.Append(Serialize(part));
         }
 
         builder.Append(' ');
@@ -111,7 +121,7 @@ namespace SonicRemake
             builder.Append(Gray);
             builder.AppendLine();
             builder.Append("           ");
-            builder.Append(JsonConvert.SerializeObject(exception.Data));
+            builder.Append(Serialize(exception.Data));
           }
 
           ex = ex.InnerException;
@@ -203,6 +213,11 @@ namespace SonicRemake
     public void Critical(params object?[] message)
     {
       LogMessage(LogLevel.Critical, null, message);
+    }
+
+    public void Value(string key, object value)
+    {
+      Values[key] = Serialize(value);
     }
 
     private string GetColorCode(LogLevel level)

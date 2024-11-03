@@ -37,10 +37,14 @@ namespace SonicRemake.Movement
 
         private void HandleMovement(ref Transform transform, ref Velocity velocity, ref Sonic sonic, ref Sensors sensors)
         {
-            // if (sensors.LowerLeft.Intersection.HasValue && sensors.LowerRight.Intersection.HasValue)
+            // if (sensors.LowerLeft.Intersection.HasValue && sensors.LowerRight.Intersection.HasValue && (sonic.State != SonicState.Jumping && sonic.State != SonicState.Falling))
             // {
             //     var angle = MathF.Atan2(sensors.LowerLeft.Intersection.Value.Y - sensors.LowerRight.Intersection.Value.Y, sensors.LowerLeft.Intersection.Value.X - sensors.LowerRight.Intersection.Value.X);
             //     transform.Rotation = angle * 180 / MathF.PI + 180;
+            // }
+            // else
+            // {
+            //     transform.Rotation = 0;
             // }
 
             var position = sensors.LowerRight.Position;
@@ -65,6 +69,9 @@ namespace SonicRemake.Movement
                 sonic.IsOnGround = false;
             }
 
+
+
+
             if (sonic.State != SonicState.Charging && sonic.IsOnGround)
                 sonic.State = SonicState.Idle;
 
@@ -73,8 +80,26 @@ namespace SonicRemake.Movement
             HandleHorizontalMovement(ref velocity, ref sonic);
             HandleVerticalMovement(ref transform, ref velocity, ref sonic);
 
+            if ((velocity.Speed.X > 0 && sensors.HorizontalRight.Distance < 2) || (velocity.Speed.X < 0 && sensors.HorizontalLeft.Distance < 2))
+            {
+                velocity.Speed = new Vector2f(0, velocity.Speed.Y);
+                velocity.GroundSpeed = 0;
+            }
+
+
+
             transform.Position = new Vector2f(transform.Position.X + velocity.Speed.X, transform.Position.Y + velocity.Speed.Y);
 
+            // TODO - GET RID OF THIS WORK AROUND 
+            // if (transform.Position.Y >= 30 * 16)
+            // {
+            //     transform.Position = new Vector2f(transform.Position.X, 30 * 16);
+            //     sonic.IsOnGround = true;
+            // }
+            // else
+            // {
+            //     sonic.IsOnGround = false;
+            // }
 
             if (velocity.Speed.X > 0)
                 sonic.Facing = Facing.Right;

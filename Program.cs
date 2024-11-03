@@ -35,8 +35,9 @@ gameLevel.AddSystems(new TileManagementSystem(),
 	new FpsDebugSystem(),
 	new SensorDebug(),
 	new SensorSystem(),
-	new GridDebugSystem(),
-	new RenderSystem()
+	//new GridDebugSystem(),
+	new RenderSystem(),
+	new LogDebugSystem()
 );
 
 gameLevel.Entities.Create(
