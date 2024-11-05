@@ -69,6 +69,11 @@ public class SensorSystem : GameSystem
 		var position = positionFunc(sonic);
 		var detectedTile = FindTileIndex(position, map.TileMap, dimension);
 
+		return CalculateSensorData(sonic, position, detectedTile, map, dimension);
+	}
+
+	private static SensorData CalculateSensorData(Sonic sonic, Vector2f position, Vector2i? detectedTile, SolidTiles map, Dimension dimension)
+	{
 		Vector2f? intersection = null;
 
 		if (detectedTile.HasValue)
@@ -86,11 +91,15 @@ public class SensorSystem : GameSystem
 				case Dimension.Right:
 					index = Math.Clamp((int)Math.Floor(position.Y - tileY + 8) - 1, 0, 15);
 					offsets = tile.Matrix.GetRow(index).ToArray();
+
+					if (detectedTile.HasValue && offsets.All(x => x == 0) && Math.Abs(position.Y - tileY) < 8)
+						return CalculateSensorData(sonic, position, detectedTile + new Vector2i(1, 0), map, dimension);
+
 					offsetX = offsets.TakeWhile(x => x == 0).Count();
 					intersection = new Vector2f(detectedTile.Value.X * 16 + offsetX - 8, position.Y);
 
 					_log.Value("index", index);
-					_log.Value("offsets", offsets);
+					_log.Value("offsets", string.Join(",", offsets));
 					_log.Value("offsetX", offsetX);
 					_log.Value("intersection", intersection);
 					break;
@@ -104,6 +113,7 @@ public class SensorSystem : GameSystem
 				case Dimension.Up:
 					index = Math.Clamp((int)Math.Floor(position.X - tileX + 8), 0, 15);
 					offsets = tile.Matrix.GetColumn(index).ToArray().Reverse().ToArray();
+
 					offsetY = offsets.TakeWhile(x => x == 0).Count();
 					intersection = new Vector2f(position.X, detectedTile.Value.Y * 16 + offsetY + 8);
 					break;
@@ -111,13 +121,17 @@ public class SensorSystem : GameSystem
 				case Dimension.Down:
 					index = Math.Clamp((int)Math.Floor(position.X - tileX + 8), 0, 15);
 					offsets = tile.Matrix.GetColumn(index).ToArray();
+
+					if (offsets.All(x => x == 1) && Math.Abs(position.X - tileX) < 8)
+						return CalculateSensorData(sonic, position, detectedTile + new Vector2i(0, -1), map, dimension);
+
 					offsetY = offsets.TakeWhile(x => x == 0).Count();
 					intersection = new Vector2f(position.X, detectedTile.Value.Y * 16 - 8 + offsetY);
 					break;
 			}
 		}
 
-		float? distance = null;
+		float distance = float.MaxValue;
 
 		if (intersection.HasValue)
 		{

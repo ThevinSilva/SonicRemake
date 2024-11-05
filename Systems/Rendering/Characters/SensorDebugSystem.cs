@@ -35,55 +35,66 @@ namespace SonicRemake.Systems.Rendering.Characters
 
 		public override void OnStart(World world)
 		{
+			// lines 
 			_lowerLeftLine = world.Create(
 				new Transform(),
 				new Line(new(0, 0), new(0, 0), _lowerLeftColor, _lineThickness),
-				new Renderer(Layer.Debug));
-			_lowerLeftTile = world.Create(
-				new Transform(),
-				new Rectangle(new(16, 16), new(0), _lowerLeftColor, _tileThickness),
 				new Renderer(Layer.Debug));
 
 			_lowerRightLine = world.Create(
 				new Transform(),
 				new Line(new(0, 0), new(0, 0), _lowerRightColor, _lineThickness),
 				new Renderer(Layer.Debug));
-			_lowerRightTile = world.Create(
-				new Transform(),
-				new Rectangle(new(16, 16), new(0), _lowerRightColor, _tileThickness),
-				new Renderer(Layer.Debug));
 
 			_upperLeftLine = world.Create(
 				new Transform(),
 				new Line(new(0, 0), new(0, 0), _upperLeftColor, _lineThickness),
-				new Renderer(Layer.Debug));
-			_upperLeftTile = world.Create(
-				new Transform(),
-				new Rectangle(new(16, 16), new(0), _upperLeftColor, _tileThickness),
 				new Renderer(Layer.Debug));
 
 			_upperRightLine = world.Create(
 				new Transform(),
 				new Line(new(0, 0), new(0, 0), _upperRightColor, _lineThickness),
 				new Renderer(Layer.Debug));
-			_upperRightTile = world.Create(
-				new Transform(),
-				new Rectangle(new(16, 16), new(0), _upperRightColor, _tileThickness),
-				new Renderer(Layer.Debug));
 
 			_horizontalLeftLine = world.Create(
 				new Transform(),
 				new Line(new(0, 0), new(0, 0), _horizontalLeftColor, _lineThickness),
 				new Renderer(Layer.Debug));
-			_horizontalLeftTile = world.Create(
-				new Transform(),
-				new Rectangle(new(16, 16), new(0), _horizontalLeftColor, _tileThickness),
-				new Renderer(Layer.Debug));
+
 
 			_horizontalRightLine = world.Create(
 				new Transform(),
 				new Line(new(0, 0), new(0, 0), _horizontalRightColor, _lineThickness),
 				new Renderer(Layer.Debug));
+
+			// Boxes 
+
+
+			_lowerLeftTile = world.Create(
+				new Transform(),
+				new Rectangle(new(16, 16), new(0), _lowerLeftColor, _tileThickness),
+				new Renderer(Layer.Debug));
+
+			_lowerRightTile = world.Create(
+				new Transform(),
+				new Rectangle(new(16, 16), new(0), _lowerRightColor, _tileThickness),
+				new Renderer(Layer.Debug));
+
+			_upperLeftTile = world.Create(
+				new Transform(),
+				new Rectangle(new(16, 16), new(0), _upperLeftColor, _tileThickness),
+				new Renderer(Layer.Debug));
+
+			_upperRightTile = world.Create(
+				new Transform(),
+				new Rectangle(new(16, 16), new(0), _upperRightColor, _tileThickness),
+				new Renderer(Layer.Debug));
+
+			_horizontalLeftTile = world.Create(
+				new Transform(),
+				new Rectangle(new(16, 16), new(0), _horizontalLeftColor, _tileThickness),
+				new Renderer(Layer.Debug));
+
 			_horizontalRightTile = world.Create(
 				new Transform(),
 				new Rectangle(new(16, 16), new(0), _horizontalRightColor, _tileThickness),

@@ -48,20 +48,27 @@ namespace SonicRemake.Movement
             // }
 
             var position = sensors.LowerRight.Position;
-            var intersection = sonic.Facing == Facing.Left ? sensors.LowerLeft.Intersection ?? sensors.LowerRight.Intersection : sensors.LowerRight.Intersection ?? sensors.LowerLeft.Intersection;
+            var intersection = new[] { sensors.LowerLeft, sensors.LowerRight }
+                .Where(sensors => sensors.Intersection.HasValue)
+                .OrderBy(sensor => sensor.Intersection!.Value.Y)
+                .FirstOrDefault()
+                .Intersection;
+
+            _log.Value("Distance of Sensor", new[] { sensors.LowerLeft, sensors.LowerRight }.OrderBy(sensor => sensor.Distance).First().Distance);
 
 
             if (intersection.HasValue)
             {
 
+                // Phasing
                 if (position.Y > intersection.Value.Y)
                 {
-                    transform.Position = new Vector2f(transform.Position.X, intersection.Value.Y - 48 / 2 - 1);
+                    transform.Position = new Vector2f(transform.Position.X, intersection.Value.Y - 48 / 2 + 1);
                     sonic.IsOnGround = true;
                 }
                 else
                 {
-                    sonic.IsOnGround = Math.Abs(intersection.Value.Y - position.Y) > 2 ? false : true;
+                    sonic.IsOnGround = Math.Abs(intersection.Value.Y - position.Y) > 0.5 ? false : true;
                 }
             }
             else

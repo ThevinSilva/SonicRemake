@@ -34,7 +34,7 @@ public record struct Sensors(SensorData UpperLeft, SensorData UpperRight, Sensor
 public struct SensorData
 {
   public Vector2f Position;
-  public float? Distance;
+  public float Distance;
   public Vector2f? Intersection;
   public Vector2i? DetectedTile;
 

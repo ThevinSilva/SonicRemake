@@ -1,8 +1,10 @@
 using System;
 using Arch.Core;
 using SFML.Graphics;
+using SFML.Window;
 using SonicRemake.Components;
 using SonicRemake.Inputs;
+using SonicRemake.Systems.Sensors;
 using Transform = SonicRemake.Components.Transform;
 
 namespace SonicRemake.Systems.Rendering.Characters;
@@ -11,11 +13,11 @@ public class SonicAnimationSystem : GameSystem
 {
     private static Log _log = new(typeof(SonicAnimationSystem));
 
-    private QueryDescription Query = new QueryDescription().WithAll<Sonic, SpriteAnimation, Velocity, Transform, Renderer>();
+    private QueryDescription Query = new QueryDescription().WithAll<Sonic, SpriteAnimation, Velocity, Transform, Renderer, Components.Sensors>();
 
     public override void OnTick(World world, GameContext context)
     {
-        world.Query(in Query, (Entity entity, ref Sonic sonic, ref SpriteAnimation queue, ref Velocity velocity, ref Transform transform, ref Renderer renderer) =>
+        world.Query(in Query, (Entity entity, ref Sonic sonic, ref SpriteAnimation queue, ref Velocity velocity, ref Transform transform, ref Renderer renderer, ref Components.Sensors sensors) =>
         {
             if (sonic.Facing == Facing.Left)
                 renderer.FlipX = true;
@@ -63,10 +65,19 @@ public class SonicAnimationSystem : GameSystem
             }
             else
             {
-                var duration = (int)Math.Floor(Math.Max(0, 6 - Math.Abs(velocity.Speed.X)));
-                queue.Animation = "jump";
-                queue.FramesPerSprite = duration;
-                queue.Loop = true;
+                var position = sensors.LowerRight.Position;
+                var intersection = new[] { sensors.LowerLeft, sensors.LowerRight }.OrderBy(sensor => sensor.Distance).First().Intersection;
+
+                if (!intersection.HasValue || Math.Abs(intersection.Value.Y - position.Y) > 4)
+                {
+                    var duration = (int)Math.Floor(Math.Max(0, 6 - Math.Abs(velocity.Speed.X)));
+                    queue.Animation = "jump";
+                    queue.FramesPerSprite = duration;
+                    queue.Loop = true;
+                }
+
+
+
             }
         });
     }
