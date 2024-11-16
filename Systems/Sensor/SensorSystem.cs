@@ -92,7 +92,7 @@ public class SensorSystem : GameSystem
 					index = Math.Clamp((int)Math.Floor(position.Y - tileY + 8) - 1, 0, 15);
 					offsets = tile.Matrix.GetRow(index).ToArray();
 
-					if (detectedTile.HasValue && offsets.All(x => x == 0) && Math.Abs(position.Y - tileY) < 8)
+					if (detectedTile.HasValue && offsets.All(x => x == 0) && Math.Abs(position.X - tileX) < 8 * 16)
 						return CalculateSensorData(sonic, position, detectedTile + new Vector2i(1, 0), map, dimension);
 
 					offsetX = offsets.TakeWhile(x => x == 0).Count();
