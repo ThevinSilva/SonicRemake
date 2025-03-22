@@ -1,0 +1,27 @@
+permissions: write-all
+name: ci/cd
+on:
+    - push
+    - pull_request
+    - workflow_dispatch
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up .NET 8
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: 8.0.x
+      
+      - name: Install dependencies
+        run: dotnet restore
+
+      - name: Build
+        run: dotnet build --configuration Release --no-restore
+
+      - name: Tests
+        run: dotnet test --configuration Release --no-build --verbosity normal
