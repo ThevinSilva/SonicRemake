@@ -7,9 +7,6 @@ namespace SonicRemake.Systems.Rendering.Debugging
   public class LogDebugSystem : GameSystem
   {
     private Font _monocraft = new("Assets/Fonts/Monocraft.ttf");
-    private float[] _deltaTimeBuffer = new float[25];
-    private int _deltaTimeBufferIndex = 0;
-    private float _smoothDeltaTime;
 
     public LogDebugSystem()
     {

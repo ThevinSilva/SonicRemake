@@ -1,120 +1,70 @@
 using System.Numerics;
-using System.Runtime.InteropServices;
 using Arch.Core;
-using CommunityToolkit.HighPerformance;
 using Newtonsoft.Json;
+using SFML.Graphics;
 using SFML.System;
 using SonicRemake.Components;
 using SonicRemake.Systems;
+using TiledLib;
+using TiledLib.Layer;
+
 
 namespace SonicRemake.Maps;
 
-// Solid Tiles Implementation https://info.sonicretro.org/SPG:Solid_Tiles#Height_Array
-public struct Tile
-{
-	private byte[] _heights;
-	private byte[] _widths;
-
-	public byte[,] Matrix { get; set; }
-
-	public float? Angle { get; set; }
-	public byte[] Heights
-	{
-		get => _heights;
-		set
-		{
-			Validation(value);
-			_heights = value;
-		}
-	}
-
-	public byte[] Widths
-	{
-		get => _widths;
-		set
-		{
-			Validation(value);
-			_widths = value;
-		}
-	}
-
-	public Tile(byte[] heights, byte[] widths, ushort angle)
-	{
-		Heights = heights;
-		Widths = widths;
-		Angle = angle;
-	}
-
-	public static void Validation(byte[] value)
-	{
-		if (value.Length != 16)
-			throw new ArgumentOutOfRangeException("Needs to be size 16");
-
-		if (value.Max() > 16)
-			throw new ArgumentException("Values must be less than 16");
-	}
-
-	public override string ToString()
-	{
-		return $" Angle - {Angle} \n Heights {string.Join(",", Heights)} \n Widths {string.Join(",", Widths)} ";
-	}
-}
-
 public class TileManagementSystem : GameSystem
 {
+
+	private const string FILENAME = "./Assets/Sprites/Loop.tmj";
+
 	private static Log _log = new Log(typeof(TileManagementSystem));
 	private QueryDescription Query = new QueryDescription().WithAll<SolidTiles>();
 
-	private Tile[] TileSet { get; set; }
-	private int[,] TileMap { get; set; }
+	private Tile[] SolidTiles { get; set; }
+	private uint[,] TileMap { get; set; }
+
+	private Map _map;
 
 	public override void OnStart(World world)
 	{
-
 		world.Query(in Query, (ref SolidTiles map) =>
 		{
-			TileSet = LoadTileSet("./Assets/Map/Tiles.json");
-			TileMap = LoadTileMap("./Assets/Map/TestStage.csv");
+			using var stream = File.OpenRead(FILENAME);
+			_map = Map.FromStream(stream, ts => File.OpenRead(Path.Combine(Path.GetDirectoryName(FILENAME), ts.Source)));
+
+			SolidTiles = LoadSolidTiles("./Assets/Map/Tiles.json");
+			TileMap = LoadMap();
+
 			map.TileMap = TileMap;
-			map.TileSet = TileSet;
+			map.TileSet = SolidTiles;
 			CreateDrawableEntities(world);
 		});
 	}
 
-	private static Tile[] LoadTileSet(string location)
+	private static Tile[] LoadSolidTiles(string location)
 	{
 		string text = File.ReadAllText(location);
 
-		Tile[]? tileset = JsonConvert.DeserializeObject<Tile[]>(text);
-
-		if (tileset == null)
-			throw new ArgumentNullException();
+		Tile[]? tileset = JsonConvert.DeserializeObject<Tile[]>(text) ?? throw new ArgumentNullException();
 
 		_log.Information($"TileSet of size {tileset.Length} loaded in.");
 
 		return tileset;
 	}
 
-	private static int[,] LoadTileMap(string location)
+	private uint[,] LoadMap()
 	{
-		string[] rows = File.ReadAllLines(location);
-		int[,] tileMap = new int[rows.Length, rows[0].Split(",").Length]; // please don't judge :3
+		// Base layer that contains the solidTile data
+		var layer = _map.Layers.OfType<TileLayer>().First();
+		uint[,] map = new uint[layer.Height, layer.Width];
 
-		for (int i = 0; i < rows.Length; i++)
-		{
-			string[] row = rows[i].Split(",");
-			for (int j = 0; j < row.Length; j++)
-			{
-				int idx = int.Parse(row[j]);
-				if (idx > 0) tileMap[i, j] = idx;
-			}
-		}
+		for (int y = 0, i = 0; y < layer.Height; y++)
+			for (int x = 0; x < layer.Width; x++, i++)
+				map[y, x] = layer.Data[i];
 
-		_log.Information($"Tile Map of size {rows.Length} x {rows[0].Length} loaded in.");
+		_log.Information($"Tile Map of size {layer.Height} x {layer.Width} loaded in.");
 
-		return tileMap;
+		return map;
 	}
-
 
 	public void CreateDrawableEntities(World world)
 	{
@@ -122,20 +72,22 @@ public class TileManagementSystem : GameSystem
 		{
 			for (int x = 0; x < TileMap.GetLength(1); x++)
 			{
+				uint id = MapUtil.GetId(TileMap[y, x]); // clearing gid of any flags
+
+				// _log.Critical($"{id}");
+
+				if (id <= 0) continue;
+
+				// _log.Critical("I ran");
 
 				var pos = new Vector2f(x * 16, y * 16);
-				var scale = new Vector2f(1, 1);
-				var idx = TileMap[y, x];
-
-				if (idx <= 0) continue;
+				var scale = MapUtil.GetTransformedVector(TileMap[y, x]);
+				var image = new Image(SolidTiles[id > 0 ? id - 1 : id].GetColorMatrix());
 
 				world.Create(
-					new Transform(pos, scale),
+				new Components.Transform(pos, scale),
 					new Renderer(Layer.BackgroundTiles),
-					new Sprite(
-						$"BaseTileSet/block_{idx}.png",
-						new SFML.Graphics.Color(0, 0, 0)
-					)
+					new SpriteTexture(new Texture(image))
 				);
 			}
 		}

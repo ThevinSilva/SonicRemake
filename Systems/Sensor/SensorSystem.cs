@@ -60,9 +60,11 @@ public class SensorSystem : GameSystem
 	}
 
 	// Something that retrives tile data height array and width array
-	public Tile GetTile(int id, Tile[] tileset) => tileset[id];
-
-
+	public static Tile GetTile(uint id, Tile[] tileset)
+	{
+		var cleard_id = MapUtil.GetId(id);
+		return tileset[cleard_id > 0 ? cleard_id - 1 : cleard_id];
+	}
 
 	private static SensorData CalculateSensorData(Sonic sonic, Func<Sonic, Vector2f> positionFunc, SolidTiles map, Dimension dimension)
 	{
@@ -78,7 +80,7 @@ public class SensorSystem : GameSystem
 
 		if (detectedTile.HasValue)
 		{
-			Tile tile = map.TileSet[map.TileMap[detectedTile.Value.Y, detectedTile.Value.X]];
+			Tile tile = GetTile(map.TileMap[detectedTile.Value.Y, detectedTile.Value.X], map.TileSet);
 			var tileX = detectedTile.Value.X * 16;
 			var tileY = detectedTile.Value.Y * 16;
 			int offsetX;
@@ -141,13 +143,15 @@ public class SensorSystem : GameSystem
 		return new SensorData
 		{
 			Position = position,
-			DetectedTile = detectedTile,
+			// Intersection = detectedTile.HasValue && map.TileMap[detectedTile.Value.Y, detectedTile.Value.X] != 0 ? intersection : null,
+			// DetectedTile = detectedTile.HasValue && map.TileMap[detectedTile.Value.Y, detectedTile.Value.X] != 0 ? detectedTile : null,
 			Intersection = intersection,
+			DetectedTile = detectedTile,
 			Distance = distance
 		};
 	}
 
-	private static Vector2i? FindTileIndex(Vector2f sensor, int[,] map, Dimension dim)
+	private static Vector2i? FindTileIndex(Vector2f sensor, uint[,] map, Dimension dim)
 	{
 		int xPos = (int)Math.Round(sensor.X / 16);
 		int yPos = (int)Math.Round(sensor.Y / 16);

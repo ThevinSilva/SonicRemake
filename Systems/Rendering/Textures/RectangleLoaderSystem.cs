@@ -1,7 +1,6 @@
 using Arch.Core;
 using SFML.Graphics;
 using SonicRemake.Components;
-using Sprite = SonicRemake.Components.Sprite;
 
 namespace SonicRemake.Systems.Rendering.Textures
 {
@@ -17,7 +16,7 @@ namespace SonicRemake.Systems.Rendering.Textures
       {
         if (renderer.Drawable == null)
         {
-          renderer.Drawable = new SFML.Graphics.RectangleShape()
+          renderer.Drawable = new RectangleShape()
           {
             Size = rectangle.Size,
             FillColor = rectangle.FillColor,

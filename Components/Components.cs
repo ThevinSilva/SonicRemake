@@ -1,4 +1,3 @@
-using System;
 using SFML.Graphics;
 using SFML.System;
 using SonicRemake.Animations;
@@ -15,6 +14,8 @@ public record struct Transform(Vector2f Position, Vector2f Scale, float Rotation
 public record struct Velocity(Vector2f Speed, float GroundSpeed);
 
 public record struct Sprite(string SpriteId, params Color[] MaskColors);
+
+public record struct SpriteTexture(Texture Texture);
 
 public record struct Rectangle(Vector2f Size, Color FillColor, Color OutlineColor, float OutlineThickness);
 
@@ -41,7 +42,7 @@ public struct SensorData
 
 }
 
-public record struct SolidTiles(int[,] TileMap, Tile[] TileSet);
+public record struct SolidTiles(uint[,] TileMap, Tile[] TileSet);
 
 public record struct Camera(float Zoom = 4f);
 
