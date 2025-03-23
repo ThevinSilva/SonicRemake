@@ -76,9 +76,6 @@ namespace SonicRemake.Movement
                 sonic.IsOnGround = false;
             }
 
-
-
-
             if (sonic.State != SonicState.Charging && sonic.IsOnGround)
                 sonic.State = SonicState.Idle;
 
