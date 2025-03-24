@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SonicRemake", "SonicRemake\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SonicRemake.Tests", "SonicRemake.Tests\SonicRemake.Tests.csproj", "{A729F337-ECAB-4C0E-BD1E-507CE20DBFFB}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SonicRemake.Layout", "SonicRemake.Layout\SonicRemake.Layout.csproj", "{8DF4B762-BAFE-471D-A6C5-913F2C58CE01}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{A729F337-ECAB-4C0E-BD1E-507CE20DBFFB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A729F337-ECAB-4C0E-BD1E-507CE20DBFFB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A729F337-ECAB-4C0E-BD1E-507CE20DBFFB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8DF4B762-BAFE-471D-A6C5-913F2C58CE01}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8DF4B762-BAFE-471D-A6C5-913F2C58CE01}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8DF4B762-BAFE-471D-A6C5-913F2C58CE01}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8DF4B762-BAFE-471D-A6C5-913F2C58CE01}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
