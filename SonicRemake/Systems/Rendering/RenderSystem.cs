@@ -53,7 +53,7 @@ namespace SonicRemake.Systems.Rendering
 					origin = new Vector2f(sprite.Texture.Size.X / 2, sprite.Texture.Size.Y / 2);
 					textureRect = new IntRect(0, 0, (int)sprite.Texture.Size.X, (int)sprite.Texture.Size.Y);
 				}
-				else if (renderer.Drawable != null && renderer.Drawable is SFML.Graphics.RectangleShape rectangle)
+				else if (renderer.Drawable != null && renderer.Drawable is RectangleShape rectangle)
 				{
 					origin = new Vector2f(rectangle.Size.X / 2, rectangle.Size.Y / 2);
 					textureRect = new IntRect(0, 0, (int)rectangle.Size.X, (int)rectangle.Size.Y);
