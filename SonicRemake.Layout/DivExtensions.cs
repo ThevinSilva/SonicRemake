@@ -12,6 +12,13 @@ public static class DivExtensions
     return div;
   }
 
+  public static Div Size(this Div div, Sizing sizing)
+  {
+    div.Width = sizing == Sizing.Grow ? new GrowSize() : new FitSize();
+    div.Height = sizing == Sizing.Grow ? new GrowSize() : new FitSize();
+    return div;
+  }
+  
   public static Div Size(this Div div, int width, Sizing height)
   {
     div.Width = new FixedSize(width);
