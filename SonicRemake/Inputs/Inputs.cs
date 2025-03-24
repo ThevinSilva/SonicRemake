@@ -1,5 +1,4 @@
-﻿using Newtonsoft.Json;
-using SFML.Window;
+﻿using SFML.Window;
 
 namespace SonicRemake.Inputs
 {
@@ -18,14 +17,14 @@ namespace SonicRemake.Inputs
         };
 
         // Sets to store current and previous key states
-        private static HashSet<Keyboard.Key> currentPressedKeys = new();
-        private static HashSet<Keyboard.Key> previousPressedKeys = new();
+        private static HashSet<Keyboard.Key> currentPressedKeys = [];
+        private static HashSet<Keyboard.Key> previousPressedKeys = [];
 
         // Method to be called once per frame to update the input state
         public static void UpdateInputState()
         {
             // Store the current pressed keys in the previous state
-            previousPressedKeys = new HashSet<Keyboard.Key>(currentPressedKeys);
+            previousPressedKeys = [.. currentPressedKeys];
 
             // Clear and update the currently pressed keys
             currentPressedKeys.Clear();
