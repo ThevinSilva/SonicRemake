@@ -7,4 +7,13 @@ public abstract record Size
 
 public record FitSize : Size;
 public record GrowSize : Size;
-public record FixedSize(int Size) : Size;
+public record FixedSize : Size
+{
+    public FixedSize(int Size)
+    {
+        this.Size = Size;
+        Calculated = Size;
+    }
+
+    public int Size { get; init; }
+}

@@ -8,80 +8,77 @@ namespace SonicRemake.Layout;
 public static class UI
 {
   private static readonly Log Log = new(typeof(UI));
-  
+
+  private static Div? _root;
   private static Div? _current;
 
   public static void Init(int rootWidth, int rootHeight)
   {
-    _current = new Div("ROOT").Size(rootWidth, rootHeight);
+    _root = new Div("__ROOT__").Size(rootWidth, rootHeight);
+    _current = _root;
   }
   
   public static void Calculate()
   {
-    // fixed pass
-    foreach (var div in BreadthFirst())
-    {
-      if (div.Width is FixedSize fixedWidth)
-        div.Width.Calculated = fixedWidth.Size;
-      
-      if (div.Height is FixedSize fixedHeight)
-        div.Height.Calculated = fixedHeight.Size;
-    }
-    
-    // fit pass
+    CalculateFitPass();
+  }
+
+  private static void CalculateFitPass()
+  {
     foreach (var div in ReverseBreadthFirst())
     {
-      if (div.Width is FitSize)
-        div.Width.Calculated = div.Children.Sum(child => child.Width.Calculated) + (div.Children.Count - 1) * div.Gap;
+      Log.Debug("Calculating div", div.Id);
+
+      if (div.Parent == null)
+        continue;
       
+      if (div.Width is FixedSize)
+        div.Parent.Width.Calculated += div.Width.Calculated;
+
       if (div.Height is FitSize)
         div.Height.Calculated = div.Children.Max(child => child.Height.Calculated);
-    }
-    
-    // grow pass
-    foreach (var div in BreadthFirst())
-    {
-      if (div.Width is GrowSize)
-        div.Width.Calculated = div.Parent.Width.Calculated - div.Parent.Padding.left - div.Parent.Padding.right;
-      
-      if (div.Height is GrowSize)
-        div.Height.Calculated = div.Parent.Height.Calculated - div.Parent.Padding.top - div.Parent.Padding.bottom;
     }
   }
 
   public static IEnumerable<Div> BreadthFirst()
   {
-    if (_current == null)
-      yield break;
+    if (_root == null)
+      throw new Exception("No root div. Did you forget to call Init?");
     
-    var queue = new Queue<Div>([_current]);
+    var queue = new Queue<Div>();
+    queue.Enqueue(_root);
 
     while (queue.Count > 0)
     {
       var div = queue.Dequeue();
+      yield return div;
 
       foreach (var child in div.Children)
         queue.Enqueue(child);
-
-      yield return div;
     }
   }
 
   public static IEnumerable<Div> ReverseBreadthFirst()
   {
-    if (_current == null)
-      yield break;
+    if (_root == null)
+      throw new Exception("No root div. Did you forget to call Init?");
     
-    var stack = new Stack<Div>([_current]);
+    var queue = new Queue<Div>();
+    queue.Enqueue(_root);
+
+    var stack = new Stack<Div>();
+    while (queue.Count > 0)
+    {
+      var div = queue.Dequeue();
+      stack.Push(div);
+
+      foreach (var child in div.Children)
+        queue.Enqueue(child);
+    }
 
     while (stack.Count > 0)
     {
-      var div = stack.Pop();
-
-      for (var i = div.Children.Count - 1; i >= 0; i--)
-        stack.Push(div.Children[i]);
-
-      yield return div;
+      yield return stack.Pop();
     }
   }
 
@@ -93,9 +90,9 @@ public static class UI
     if (_current == null)
       throw new Exception("No current div to open. Did you forget to call Init?");
     
+    _current.Children.Add(div);
     div.Parent = _current;
-    div.Parent.Children.Add(div);
-
+    
     _current = div;
     return div;
   }
