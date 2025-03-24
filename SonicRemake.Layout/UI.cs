@@ -3,9 +3,10 @@ using System.Collections.Generic;
 
 namespace SonicRemake.Layout;
 
+// ReSharper disable once InconsistentNaming
 public static class UI
 {
-  private static Log _log = new(typeof(UI));
+  private static readonly Log Log = new(typeof(UI));
   
   private static Div? _current;
 
@@ -18,11 +19,11 @@ public static class UI
   {
     foreach (var div in BreadthFirst())
     {
-      _log.Debug($"Calculating {div.Id}");
+      Log.Debug($"Calculating {div.Id}");
     }
   }
 
-  public static IEnumerable<Div> BreadthFirst(Action<Div>? action = null)
+  public static IEnumerable<Div> BreadthFirst()
   {
     if (_current == null)
       yield break;
@@ -32,7 +33,6 @@ public static class UI
     while (queue.Count > 0)
     {
       var div = queue.Dequeue();
-      action?.Invoke(div);
 
       foreach (var child in div.Children)
         queue.Enqueue(child);
@@ -41,7 +41,7 @@ public static class UI
     }
   }
 
-  public static IEnumerable<Div> ReverseBreadthFirst(Action<Div>? action = null)
+  public static IEnumerable<Div> ReverseBreadthFirst()
   {
     if (_current == null)
       yield break;
@@ -51,7 +51,6 @@ public static class UI
     while (stack.Count > 0)
     {
       var div = stack.Pop();
-      action?.Invoke(div);
 
       for (var i = div.Children.Count - 1; i >= 0; i--)
         stack.Push(div.Children[i]);
@@ -62,7 +61,7 @@ public static class UI
 
   public static Div Open(Div div)
   {
-    _log.Debug($"Opening {div.Id}");
+    Log.Debug($"Opening {div.Id}");
     
     if (div.Parent != null)
       throw new Exception("Div already has a parent");
