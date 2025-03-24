@@ -33,7 +33,7 @@ public class Tests
         var result = UI.BreadthFirst().Select(div => div.Id).ToArray();
         result.Should().NotBeNullOrEmpty();
         result.Should().HaveCount(6);
-        result.Should().ContainInOrder("ROOT", "1", "2", "3", "4", "5");
+        result.Should().ContainInOrder("__ROOT__", "1", "2", "3", "4", "5");
     }
     
     [Test]
@@ -63,7 +63,7 @@ public class Tests
         var result = UI.ReverseBreadthFirst().Select(div => div.Id).ToArray();
         result.Should().NotBeNullOrEmpty();
         result.Should().HaveCount(6);
-        result.Should().ContainInOrder("5", "4", "3", "2", "1", "ROOT");
+        result.Should().ContainInOrder("5", "4", "3", "2", "1", "__ROOT__");
     }
     
     [Test]
@@ -124,5 +124,42 @@ public class Tests
 
         a.Width.Calculated.Should().Be(20);
         a.Height.Calculated.Should().Be(10);
+    }
+
+    [Test]
+    public void Gap()
+    {
+        var a = new Div("a").Size(Size.Fit).Gap(10);
+        var b = new Div("b").Size(10);
+        var c = new Div("c").Size(10);
+        
+        a.Children(b, c);
+        
+        UI.Init(int.MaxValue, int.MaxValue);
+        UI.Open(a);
+        UI.Close();
+        UI.Calculate();
+        
+        a.Width.Calculated.Should().Be(30);
+        a.Width.Calculated.Should().Be(20);
+    }
+    
+    
+    [Test]
+    public void Padding()
+    {
+        var a = new Div("a").Size(Size.Fit).Padding(5);
+        var b = new Div("b").Size(10);
+        var c = new Div("c").Size(10);
+        
+        a.Children(b, c);
+        
+        UI.Init(int.MaxValue, int.MaxValue);
+        UI.Open(a);
+        UI.Close();
+        UI.Calculate();
+        
+        a.Width.Calculated.Should().Be(30);
+        a.Height.Calculated.Should().Be(20);
     }
 }

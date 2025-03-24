@@ -30,12 +30,31 @@ public static class UI
       // Skip root
       if (div.Parent == null)
         continue;
+
+      var parent = div.Parent!;
       
-      if (div.Parent.Width is FitSizing)
-        div.Parent.Width.Calculated += div.Width.Calculated;
+      var axis = div.Flow == Flow.Horizontal ? div.Width : div.Height;
+      var crossAxis = div.Flow == Flow.Horizontal ? div.Height : div.Width;
       
-      if (div.Parent.Height is FitSizing)
-        div.Parent.Height.Calculated = Math.Max(div.Parent.Height.Calculated, div.Height.Calculated);
+      var parentAxis = parent.Flow == Flow.Horizontal ? parent.Width : parent.Height;
+      var parentCrossAxis = parent.Flow == Flow.Horizontal ? parent.Height : parent.Width;
+      
+      div.Width.Calculated += div.Padding.left + div.Padding.right;
+      div.Height.Calculated += div.Padding.top + div.Padding.bottom;
+
+      var childGap = (div.Children.Count - 1) * div.Gap;
+      
+      axis.Calculated += childGap;
+      
+      if (parentAxis is FitSizing)
+      {
+        parentAxis.Calculated += axis.Calculated;
+      }
+
+      if (parentCrossAxis is FitSizing)
+      {
+        parentCrossAxis.Calculated = Math.Max(crossAxis.Calculated, parentCrossAxis.Calculated);
+      }
     }
   }
 
