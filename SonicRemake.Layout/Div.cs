@@ -14,8 +14,8 @@ public class Div
   
   public Div? Parent;
 
-  public Size Width { get; internal set; } = new FitSize();
-  public Size Height { get; internal set; } = new FitSize();
+  public Sizing Width { get; internal set; } = new FitSizing();
+  public Sizing Height { get; internal set; } = new FitSizing();
 
   public Color Background { get; internal set; } = Color.Transparent;
   public Color Foreground { get; internal set; } = Color.White;
@@ -24,12 +24,12 @@ public class Div
 
   public int Gap { get; internal set; }
 
-  public Flow Flow { get; internal set; } = Flow.LeftToRight;
+  public Flow Flow { get; internal set; } = Flow.Horizontal;
 
   public IList<Div> Children { get; internal set; } = [];
 }
 
-public enum Sizing
+public enum Size
 {
   Fit,
   Grow

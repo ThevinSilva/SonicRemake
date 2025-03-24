@@ -81,21 +81,48 @@ public class Tests
     }
     
     [Test]
-    public void FitSize()
+    public void FitSizeDeep()
     {
-        var parent = new Div().Size(Sizing.Fit);
-        var a = new Div().Size(10, 10);
-        var b = new Div().Size(10, 10);
+        var a = new Div("a").Size(Size.Fit);
+        var b = new Div("b").Size(Size.Fit);
+        var c = new Div("c").Size(Size.Fit);
+        var d = new Div("d").Size(10);
         
-        UI.Init(1000, 1000); 
-        UI.Open(parent);
+        a.Children(b);
+        b.Children(c);
+        c.Children(d);
+
+        UI.Init(int.MaxValue, int.MaxValue);
         UI.Open(a);
         UI.Close();
-        UI.Open(b);
-        UI.Close();
+        UI.Calculate();
+
+        a.Width.Calculated.Should().Be(10);
+        a.Height.Calculated.Should().Be(10);
+        b.Width.Calculated.Should().Be(10);
+        b.Height.Calculated.Should().Be(10);
+        c.Width.Calculated.Should().Be(10);
+        c.Height.Calculated.Should().Be(10);
+        d.Width.Calculated.Should().Be(10);
+        d.Height.Calculated.Should().Be(10);
+    }
+    
+    [Test]
+    public void FitSizeWide()
+    {
+        var a = new Div("a").Size(Size.Fit);
+        var b = new Div("b").Size(Size.Fit);
+        var c = new Div("c").Size(10);
+        var d = new Div("d").Size(10);
+        
+        a.Children(b, c, d);
+
+        UI.Init(int.MaxValue, int.MaxValue);
+        UI.Open(a);
         UI.Close();
         UI.Calculate();
-        
-        Assert.That(parent.Width.Calculated, Is.EqualTo(20));
+
+        a.Width.Calculated.Should().Be(20);
+        a.Height.Calculated.Should().Be(10);
     }
 }

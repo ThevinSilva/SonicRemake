@@ -1,3 +1,4 @@
+using System;
 using SFML.Graphics;
 
 namespace SonicRemake.Layout;
@@ -6,37 +7,44 @@ public static class DivExtensions
 {
   public static Div Size(this Div div, int width, int height)
   {
-    div.Width = new FixedSize(width);
-    div.Height = new FixedSize(height);
+    div.Width = new FixedSizing(width);
+    div.Height = new FixedSizing(height);
 
-    return div;
-  }
-
-  public static Div Size(this Div div, Sizing sizing)
-  {
-    div.Width = sizing == Sizing.Grow ? new GrowSize() : new FitSize();
-    div.Height = sizing == Sizing.Grow ? new GrowSize() : new FitSize();
     return div;
   }
   
-  public static Div Size(this Div div, int width, Sizing height)
+  public static Div Size(this Div div, int size)
   {
-    div.Width = new FixedSize(width);
-    div.Height = height == Sizing.Grow ? new GrowSize() : new FitSize();
+    div.Width = new FixedSizing(size);
+    div.Height = new FixedSizing(size);
     return div;
   }
 
-  public static Div Size(this Div div, Sizing width, int height)
+  public static Div Size(this Div div, Size sizing)
   {
-    div.Width = width == Sizing.Grow ? new GrowSize() : new FitSize();
-    div.Height = new FixedSize(height);
+    div.Width = sizing == Layout.Size.Grow ? new GrowSizing() : new FitSizing();
+    div.Height = sizing == Layout.Size.Grow ? new GrowSizing() : new FitSizing();
+    return div;
+  }
+  
+  public static Div Size(this Div div, int width, Size height)
+  {
+    div.Width = new FixedSizing(width);
+    div.Height = height == Layout.Size.Grow ? new GrowSizing() : new FitSizing();
     return div;
   }
 
-  public static Div Size(this Div div, Sizing width, Sizing height)
+  public static Div Size(this Div div, Size width, int height)
   {
-    div.Width = width == Sizing.Grow ? new GrowSize() : new FitSize();
-    div.Height = height == Sizing.Grow ? new GrowSize() : new FitSize();
+    div.Width = width == Layout.Size.Grow ? new GrowSizing() : new FitSizing();
+    div.Height = new FixedSizing(height);
+    return div;
+  }
+
+  public static Div Size(this Div div, Size width, Size height)
+  {
+    div.Width = width == Layout.Size.Grow ? new GrowSizing() : new FitSizing();
+    div.Height = height == Layout.Size.Grow ? new GrowSizing() : new FitSizing();
     return div;
   }
 
@@ -79,6 +87,20 @@ public static class DivExtensions
   public static Div Flow(this Div div, Flow flow)
   {
     div.Flow = flow;
+    return div;
+  }
+  
+  public static Div Children(this Div div, params Div[] children)
+  {
+    foreach (var child in children)
+    {
+      if (child.Parent != null)
+        throw new Exception("Div already has a parent");
+      
+      div.Children.Add(child);
+      child.Parent = div;
+    }
+
     return div;
   }
 }

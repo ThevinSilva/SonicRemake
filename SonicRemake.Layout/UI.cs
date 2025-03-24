@@ -27,16 +27,15 @@ public static class UI
   {
     foreach (var div in ReverseBreadthFirst())
     {
-      Log.Debug("Calculating div", div.Id);
-
+      // Skip root
       if (div.Parent == null)
         continue;
       
-      if (div.Width is FixedSize)
+      if (div.Parent.Width is FitSizing)
         div.Parent.Width.Calculated += div.Width.Calculated;
-
-      if (div.Height is FitSize)
-        div.Height.Calculated = div.Children.Max(child => child.Height.Calculated);
+      
+      if (div.Parent.Height is FitSizing)
+        div.Parent.Height.Calculated = Math.Max(div.Parent.Height.Calculated, div.Height.Calculated);
     }
   }
 
@@ -90,7 +89,7 @@ public static class UI
     if (_current == null)
       throw new Exception("No current div to open. Did you forget to call Init?");
     
-    _current.Children.Add(div);
+    _current.Children(div);
     div.Parent = _current;
     
     _current = div;

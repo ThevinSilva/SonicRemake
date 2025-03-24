@@ -1,15 +1,15 @@
 namespace SonicRemake.Layout;
 
-public abstract record Size
+public abstract record Sizing
 {
     public int Calculated { get; internal set; } = 0;
 }
 
-public record FitSize : Size;
-public record GrowSize : Size;
-public record FixedSize : Size
+public record FitSizing : Sizing;
+public record GrowSizing : Sizing;
+public record FixedSizing : Sizing
 {
-    public FixedSize(int Size)
+    public FixedSizing(int Size)
     {
         this.Size = Size;
         Calculated = Size;
