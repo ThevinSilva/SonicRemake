@@ -15,7 +15,7 @@ public class Node(string? id = null)
   public Color Background { get; internal set; } = Color.Transparent;
   public Color Foreground { get; internal set; } = Color.White;
 
-  public (int left, int top, int right, int bottom) Padding { get; internal set; }
+  public (int Left, int Top, int Right, int Bottom) Padding { get; internal set; }
 
   public int Gap { get; internal set; }
 

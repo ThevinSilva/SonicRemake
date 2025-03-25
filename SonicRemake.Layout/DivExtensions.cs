@@ -68,7 +68,7 @@ public static class DivExtensions
 
   public static Node Padding(this Node node, int left, int top, int right, int bottom)
   {
-    node.Padding = (left, top, right, bottom);
+    node.Padding = (Left: left, Top: top, Right: right, Bottom: bottom);
     return node;
   }
 

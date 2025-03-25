@@ -39,8 +39,8 @@ public static class UI
       var parentAxis = parent.Flow == Flow.Horizontal ? parent.Width : parent.Height;
       var parentCrossAxis = parent.Flow == Flow.Horizontal ? parent.Height : parent.Width;
       
-      div.Width.Calculated += div.Padding.left + div.Padding.right;
-      div.Height.Calculated += div.Padding.top + div.Padding.bottom;
+      div.Width.Calculated += div.Padding.Left + div.Padding.Right;
+      div.Height.Calculated += div.Padding.Top + div.Padding.Bottom;
 
       var childGap = (div.Children.Count - 1) * div.Gap;
       
