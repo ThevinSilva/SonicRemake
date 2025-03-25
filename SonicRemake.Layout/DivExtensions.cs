@@ -5,102 +5,102 @@ namespace SonicRemake.Layout;
 
 public static class DivExtensions
 {
-  public static Div Size(this Div div, int width, int height)
+  public static Node Size(this Node node, int width, int height)
   {
-    div.Width = new FixedSizing(width);
-    div.Height = new FixedSizing(height);
+    node.Width = new FixedSizing(width);
+    node.Height = new FixedSizing(height);
 
-    return div;
+    return node;
   }
   
-  public static Div Size(this Div div, int size)
+  public static Node Size(this Node node, int size)
   {
-    div.Width = new FixedSizing(size);
-    div.Height = new FixedSizing(size);
-    return div;
+    node.Width = new FixedSizing(size);
+    node.Height = new FixedSizing(size);
+    return node;
   }
 
-  public static Div Size(this Div div, Size sizing)
+  public static Node Size(this Node node, Size sizing)
   {
-    div.Width = sizing == Layout.Size.Grow ? new GrowSizing() : new FitSizing();
-    div.Height = sizing == Layout.Size.Grow ? new GrowSizing() : new FitSizing();
-    return div;
+    node.Width = sizing == Layout.Size.Grow ? new GrowSizing() : new FitSizing();
+    node.Height = sizing == Layout.Size.Grow ? new GrowSizing() : new FitSizing();
+    return node;
   }
   
-  public static Div Size(this Div div, int width, Size height)
+  public static Node Size(this Node node, int width, Size height)
   {
-    div.Width = new FixedSizing(width);
-    div.Height = height == Layout.Size.Grow ? new GrowSizing() : new FitSizing();
-    return div;
+    node.Width = new FixedSizing(width);
+    node.Height = height == Layout.Size.Grow ? new GrowSizing() : new FitSizing();
+    return node;
   }
 
-  public static Div Size(this Div div, Size width, int height)
+  public static Node Size(this Node node, Size width, int height)
   {
-    div.Width = width == Layout.Size.Grow ? new GrowSizing() : new FitSizing();
-    div.Height = new FixedSizing(height);
-    return div;
+    node.Width = width == Layout.Size.Grow ? new GrowSizing() : new FitSizing();
+    node.Height = new FixedSizing(height);
+    return node;
   }
 
-  public static Div Size(this Div div, Size width, Size height)
+  public static Node Size(this Node node, Size width, Size height)
   {
-    div.Width = width == Layout.Size.Grow ? new GrowSizing() : new FitSizing();
-    div.Height = height == Layout.Size.Grow ? new GrowSizing() : new FitSizing();
-    return div;
+    node.Width = width == Layout.Size.Grow ? new GrowSizing() : new FitSizing();
+    node.Height = height == Layout.Size.Grow ? new GrowSizing() : new FitSizing();
+    return node;
   }
 
-  public static Div Background(this Div div, Color color)
+  public static Node Background(this Node node, Color color)
   {
-    div.Background = color;
-    return div;
+    node.Background = color;
+    return node;
   }
 
-  public static Div Foreground(this Div div, Color color)
+  public static Node Foreground(this Node node, Color color)
   {
-    div.Foreground = color;
-    return div;
+    node.Foreground = color;
+    return node;
   }
 
-  public static Div Padding(this Div div, int padding)
+  public static Node Padding(this Node node, int padding)
   {
-    div.Padding = (padding, padding, padding, padding);
-    return div;
+    node.Padding = (padding, padding, padding, padding);
+    return node;
   }
 
-  public static Div Padding(this Div div, int left, int top, int right, int bottom)
+  public static Node Padding(this Node node, int left, int top, int right, int bottom)
   {
-    div.Padding = (left, top, right, bottom);
-    return div;
+    node.Padding = (left, top, right, bottom);
+    return node;
   }
 
-  public static Div Padding(this Div div, int horizontal, int vertical)
+  public static Node Padding(this Node node, int horizontal, int vertical)
   {
-    div.Padding = (horizontal, vertical, horizontal, vertical);
-    return div;
+    node.Padding = (horizontal, vertical, horizontal, vertical);
+    return node;
   }
 
-  public static Div Gap(this Div div, int gap)
+  public static Node Gap(this Node node, int gap)
   {
-    div.Gap = gap;
-    return div;
+    node.Gap = gap;
+    return node;
   }
 
-  public static Div Flow(this Div div, Flow flow)
+  public static Node Flow(this Node node, Flow flow)
   {
-    div.Flow = flow;
-    return div;
+    node.Flow = flow;
+    return node;
   }
   
-  public static Div Children(this Div div, params Div[] children)
+  public static Node Children(this Node node, params Node[] children)
   {
     foreach (var child in children)
     {
       if (child.Parent != null)
         throw new Exception("Div already has a parent");
       
-      div.Children.Add(child);
-      child.Parent = div;
+      node.Children.Add(child);
+      child.Parent = node;
     }
 
-    return div;
+    return node;
   }
 }

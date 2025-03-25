@@ -3,16 +3,11 @@ using SFML.Graphics;
 
 namespace SonicRemake.Layout;
 
-public class Div
+public class Node(string? id = null)
 {
-  public Div(string? id = null)
-  {
-    Id = id;
-  }
-  
-  public string? Id { get; internal set; }
-  
-  public Div? Parent;
+  public string? Id { get; } = id;
+
+  public Node? Parent;
 
   public Sizing Width { get; internal set; } = new FitSizing();
   public Sizing Height { get; internal set; } = new FitSizing();
@@ -26,7 +21,7 @@ public class Div
 
   public Flow Flow { get; internal set; } = Flow.Horizontal;
 
-  public IList<Div> Children { get; internal set; } = [];
+  public IList<Node> Children { get; internal set; } = [];
 }
 
 public enum Size

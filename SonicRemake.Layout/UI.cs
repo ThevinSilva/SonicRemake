@@ -9,12 +9,12 @@ public static class UI
 {
   private static readonly Log Log = new(typeof(UI));
 
-  private static Div? _root;
-  private static Div? _current;
+  private static Node? _root;
+  private static Node? _current;
 
   public static void Init(int rootWidth, int rootHeight)
   {
-    _root = new Div("__ROOT__").Size(rootWidth, rootHeight);
+    _root = new Node("__ROOT__").Size(rootWidth, rootHeight);
     _current = _root;
   }
   
@@ -58,12 +58,12 @@ public static class UI
     }
   }
 
-  public static IEnumerable<Div> BreadthFirst()
+  public static IEnumerable<Node> BreadthFirst()
   {
     if (_root == null)
       throw new Exception("No root div. Did you forget to call Init?");
     
-    var queue = new Queue<Div>();
+    var queue = new Queue<Node>();
     queue.Enqueue(_root);
 
     while (queue.Count > 0)
@@ -76,15 +76,15 @@ public static class UI
     }
   }
 
-  public static IEnumerable<Div> ReverseBreadthFirst()
+  public static IEnumerable<Node> ReverseBreadthFirst()
   {
     if (_root == null)
       throw new Exception("No root div. Did you forget to call Init?");
     
-    var queue = new Queue<Div>();
+    var queue = new Queue<Node>();
     queue.Enqueue(_root);
 
-    var stack = new Stack<Div>();
+    var stack = new Stack<Node>();
     while (queue.Count > 0)
     {
       var div = queue.Dequeue();
@@ -100,19 +100,19 @@ public static class UI
     }
   }
 
-  public static Div Open(Div div)
+  public static Node Open(Node node)
   {
-    if (div.Parent != null)
+    if (node.Parent != null)
       throw new Exception("Div already has a parent");
 
     if (_current == null)
       throw new Exception("No current div to open. Did you forget to call Init?");
     
-    _current.Children(div);
-    div.Parent = _current;
+    _current.Children(node);
+    node.Parent = _current;
     
-    _current = div;
-    return div;
+    _current = node;
+    return node;
   }
 
   public static void Close()
