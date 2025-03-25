@@ -181,4 +181,49 @@ public class Tests
         b.Width.Calculated.Should().Be(100);
         b.Height.Calculated.Should().Be(100);
     }
+
+    [Test]
+    public void GrowMultipleChildren()
+    {
+        var a = new Node("a").Size(100);
+        var b = new Node("b").Size(Size.Grow);
+        var c = new Node("c").Size(Size.Grow);
+
+        a.Children(b, c);
+
+        UI.Init(1000, 1000);
+        UI.Open(a);
+        UI.Close();
+        UI.Calculate();
+
+        a.Width.Calculated.Should().Be(100);
+        a.Height.Calculated.Should().Be(100);
+        b.Width.Calculated.Should().Be(50);
+        b.Height.Calculated.Should().Be(100);
+        c.Width.Calculated.Should().Be(50);
+        c.Height.Calculated.Should().Be(100);
+    }
+
+    // [Test]
+    public void GrowMultipleChildrenDifferentStartingSizes()
+    {
+        var a = new Node("a").Size(100);
+        var b = new Node("b").Size(Size.Grow);
+        var c = new Node("c").Size(Size.Grow);
+        var d = new Node("d").Size(50);
+
+        a.Children(b, c);
+
+        UI.Init(1000, 1000);
+        UI.Open(a);
+        UI.Close();
+        UI.Calculate();
+
+        a.Width.Calculated.Should().Be(100);
+        a.Height.Calculated.Should().Be(100);
+        b.Width.Calculated.Should().Be(50);
+        b.Height.Calculated.Should().Be(100);
+        c.Width.Calculated.Should().Be(50);
+        c.Height.Calculated.Should().Be(100);
+    }
 }

@@ -56,16 +56,55 @@ public static class UI
 
 			var parent = div.Parent!;
 
-			var remaningWidth = parent.Axis.Calculated
-				- parent.Padding.Left - parent.Padding.Right
-				- div.Children.Sum(c => c.Width.Calculated)
-				- (div.Children.Count - 1) * div.Gap;
-
-			foreach (Node child in parent.Children.Where(x => x.Axis is GrowSizing))
-				child.Axis.Calculated += remaningWidth;
-
+			// Grow cross axis
 			foreach (Node child in parent.Children.Where(x => x.CrossAxis is GrowSizing))
 				child.CrossAxis.Calculated += parent.CrossAxis.Calculated - child.CrossAxis.Calculated;
+
+			// Grow axis
+			var remaningWidth = parent.Axis.Calculated
+				- parent.Padding.Left - parent.Padding.Right
+				- parent.Children.Sum(c => c.Width.Calculated)
+				- (parent.Children.Count - 1) * div.Gap;
+
+			var growables = parent.Children
+				.Where(c => c.Axis is GrowSizing)
+				.ToList();
+
+			if (growables.Count == 0)
+				continue;
+
+			while (remaningWidth > 0)
+			{
+				int smallest = int.MaxValue;
+				int secondSmallest = int.MaxValue;
+				int spaceToAdd = remaningWidth;
+
+				foreach (var child in growables)
+				{
+					if (child.Axis.Calculated < smallest)
+					{
+						secondSmallest = smallest;
+						smallest = child.Axis.Calculated;
+					}
+
+					if (child.Axis.Calculated > smallest)
+					{
+						secondSmallest = Math.Min(secondSmallest, child.Axis.Calculated);
+						spaceToAdd = secondSmallest - smallest;
+					}
+				}
+
+				spaceToAdd = Math.Min(spaceToAdd, remaningWidth / growables.Count);
+
+				foreach (var child in growables)
+				{
+					if (child.Axis.Calculated == smallest)
+					{
+						child.Axis.Calculated += spaceToAdd;
+						remaningWidth -= spaceToAdd;
+					}
+				}
+			}
 		}
 	}
 
