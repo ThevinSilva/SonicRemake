@@ -12,14 +12,17 @@ public class Node(string? id = null)
   public Sizing Width { get; internal set; } = new FitSizing();
   public Sizing Height { get; internal set; } = new FitSizing();
 
+  public Flow Flow { get; internal set; } = Flow.Horizontal;
+
+  public Sizing Axis => Flow == Flow.Horizontal ? Width : Height;
+  public Sizing CrossAxis => Flow == Flow.Horizontal ? Height : Width;
+
   public Color Background { get; internal set; } = Color.Transparent;
   public Color Foreground { get; internal set; } = Color.White;
 
   public (int Left, int Top, int Right, int Bottom) Padding { get; internal set; }
 
   public int Gap { get; internal set; }
-
-  public Flow Flow { get; internal set; } = Flow.Horizontal;
 
   public IList<Node> Children { get; internal set; } = [];
 }

@@ -7,112 +7,127 @@ namespace SonicRemake.Layout;
 // ReSharper disable once InconsistentNaming
 public static class UI
 {
-  private static readonly Log Log = new(typeof(UI));
+	private static readonly Log Log = new(typeof(UI));
 
-  private static Node? _root;
-  private static Node? _current;
+	private static Node? _root;
+	private static Node? _current;
 
-  public static void Init(int rootWidth, int rootHeight)
-  {
-    _root = new Node("__ROOT__").Size(rootWidth, rootHeight);
-    _current = _root;
-  }
-  
-  public static void Calculate()
-  {
-    CalculateFitPass();
-  }
+	public static void Init(int rootWidth, int rootHeight)
+	{
+		_root = new Node("__ROOT__").Size(rootWidth, rootHeight);
+		_current = _root;
+	}
 
-  private static void CalculateFitPass()
-  {
-    foreach (var div in ReverseBreadthFirst())
-    {
-      // Skip root
-      if (div.Parent == null)
-        continue;
+	public static void Calculate()
+	{
+		CalculateFitPass();
+	}
 
-      var parent = div.Parent!;
-      
-      var axis = div.Flow == Flow.Horizontal ? div.Width : div.Height;
-      var crossAxis = div.Flow == Flow.Horizontal ? div.Height : div.Width;
-      
-      var parentAxis = parent.Flow == Flow.Horizontal ? parent.Width : parent.Height;
-      var parentCrossAxis = parent.Flow == Flow.Horizontal ? parent.Height : parent.Width;
-      
-      // Padding
-      div.Width.Calculated += div.Padding.Left + div.Padding.Right;
-      div.Height.Calculated += div.Padding.Top + div.Padding.Bottom;
-      
-      // Gap
-      axis.Calculated += (div.Children.Count - 1) * div.Gap;
-      
-      if (parentAxis is FitSizing)
-        parentAxis.Calculated += axis.Calculated;
+	private static void CalculateFitPass()
+	{
+		// Fit pass
+		foreach (var div in ReverseBreadthFirst())
+		{
+			// Skip root
+			if (div.Parent == null)
+				continue;
 
-      if (parentCrossAxis is FitSizing)
-        parentCrossAxis.Calculated = Math.Max(crossAxis.Calculated, parentCrossAxis.Calculated);
-    }
-  }
+			var parent = div.Parent!;
 
-  public static IEnumerable<Node> BreadthFirst()
-  {
-    if (_root == null)
-      throw new Exception("No root div. Did you forget to call Init?");
-    
-    var queue = new Queue<Node>();
-    queue.Enqueue(_root);
+			// Padding
+			div.Width.Calculated += div.Padding.Left + div.Padding.Right;
+			div.Height.Calculated += div.Padding.Top + div.Padding.Bottom;
 
-    while (queue.Count > 0)
-    {
-      var div = queue.Dequeue();
-      yield return div;
+			// Gap
+			div.Axis.Calculated += (div.Children.Count - 1) * div.Gap;
 
-      foreach (var child in div.Children)
-        queue.Enqueue(child);
-    }
-  }
+			if (parent.Axis is FitSizing)
+				parent.Axis.Calculated += div.Axis.Calculated;
 
-  public static IEnumerable<Node> ReverseBreadthFirst()
-  {
-    if (_root == null)
-      throw new Exception("No root div. Did you forget to call Init?");
-    
-    var queue = new Queue<Node>();
-    queue.Enqueue(_root);
+			if (parent.CrossAxis is FitSizing)
+				parent.CrossAxis.Calculated = Math.Max(div.CrossAxis.Calculated, parent.CrossAxis.Calculated);
+		}
 
-    var stack = new Stack<Node>();
-    while (queue.Count > 0)
-    {
-      var div = queue.Dequeue();
-      stack.Push(div);
+		// Grow pass
+		foreach (var div in BreadthFirst())
+		{
+			if (div.Parent == null)
+				continue;
 
-      foreach (var child in div.Children)
-        queue.Enqueue(child);
-    }
+			var parent = div.Parent!;
 
-    while (stack.Count > 0)
-    {
-      yield return stack.Pop();
-    }
-  }
+			var remaningWidth = parent.Axis.Calculated
+				- parent.Padding.Left - parent.Padding.Right
+				- div.Children.Sum(c => c.Width.Calculated)
+				- (div.Children.Count - 1) * div.Gap;
 
-  public static Node Open(Node node)
-  {
-    if (node.Parent != null)
-      throw new Exception("Div already has a parent");
+			foreach (Node child in parent.Children.Where(x => x.Axis is GrowSizing))
+				child.Axis.Calculated += remaningWidth;
 
-    if (_current == null)
-      throw new Exception("No current div to open. Did you forget to call Init?");
-    
-    _current.Children(node);
-    node.Parent = _current;
-    
-    _current = node;
-    return node;
-  }
+			foreach (Node child in parent.Children.Where(x => x.CrossAxis is GrowSizing))
+				child.CrossAxis.Calculated += parent.CrossAxis.Calculated - child.CrossAxis.Calculated;
+		}
+	}
 
-  public static void Close()
-  {
-    _current = _current?.Parent ?? throw new Exception("No parent to close. Did you forget to call Init?");
-  }
+	public static IEnumerable<Node> BreadthFirst()
+	{
+		if (_root == null)
+			throw new Exception("No root div. Did you forget to call Init?");
+
+		var queue = new Queue<Node>();
+		queue.Enqueue(_root);
+
+		while (queue.Count > 0)
+		{
+			var div = queue.Dequeue();
+			yield return div;
+
+			foreach (var child in div.Children)
+				queue.Enqueue(child);
+		}
+	}
+
+	public static IEnumerable<Node> ReverseBreadthFirst()
+	{
+		if (_root == null)
+			throw new Exception("No root div. Did you forget to call Init?");
+
+		var queue = new Queue<Node>();
+		queue.Enqueue(_root);
+
+		var stack = new Stack<Node>();
+		while (queue.Count > 0)
+		{
+			var div = queue.Dequeue();
+			stack.Push(div);
+
+			foreach (var child in div.Children)
+				queue.Enqueue(child);
+		}
+
+		while (stack.Count > 0)
+		{
+			yield return stack.Pop();
+		}
+	}
+
+	public static Node Open(Node node)
+	{
+		if (node.Parent != null)
+			throw new Exception("Div already has a parent");
+
+		if (_current == null)
+			throw new Exception("No current div to open. Did you forget to call Init?");
+
+		_current.Children(node);
+		node.Parent = _current;
+
+		_current = node;
+		return node;
+	}
+
+	public static void Close()
+	{
+		_current = _current?.Parent ?? throw new Exception("No parent to close. Did you forget to call Init?");
+	}
 }
