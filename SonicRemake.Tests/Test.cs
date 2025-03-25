@@ -141,7 +141,7 @@ public class Tests
         UI.Calculate();
         
         a.Width.Calculated.Should().Be(30);
-        a.Width.Calculated.Should().Be(20);
+        a.Height.Calculated.Should().Be(10);
     }
     
     
