@@ -39,22 +39,18 @@ public static class UI
       var parentAxis = parent.Flow == Flow.Horizontal ? parent.Width : parent.Height;
       var parentCrossAxis = parent.Flow == Flow.Horizontal ? parent.Height : parent.Width;
       
+      // Padding
       div.Width.Calculated += div.Padding.Left + div.Padding.Right;
       div.Height.Calculated += div.Padding.Top + div.Padding.Bottom;
-
-      var childGap = (div.Children.Count - 1) * div.Gap;
       
-      axis.Calculated += childGap;
+      // Gap
+      axis.Calculated += (div.Children.Count - 1) * div.Gap;
       
       if (parentAxis is FitSizing)
-      {
         parentAxis.Calculated += axis.Calculated;
-      }
 
       if (parentCrossAxis is FitSizing)
-      {
         parentCrossAxis.Calculated = Math.Max(crossAxis.Calculated, parentCrossAxis.Calculated);
-      }
     }
   }
 
