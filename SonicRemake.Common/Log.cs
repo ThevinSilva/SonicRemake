@@ -38,7 +38,7 @@ namespace SonicRemake
     {
       var frame = new StackFrame(1);
       var method = frame.GetMethod();
-      var type = method.DeclaringType!;
+      var type = method?.DeclaringType ?? typeof(Log);
 
       return new Log(type);
     }
