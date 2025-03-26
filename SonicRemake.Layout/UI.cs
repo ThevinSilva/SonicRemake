@@ -13,14 +13,17 @@ public static class UI
 	private static Node? _root;
 	private static Node? _current;
 
-	public static void Init(int rootWidth, int rootHeight)
+	public static void Init(uint rootWidth, uint rootHeight)
 	{
-		_root = new Node("__ROOT__").Size(rootWidth, rootHeight);
+		_root = new Node("__ROOT__").Size((int)rootWidth, (int)rootHeight);
 		_current = _root;
 	}
 
 	public static void Calculate()
 	{
+		if (_root == null)
+			return;
+
 		// Fit pass
 		foreach (var div in ReverseBreadthFirst())
 		{
@@ -30,12 +33,11 @@ public static class UI
 
 			var parent = div.Parent!;
 
-			// Padding
-			div.Width.Calculated += div.Padding.Left + div.Padding.Right;
-			div.Height.Calculated += div.Padding.Top + div.Padding.Bottom;
+			if (div.Width is FitSizing)
+				div.Width.Calculated += div.Padding.Left + div.Padding.Right;
 
-			// Gap
-			div.Axis.Calculated += (div.Children.Count - 1) * div.Gap;
+			if (div.Height is FitSizing)
+				div.Height.Calculated += div.Padding.Top + div.Padding.Bottom;
 
 			if (parent.Axis is FitSizing)
 				parent.Axis.Calculated += div.Axis.Calculated;
@@ -60,7 +62,7 @@ public static class UI
 			var remaningWidth = parent.Axis.Calculated
 				- parent.Padding.Left - parent.Padding.Right
 				- parent.Children.Sum(c => c.Width.Calculated)
-				- (parent.Children.Count - 1) * div.Gap;
+				- (parent.Children.Count - 1) * parent.Gap;
 
 			var growables = parent.Children
 				.Where(c => c.Axis is GrowSizing)
@@ -69,7 +71,8 @@ public static class UI
 			if (growables.Count == 0)
 				continue;
 
-			while (remaningWidth > 0)
+			// Distribute space to growables
+			while (remaningWidth > growables.Count)
 			{
 				int smallest = int.MaxValue;
 				int secondSmallest = int.MaxValue;
@@ -100,6 +103,16 @@ public static class UI
 						remaningWidth -= spaceToAdd;
 					}
 				}
+			}
+
+			// Distribute remaining pixels
+			foreach (var child in growables)
+			{
+				if (remaningWidth <= 0)
+					break;
+
+				child.Axis.Calculated += 1;
+				remaningWidth--;
 			}
 		}
 
@@ -135,7 +148,7 @@ public static class UI
 	public static IEnumerable<Node> BreadthFirst()
 	{
 		if (_root == null)
-			throw new Exception("No root div. Did you forget to call Init?");
+			yield break;
 
 		var queue = new Queue<Node>();
 		queue.Enqueue(_root);
@@ -153,7 +166,7 @@ public static class UI
 	public static IEnumerable<Node> ReverseBreadthFirst()
 	{
 		if (_root == null)
-			throw new Exception("No root div. Did you forget to call Init?");
+			yield break;
 
 		var queue = new Queue<Node>();
 		queue.Enqueue(_root);

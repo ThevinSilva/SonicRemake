@@ -37,7 +37,8 @@ gameLevel.AddSystems(new TileManagementSystem(),
 	new SensorDebug(),
 	new SolidTilesDebugSystem(),
 	// new GridDebugSystem(),
-	new RenderSystem(),
+	// new RenderSystem(),
+	new UiRenderSystem(),
 	new LogDebugSystem()
 );
 
@@ -63,7 +64,7 @@ gameLevel.Entities.Create(
 const float tickTimeStep = 1.0f / 60.0f;
 float tickTimeStepAccumulator = 0.0f;
 
-var window = new RenderWindow(new VideoMode(1920, 1080), "Sonic");
+var window = new RenderWindow(new VideoMode(400, 400), "Sonic");
 window.SetFramerateLimit(120);
 
 var clock = new Clock();

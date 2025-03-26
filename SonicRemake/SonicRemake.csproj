@@ -31,6 +31,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\SonicRemake.Common\SonicRemake.Common.csproj" />
+    <ProjectReference Include="..\SonicRemake.Layout\SonicRemake.Layout.csproj" />
   </ItemGroup>
 
 </Project>

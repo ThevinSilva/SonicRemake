@@ -205,6 +205,28 @@ public class Tests
     }
 
     [Test]
+    public void GrowMultipleChildrenGap()
+    {
+        var a = new Node("a").Size(100).Gap(10);
+        var b = new Node("b").Size(Size.Grow);
+        var c = new Node("c").Size(Size.Grow);
+
+        a.Children(b, c);
+
+        UI.Init(1000, 1000);
+        UI.Open(a);
+        UI.Close();
+        UI.Calculate();
+
+        a.Width.Calculated.Should().Be(100);
+        a.Height.Calculated.Should().Be(100);
+        b.Width.Calculated.Should().Be(45);
+        b.Height.Calculated.Should().Be(100);
+        c.Width.Calculated.Should().Be(45);
+        c.Height.Calculated.Should().Be(100);
+    }
+
+    [Test]
     public void GrowMultipleChildrenDifferentStartingSizes()
     {
         var a = new Node("a").Size(100);
@@ -312,5 +334,24 @@ public class Tests
         a.Position.Should().Be((0, 0));
         b.Position.Should().Be((5, 5));
         c.Position.Should().Be((65, 5));
+    }
+
+    [Test]
+    public void PositionTwoChildrenGrow()
+    {
+        var a = new Node("a").Size(100, 100).Gap(10);
+        var b = new Node("b").Size(Size.Grow, Size.Grow);
+        var c = new Node("c").Size(Size.Grow, Size.Grow);
+
+        a.Children(b, c);
+
+        UI.Init(1000, 1000);
+        UI.Open(a);
+        UI.Close();
+        UI.Calculate();
+
+        a.Position.Should().Be((0, 0));
+        b.Position.Should().Be((0, 0));
+        c.Position.Should().Be((55, 0));
     }
 }
