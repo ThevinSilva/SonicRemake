@@ -33,12 +33,13 @@ gameLevel.AddSystems(new TileManagementSystem(),
 	new SonicAnimationSystem(),
 	new CameraSystem(),
 	new LineLoaderSystem(),
-	new FpsDebugSystem(),
 	new SensorDebug(),
 	new SolidTilesDebugSystem(),
 	// new GridDebugSystem(),
 	new RenderSystem(),
-	new LogDebugSystem()
+	new LogDebugSystem(),
+	new FpsDebugSystem(),
+	new UiRenderSystem()
 );
 
 gameLevel.Entities.Create(
@@ -63,7 +64,7 @@ gameLevel.Entities.Create(
 const float tickTimeStep = 1.0f / 60.0f;
 float tickTimeStepAccumulator = 0.0f;
 
-var window = new RenderWindow(new VideoMode(1920, 1080), "Sonic");
+var window = new RenderWindow(new VideoMode(400, 400), "Sonic");
 window.SetFramerateLimit(120);
 
 var clock = new Clock();
@@ -76,8 +77,6 @@ LevelManager.LoadLevel(gameLevel);
 // 	new Renderer(),
 // 	new Sprite("Green Hill Zone/Scene1-BG Outside.png")
 // );
-
-
 
 while (window.IsOpen)
 {

@@ -29,4 +29,9 @@
     <Folder Include="Assets\Sprites\Green Hill Zone\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\SonicRemake.Common\SonicRemake.Common.csproj" />
+    <ProjectReference Include="..\SonicRemake.Layout\SonicRemake.Layout.csproj" />
+  </ItemGroup>
+
 </Project>

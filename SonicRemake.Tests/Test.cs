@@ -1,10 +1,357 @@
+using FluentAssertions;
+using SFML.Graphics;
+using SonicRemake.Layout;
+
 namespace SonicRemake.Tests;
 
 public class Tests
 {
     [Test]
-    public void Test()
+    public void BreadthFirst()
     {
-        Assert.Pass();
+        var a = new Div("1");
+        var b = new Div("2");
+        var c = new Div("3");
+        var d = new Div("4");
+        var e = new Div("5");
+
+        UI.Init(0, 0);
+        UI.Open(a);
+
+        UI.Open(c);
+        UI.Close();
+
+        UI.Open(d);
+        UI.Close();
+        UI.Close();
+
+        UI.Open(b);
+        UI.Open(e);
+        UI.Close();
+        UI.Close();
+
+        var result = UI.BreadthFirst().Select(div => div.Id).ToArray();
+        result.Should().NotBeNullOrEmpty();
+        result.Should().HaveCount(6);
+        result.Should().ContainInOrder("__ROOT__", "1", "2", "3", "4", "5");
+    }
+
+    [Test]
+    public void ReverseBreadthFirst()
+    {
+        var a = new Div("1");
+        var b = new Div("2");
+        var c = new Div("3");
+        var d = new Div("4");
+        var e = new Div("5");
+
+        UI.Init(0, 0);
+        UI.Open(a);
+
+        UI.Open(c);
+        UI.Close();
+
+        UI.Open(d);
+        UI.Close();
+        UI.Close();
+
+        UI.Open(b);
+        UI.Open(e);
+        UI.Close();
+        UI.Close();
+
+        var result = UI.ReverseBreadthFirst().Select(div => div.Id).ToArray();
+        result.Should().NotBeNullOrEmpty();
+        result.Should().HaveCount(6);
+        result.Should().ContainInOrder("5", "4", "3", "2", "1", "__ROOT__");
+    }
+
+    [Test]
+    public void FixedSize()
+    {
+        var div = new Div("test").Size(20, 40);
+
+        UI.Init(1000, 1000);
+        UI.Open(div);
+        UI.Close();
+        UI.Calculate();
+
+        Assert.That(div.Width.Calculated, Is.EqualTo(20));
+        Assert.That(div.Height.Calculated, Is.EqualTo(40));
+    }
+
+    [Test]
+    public void FitSizeDeep()
+    {
+        var a = new Div("a").Size(Size.Fit);
+        var b = new Div("b").Size(Size.Fit);
+        var c = new Div("c").Size(Size.Fit);
+        var d = new Div("d").Size(10);
+
+        a.Children(b);
+        b.Children(c);
+        c.Children(d);
+
+        UI.Init(int.MaxValue, int.MaxValue);
+        UI.Open(a);
+        UI.Close();
+        UI.Calculate();
+
+        a.Width.Calculated.Should().Be(10);
+        a.Height.Calculated.Should().Be(10);
+        b.Width.Calculated.Should().Be(10);
+        b.Height.Calculated.Should().Be(10);
+        c.Width.Calculated.Should().Be(10);
+        c.Height.Calculated.Should().Be(10);
+        d.Width.Calculated.Should().Be(10);
+        d.Height.Calculated.Should().Be(10);
+    }
+
+    [Test]
+    public void FitSizeWide()
+    {
+        var a = new Div("a").Size(Size.Fit);
+        var b = new Div("b").Size(Size.Fit);
+        var c = new Div("c").Size(10);
+        var d = new Div("d").Size(10);
+
+        a.Children(b, c, d);
+
+        UI.Init(int.MaxValue, int.MaxValue);
+        UI.Open(a);
+        UI.Close();
+        UI.Calculate();
+
+        a.Width.Calculated.Should().Be(20);
+        a.Height.Calculated.Should().Be(10);
+    }
+
+    [Test]
+    public void Gap()
+    {
+        var a = new Div("a").Size(Size.Fit).Gap(10);
+        var b = new Div("b").Size(10);
+        var c = new Div("c").Size(10);
+
+        a.Children(b, c);
+
+        UI.Init(int.MaxValue, int.MaxValue);
+        UI.Open(a);
+        UI.Close();
+        UI.Calculate();
+
+        a.Width.Calculated.Should().Be(30);
+        a.Height.Calculated.Should().Be(10);
+    }
+
+
+    [Test]
+    public void Padding()
+    {
+        var a = new Div("a").Size(Size.Fit).Padding(5);
+        var b = new Div("b").Size(10);
+        var c = new Div("c").Size(10);
+
+        a.Children(b, c);
+
+        UI.Init(int.MaxValue, int.MaxValue);
+        UI.Open(a);
+        UI.Close();
+        UI.Calculate();
+
+        a.Width.Calculated.Should().Be(30);
+        a.Height.Calculated.Should().Be(20);
+    }
+
+    [Test]
+    public void Grow()
+    {
+        var a = new Div("a").Size(100, 100);
+        var b = new Div("b").Size(Size.Grow);
+
+        a.Children(b);
+
+        UI.Init(1000, 1000);
+        UI.Open(a);
+        UI.Close();
+        UI.Calculate();
+
+        a.Width.Calculated.Should().Be(100);
+        a.Height.Calculated.Should().Be(100);
+        b.Width.Calculated.Should().Be(100);
+        b.Height.Calculated.Should().Be(100);
+    }
+
+    [Test]
+    public void GrowMultipleChildren()
+    {
+        var a = new Div("a").Size(100);
+        var b = new Div("b").Size(Size.Grow);
+        var c = new Div("c").Size(Size.Grow);
+
+        a.Children(b, c);
+
+        UI.Init(1000, 1000);
+        UI.Open(a);
+        UI.Close();
+        UI.Calculate();
+
+        a.Width.Calculated.Should().Be(100);
+        a.Height.Calculated.Should().Be(100);
+        b.Width.Calculated.Should().Be(50);
+        b.Height.Calculated.Should().Be(100);
+        c.Width.Calculated.Should().Be(50);
+        c.Height.Calculated.Should().Be(100);
+    }
+
+    [Test]
+    public void GrowMultipleChildrenGap()
+    {
+        var a = new Div("a").Size(100).Gap(10);
+        var b = new Div("b").Size(Size.Grow);
+        var c = new Div("c").Size(Size.Grow);
+
+        a.Children(b, c);
+
+        UI.Init(1000, 1000);
+        UI.Open(a);
+        UI.Close();
+        UI.Calculate();
+
+        a.Width.Calculated.Should().Be(100);
+        a.Height.Calculated.Should().Be(100);
+        b.Width.Calculated.Should().Be(45);
+        b.Height.Calculated.Should().Be(100);
+        c.Width.Calculated.Should().Be(45);
+        c.Height.Calculated.Should().Be(100);
+    }
+
+    [Test]
+    public void GrowMultipleChildrenDifferentStartingSizes()
+    {
+        var a = new Div("a").Size(100);
+        var b = new Div("b").Size(Size.Grow);
+        var c = new Div("c").Size(Size.Grow);
+        var d = new Div("d").Size(50);
+
+        a.Children(b, c);
+
+        UI.Init(1000, 1000);
+        UI.Open(a);
+        UI.Close();
+        UI.Calculate();
+
+        a.Width.Calculated.Should().Be(100);
+        a.Height.Calculated.Should().Be(100);
+        b.Width.Calculated.Should().Be(50);
+        b.Height.Calculated.Should().Be(100);
+        c.Width.Calculated.Should().Be(50);
+        c.Height.Calculated.Should().Be(100);
+    }
+
+    [Test]
+    public void PositionNoChildren()
+    {
+        var a = new Div("a").Size(100, 100);
+
+        UI.Init(1000, 1000);
+        UI.Open(a);
+        UI.Close();
+        UI.Calculate();
+
+        a.Position.Should().Be((0, 0));
+    }
+
+    [Test]
+    public void PositionOneChild()
+    {
+        var a = new Div("a").Size(100, 100);
+        var b = new Div("b").Size(50, 50);
+
+        a.Children(b);
+
+        UI.Init(1000, 1000);
+        UI.Open(a);
+        UI.Close();
+        UI.Calculate();
+
+        a.Position.Should().Be((0, 0));
+        b.Position.Should().Be((0, 0));
+    }
+
+    [Test]
+    public void PositionTwoChildren()
+    {
+        var a = new Div("a").Size(100, 100);
+        var b = new Div("b").Size(50, 50);
+        var c = new Div("c").Size(50, 50);
+
+        a.Children(b, c);
+
+        UI.Init(1000, 1000);
+        UI.Open(a);
+        UI.Close();
+        UI.Calculate();
+
+        a.Position.Should().Be((0, 0));
+        b.Position.Should().Be((0, 0));
+        c.Position.Should().Be((50, 0));
+    }
+
+    [Test]
+    public void PositionTwoChildrenGap()
+    {
+        var a = new Div("a").Size(100, 100).Gap(10);
+        var b = new Div("b").Size(50, 50);
+        var c = new Div("c").Size(50, 50);
+
+        a.Children(b, c);
+
+        UI.Init(1000, 1000);
+        UI.Open(a);
+        UI.Close();
+        UI.Calculate();
+
+        a.Position.Should().Be((0, 0));
+        b.Position.Should().Be((0, 0));
+        c.Position.Should().Be((60, 0));
+    }
+
+    [Test]
+    public void PositionTwoChildrenGapPadding()
+    {
+        var a = new Div("a").Size(100, 100).Gap(10).Padding(5);
+        var b = new Div("b").Size(50, 50);
+        var c = new Div("c").Size(50, 50);
+
+        a.Children(b, c);
+
+        UI.Init(1000, 1000);
+        UI.Open(a);
+        UI.Close();
+        UI.Calculate();
+
+        a.Position.Should().Be((0, 0));
+        b.Position.Should().Be((5, 5));
+        c.Position.Should().Be((65, 5));
+    }
+
+    [Test]
+    public void PositionTwoChildrenGrow()
+    {
+        var a = new Div("a").Size(100, 100).Gap(10);
+        var b = new Div("b").Size(Size.Grow, Size.Grow);
+        var c = new Div("c").Size(Size.Grow, Size.Grow);
+
+        a.Children(b, c);
+
+        UI.Init(1000, 1000);
+        UI.Open(a);
+        UI.Close();
+        UI.Calculate();
+
+        a.Position.Should().Be((0, 0));
+        b.Position.Should().Be((0, 0));
+        c.Position.Should().Be((55, 0));
     }
 }

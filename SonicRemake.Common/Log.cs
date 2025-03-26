@@ -1,4 +1,7 @@
+using System;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using Newtonsoft.Json;
@@ -35,7 +38,7 @@ namespace SonicRemake
     {
       var frame = new StackFrame(1);
       var method = frame.GetMethod();
-      var type = method.DeclaringType!;
+      var type = method?.DeclaringType ?? typeof(Log);
 
       return new Log(type);
     }
