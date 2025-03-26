@@ -122,3 +122,12 @@ public static class DivExtensions
     return node;
   }
 }
+
+public static class TextExtensions
+{
+  public static Text Content(this Text text, string content)
+  {
+    text.Content = content;
+    return text;
+  }
+}

@@ -40,6 +40,13 @@ public class Div(string? id = null) : Node(id)
 	public override bool WorthRendering => Background != Color.Transparent;
 }
 
+public class Text(string? id = null) : Node(id)
+{
+	public override bool WorthRendering => true;
+
+	public string Content { get; set; } = string.Empty;
+}
+
 public enum Size
 {
 	Fit,

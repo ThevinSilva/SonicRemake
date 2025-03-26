@@ -1,35 +1,36 @@
 using System;
 using Arch.Core;
 using SFML.Graphics;
+using SonicRemake.Layout;
 
 namespace SonicRemake.Systems.Rendering.Debugging
 {
   public class LogDebugSystem : GameSystem
   {
-    private Font _monocraft = new("Assets/Fonts/Monocraft.ttf");
-
-    public LogDebugSystem()
-    {
-      // Disable anti-aliasing for Monocraft
-      _monocraft.SetSmooth(false);
-    }
 
     public override void OnRender(World world, RenderWindow window, GameContext context)
     {
+      var wrapper = new Layout.Div()
+                .Padding(20, 40)
+                .Background(new Color(0, 0, 0, 150))
+                .Flow(Flow.Vertical)
+                .Gap(10);
+
       for (var i = 0; i < Log.Values.Count; i++)
       {
         var key = Log.Values.Keys.ElementAt(i);
         var value = Log.Values.Values.ElementAt(i);
+        var content = $"{key}: {value}";
 
-        var text = new Text($"{key}: {value}", _monocraft, 16)
-        {
-          Position = new(0, 50 + i * 25),
-          FillColor = Color.White,
-          CharacterSize = 20
-        };
+        var text = new Layout.Text()
+          .Content(content)
+          .Foreground(Color.White);
 
-        window.Draw(text);
+        wrapper.Children(text);
       }
+
+      UI.Open(wrapper);
+      UI.Close();
     }
   }
 }

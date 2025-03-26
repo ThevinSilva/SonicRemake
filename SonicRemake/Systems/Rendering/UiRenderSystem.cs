@@ -8,6 +8,13 @@ namespace SonicRemake.Systems.Rendering;
 
 public class UiRenderSystem : GameSystem
 {
+    private readonly Font _monocraft = new("Assets/Fonts/Monocraft.ttf");
+
+    public UiRenderSystem()
+    {
+        _monocraft.SetSmooth(false);
+    }
+
     public override void OnRender(World world, RenderWindow window, GameContext context)
     {
         UI.Calculate();
@@ -17,41 +24,33 @@ public class UiRenderSystem : GameSystem
             if (!node.WorthRendering || node.Parent == null)
                 continue;
 
-            var rect = new RectangleShape()
+            if (node is Layout.Text textNode)
             {
-                FillColor = node.Background,
-                Size = new Vector2f(node.Width.Calculated, node.Height.Calculated),
-                Position = new Vector2f(node.Position.X, node.Position.Y),
-                Scale = new Vector2f(1, 1),
-            };
+                var textObject = new SFML.Graphics.Text(textNode.Content, _monocraft)
+                {
+                    FillColor = node.Foreground,
+                    Position = new Vector2f(node.Position.X, node.Position.Y),
+                    Scale = new Vector2f(1, 1),
+                };
 
-            window.Draw(rect);
+                textObject.CharacterSize = 20;
+
+                window.Draw(textObject);
+            }
+            else if (node is Div div)
+            {
+                var rect = new RectangleShape()
+                {
+                    FillColor = node.Background,
+                    Size = new Vector2f(node.Width.Calculated, node.Height.Calculated),
+                    Position = new Vector2f(node.Position.X, node.Position.Y),
+                    Scale = new Vector2f(1, 1),
+                };
+
+                window.Draw(rect);
+            }
         }
 
         UI.Init(window.Size.X, window.Size.Y);
-
-        var square = new Div()
-            .Size(300, 400)
-            .Gap(20)
-            .Padding(20);
-
-        var child1 = new Div()
-            .Size(Size.Grow)
-            .Background(Color.Blue);
-
-        var child2 = new Div()
-            .Size(Size.Grow)
-            .Background(Color.Green);
-
-        var child3 = new Div()
-            .Size(Size.Grow)
-            .Background(Color.Yellow);
-
-        square.Children(child1, child2, child3);
-
-        UI.Open(square);
-
-        UI.Close();
     }
-
 }
