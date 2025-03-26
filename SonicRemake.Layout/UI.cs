@@ -40,7 +40,12 @@ public static class UI
 				div.Height.Calculated += div.Padding.Top + div.Padding.Bottom;
 
 			if (parent.Axis is FitSizing)
+			{
+				var index = parent.Children.IndexOf(div);
+				if (index > 0)
+					parent.Axis.Calculated += parent.Gap.Calculated;
 				parent.Axis.Calculated += div.Axis.Calculated;
+			}
 
 			if (parent.CrossAxis is FitSizing)
 				parent.CrossAxis.Calculated = Math.Max(div.CrossAxis.Calculated, parent.CrossAxis.Calculated);
