@@ -226,4 +226,91 @@ public class Tests
         c.Width.Calculated.Should().Be(50);
         c.Height.Calculated.Should().Be(100);
     }
+
+    [Test]
+    public void PositionNoChildren()
+    {
+        var a = new Node("a").Size(100, 100);
+
+        UI.Init(1000, 1000);
+        UI.Open(a);
+        UI.Close();
+        UI.Calculate();
+
+        a.Position.Should().Be((0, 0));
+    }
+
+    [Test]
+    public void PositionOneChild()
+    {
+        var a = new Node("a").Size(100, 100);
+        var b = new Node("b").Size(50, 50);
+
+        a.Children(b);
+
+        UI.Init(1000, 1000);
+        UI.Open(a);
+        UI.Close();
+        UI.Calculate();
+
+        a.Position.Should().Be((0, 0));
+        b.Position.Should().Be((0, 0));
+    }
+
+    [Test]
+    public void PositionTwoChildren()
+    {
+        var a = new Node("a").Size(100, 100);
+        var b = new Node("b").Size(50, 50);
+        var c = new Node("c").Size(50, 50);
+
+        a.Children(b, c);
+
+        UI.Init(1000, 1000);
+        UI.Open(a);
+        UI.Close();
+        UI.Calculate();
+
+        a.Position.Should().Be((0, 0));
+        b.Position.Should().Be((0, 0));
+        c.Position.Should().Be((50, 0));
+    }
+
+    [Test]
+    public void PositionTwoChildrenGap()
+    {
+        var a = new Node("a").Size(100, 100).Gap(10);
+        var b = new Node("b").Size(50, 50);
+        var c = new Node("c").Size(50, 50);
+
+        a.Children(b, c);
+
+        UI.Init(1000, 1000);
+        UI.Open(a);
+        UI.Close();
+        UI.Calculate();
+
+        a.Position.Should().Be((0, 0));
+        b.Position.Should().Be((0, 0));
+        c.Position.Should().Be((60, 0));
+    }
+
+    [Test]
+    public void PositionTwoChildrenGapPadding()
+    {
+        var a = new Node("a").Size(100, 100).Gap(10).Padding(5);
+        var b = new Node("b").Size(50, 50);
+        var c = new Node("c").Size(50, 50);
+
+        a.Children(b, c);
+
+        UI.Init(1000, 1000);
+        UI.Open(a);
+        UI.Close();
+        UI.Calculate();
+
+        a.Position.Should().Be((0, 0));
+        b.Position.Should().Be((5, 5));
+        c.Position.Should().Be((65, 5));
+    }
 }

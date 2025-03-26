@@ -112,13 +112,23 @@ public static class UI
 			var parent = div.Parent!;
 			var position = div.Position;
 
+			var nthChild = parent.Children.IndexOf(div);
+
 			position.X = parent.Position.X + parent.Padding.Left;
 			position.Y = parent.Position.Y + parent.Padding.Top;
 
 			if (parent.Flow == Flow.Horizontal)
+			{
 				position.X += parent.Children.TakeWhile(x => x != div).Sum(x => x.Width.Calculated);
+				position.X += nthChild * parent.Gap;
+			}
 			else
+			{
 				position.Y += parent.Children.TakeWhile(x => x != div).Sum(x => x.Height.Calculated);
+				position.Y += nthChild * parent.Gap;
+			}
+
+			div.Position = position;
 		}
 	}
 
