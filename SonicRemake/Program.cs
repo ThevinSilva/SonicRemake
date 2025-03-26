@@ -97,6 +97,8 @@ while (window.IsOpen)
 	// Close the window if the window wants to be closed
 	window.Closed += (sender, e) => window.Close();
 
+	window.Resized += (sender, e) => window.SetView(new View(new FloatRect(0, 0, e.Width, e.Height)));
+
 	// Clear window
 	window.Clear();
 
