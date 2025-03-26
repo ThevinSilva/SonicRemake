@@ -16,7 +16,7 @@ namespace SonicRemake.Systems.Rendering.Debugging
 			var wrapper = new Layout.Div()
 					.Padding(20)
 					.Background(new Color(0, 0, 0, 150))
-					.Gap(10);
+					.Gap(20);
 
 			var text = new Layout.Text()
 					   .Content($"{MathF.Round(1f / _smoothDeltaTime)}fps Δ{MathF.Round(_smoothDeltaTime * 100, 2)}ms")

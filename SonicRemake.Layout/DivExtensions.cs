@@ -115,7 +115,7 @@ public static class DivExtensions
       if (child.Parent != null)
         throw new Exception("Div already has a parent");
 
-      node.Children.Add(child);
+      node._children.Add(child);
       child.Parent = node;
     }
 

@@ -10,26 +10,43 @@ namespace SonicRemake.Systems.Rendering.Debugging
 
     public override void OnRender(World world, RenderWindow window, GameContext context)
     {
-      var wrapper = new Layout.Div()
-                .Padding(20, 40)
+      var grid = new Layout.Div()
                 .Background(new Color(0, 0, 0, 150))
+                //.Background(Color.Red)
+                .Flow(Flow.Horizontal)
+                .Padding(20)
+                .Gap(25);
+
+      var keys = new Layout.Div()
                 .Flow(Flow.Vertical)
-                .Gap(10);
+                .Size(200, Size.Fit)
+                .Gap(25);
+
+      var values = new Layout.Div()
+                .Flow(Flow.Vertical)
+                .Size(200, Size.Fit)
+                .Gap(25);
+
+      grid.Children(keys, values);
 
       for (var i = 0; i < Log.Values.Count; i++)
       {
         var key = Log.Values.Keys.ElementAt(i);
         var value = Log.Values.Values.ElementAt(i);
-        var content = $"{key}: {value}";
 
-        var text = new Layout.Text()
-          .Content(content)
+        var keyText = new Layout.Text()
+          .Content(key)
           .Foreground(Color.White);
 
-        wrapper.Children(text);
+        var valueText = new Layout.Text()
+          .Content(value.ToString() ?? "")
+          .Foreground(Color.White);
+
+        keys.Children(keyText);
+        values.Children(valueText);
       }
 
-      UI.Open(wrapper);
+      UI.Open(grid);
       UI.Close();
     }
   }

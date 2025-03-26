@@ -15,7 +15,7 @@ public static class UI
 
 	public static void Init(uint rootWidth, uint rootHeight)
 	{
-		_root = new Div("__ROOT__").Size((int)rootWidth, (int)rootHeight);
+		_root = new Div("__ROOT__").Size((int)rootWidth, (int)rootHeight).Flow(Flow.Vertical);
 		_current = _root;
 	}
 
@@ -44,6 +44,7 @@ public static class UI
 				var index = parent.Children.IndexOf(div);
 				if (index > 0)
 					parent.Axis.Calculated += parent.Gap.Calculated;
+
 				parent.Axis.Calculated += div.Axis.Calculated;
 			}
 
@@ -122,7 +123,7 @@ public static class UI
 		}
 
 		// Positioning pass
-		foreach (var div in ReverseBreadthFirst())
+		foreach (var div in BreadthFirst())
 		{
 			if (div.Parent == null)
 				continue;
@@ -198,7 +199,7 @@ public static class UI
 			throw new Exception("Div already has a parent");
 
 		if (_current == null)
-			throw new Exception("No current div to open. Did you forget to call Init?");
+			return node;
 
 		_current.Children(node);
 		node.Parent = _current;
@@ -209,6 +210,9 @@ public static class UI
 
 	public static void Close()
 	{
-		_current = _current?.Parent ?? throw new Exception("No parent to close. Did you forget to call Init?");
+		if (_current == null)
+			return;
+
+		_current = _current.Parent;
 	}
 }

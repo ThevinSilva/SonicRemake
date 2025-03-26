@@ -33,13 +33,13 @@ gameLevel.AddSystems(new TileManagementSystem(),
 	new SonicAnimationSystem(),
 	new CameraSystem(),
 	new LineLoaderSystem(),
-	new FpsDebugSystem(),
 	new SensorDebug(),
 	new SolidTilesDebugSystem(),
 	// new GridDebugSystem(),
-	// new RenderSystem(),
-	new UiRenderSystem(),
-	new LogDebugSystem()
+	new RenderSystem(),
+	new LogDebugSystem(),
+	new FpsDebugSystem(),
+	new UiRenderSystem()
 );
 
 gameLevel.Entities.Create(

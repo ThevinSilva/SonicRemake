@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Numerics;
 using SFML.Graphics;
 using SFML.System;
@@ -7,60 +8,61 @@ namespace SonicRemake.Layout;
 
 public abstract class Node(string? id = null)
 {
-	public string? Id { get; } = id;
+  public string? Id { get; } = id;
 
-	public Node? Parent;
+  public Node? Parent;
 
-	public (int X, int Y) Position { get; internal set; } = (0, 0);
+  public (int X, int Y) Position { get; internal set; } = (0, 0);
 
-	public Sizing Width { get; internal set; } = new FitSizing();
-	public Sizing Height { get; internal set; } = new FitSizing();
+  public Sizing Width { get; internal set; } = new FitSizing();
+  public Sizing Height { get; internal set; } = new FitSizing();
 
-	public Flow Flow { get; internal set; } = Flow.Horizontal;
+  public Flow Flow { get; internal set; } = Flow.Horizontal;
 
-	public Sizing Axis => Flow == Flow.Horizontal ? Width : Height;
-	public Sizing CrossAxis => Flow == Flow.Horizontal ? Height : Width;
+  public Sizing Axis => Flow == Flow.Horizontal ? Width : Height;
+  public Sizing CrossAxis => Flow == Flow.Horizontal ? Height : Width;
 
-	public (Align Horizontal, Align Vertical) Align { get; internal set; } = (Layout.Align.Start, Layout.Align.Start);
+  public (Align Horizontal, Align Vertical) Align { get; internal set; } = (Layout.Align.Start, Layout.Align.Start);
 
-	public Color Background { get; internal set; } = Color.Transparent;
-	public Color Foreground { get; internal set; } = Color.White;
+  public Color Background { get; internal set; } = Color.Transparent;
+  public Color Foreground { get; internal set; } = Color.White;
 
-	public (int Left, int Top, int Right, int Bottom) Padding { get; internal set; }
+  public (int Left, int Top, int Right, int Bottom) Padding { get; internal set; }
 
-	public Gapping Gap { get; internal set; } = new FixedGapping(0);
+  public Gapping Gap { get; internal set; } = new FixedGapping(0);
 
-	public IList<Node> Children { get; internal set; } = [];
+  public ImmutableList<Node> Children => [.. _children];
+  internal List<Node> _children = new();
 
-	public abstract bool WorthRendering { get; }
+  public abstract bool WorthRendering { get; }
 }
 
 public class Div(string? id = null) : Node(id)
 {
-	public override bool WorthRendering => Background != Color.Transparent;
+  public override bool WorthRendering => Background != Color.Transparent;
 }
 
 public class Text(string? id = null) : Node(id)
 {
-	public override bool WorthRendering => true;
+  public override bool WorthRendering => true;
 
-	public string Content { get; set; } = string.Empty;
+  public string Content { get; set; } = string.Empty;
 }
 
 public enum Size
 {
-	Fit,
-	Grow
+  Fit,
+  Grow
 }
 
 public enum Gap
 {
-	Grow
+  Grow
 }
 
 public enum Align
 {
-	Start,
-	Center,
-	End
+  Start,
+  Center,
+  End
 }
