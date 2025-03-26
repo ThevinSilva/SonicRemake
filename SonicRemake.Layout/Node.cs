@@ -21,7 +21,7 @@ public abstract class Node(string? id = null)
 	public Sizing Axis => Flow == Flow.Horizontal ? Width : Height;
 	public Sizing CrossAxis => Flow == Flow.Horizontal ? Height : Width;
 
-	public (Align Horizontal, Align Vertical) Alignment { get; internal set; } = (Layout.Align.Start, Layout.Align.Start);
+	public (Align Horizontal, Align Vertical) Align { get; internal set; } = (Layout.Align.Start, Layout.Align.Start);
 
 	public Color Background { get; internal set; } = Color.Transparent;
 	public Color Foreground { get; internal set; } = Color.White;

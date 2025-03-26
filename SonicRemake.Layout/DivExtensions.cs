@@ -98,13 +98,13 @@ public static class DivExtensions
 
   public static Node Align(this Node node, Align alignment)
   {
-    node.Alignment = (alignment, alignment);
+    node.Align = (alignment, alignment);
     return node;
   }
 
   public static Node Align(this Node node, Align horizontal, Align vertical)
   {
-    node.Alignment = (horizontal, vertical);
+    node.Align = (horizontal, vertical);
     return node;
   }
 
