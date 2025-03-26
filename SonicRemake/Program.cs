@@ -116,7 +116,9 @@ while (window.IsOpen)
 	// Run OnPhysics for all systems if enough time has passed
 	while (tickTimeStepAccumulator >= tickTimeStep)
 	{
-		Input.UpdateInputState();
+		if (window.HasFocus())
+			Input.UpdateInputState();
+
 		foreach (var system in LevelManager.Active.Systems)
 			system.Tick(LevelManager.Active.Entities, context);
 		tickTimeStepAccumulator -= tickTimeStep;
