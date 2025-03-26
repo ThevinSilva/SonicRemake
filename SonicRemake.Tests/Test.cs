@@ -204,7 +204,7 @@ public class Tests
         c.Height.Calculated.Should().Be(100);
     }
 
-    // [Test]
+    [Test]
     public void GrowMultipleChildrenDifferentStartingSizes()
     {
         var a = new Node("a").Size(100);
