@@ -1,5 +1,7 @@
 using System.Collections.Generic;
+using System.Numerics;
 using SFML.Graphics;
+using SFML.System;
 
 namespace SonicRemake.Layout;
 
@@ -8,6 +10,8 @@ public class Node(string? id = null)
   public string? Id { get; } = id;
 
   public Node? Parent;
+
+  public (int X, int Y) Position { get; internal set; } = (0, 0);
 
   public Sizing Width { get; internal set; } = new FitSizing();
   public Sizing Height { get; internal set; } = new FitSizing();

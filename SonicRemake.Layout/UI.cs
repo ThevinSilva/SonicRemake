@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using SFML.System;
 
 namespace SonicRemake.Layout;
 
@@ -19,11 +20,6 @@ public static class UI
 	}
 
 	public static void Calculate()
-	{
-		CalculateFitPass();
-	}
-
-	private static void CalculateFitPass()
 	{
 		// Fit pass
 		foreach (var div in ReverseBreadthFirst())
@@ -103,6 +99,43 @@ public static class UI
 						child.Axis.Calculated += spaceToAdd;
 						remaningWidth -= spaceToAdd;
 					}
+				}
+			}
+		}
+
+		// Positioning pass
+		foreach (var div in ReverseBreadthFirst())
+		{
+			if (div.Parent == null)
+				continue;
+
+			var parent = div.Parent!;
+
+			int primaryOffset = parent.Flow == Flow.Horizontal
+				   ? parent.Position.X + parent.Padding.Left
+				   : parent.Position.Y + parent.Padding.Top;
+
+			foreach (var child in parent.Children)
+			{
+				if (parent.Flow == Flow.Horizontal)
+				{
+					// set child's x position to the current primary offset
+					// and center the child vertically within the parent's cross axis (height)
+					child.Position = (
+						primaryOffset,
+						parent.Position.Y + parent.Padding.Top + ((parent.Height.Calculated - child.Height.Calculated) / 2)
+					);
+					primaryOffset += child.Width.Calculated + parent.Gap;
+				}
+				else // vertical flow
+				{
+					// set child's y position to the current primary offset
+					// and center the child horizontally within the parent's cross axis (width)
+					child.Position = (
+						parent.Position.X + parent.Padding.Left + ((parent.Width.Calculated - child.Width.Calculated) / 2),
+						primaryOffset
+					);
+					primaryOffset += child.Height.Calculated + parent.Gap;
 				}
 			}
 		}
