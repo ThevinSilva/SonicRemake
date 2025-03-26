@@ -11,9 +11,6 @@ public record FixedSizing : Sizing
 {
     public FixedSizing(int Size)
     {
-        this.Size = Size;
         Calculated = Size;
     }
-
-    public int Size { get; init; }
 }

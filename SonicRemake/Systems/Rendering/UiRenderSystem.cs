@@ -14,7 +14,7 @@ public class UiRenderSystem : GameSystem
 
         foreach (var node in UI.BreadthFirst())
         {
-            if (node.Parent == null)
+            if (!node.WorthRendering || node.Parent == null)
                 continue;
 
             var rect = new RectangleShape()
@@ -30,20 +30,20 @@ public class UiRenderSystem : GameSystem
 
         UI.Init(window.Size.X, window.Size.Y);
 
-        var square = new Node()
-            .Size(Size.Grow, Size.Grow)
-            .Padding(20)
-            .Gap(20);
+        var square = new Div()
+            .Size(300, 400)
+            .Gap(20)
+            .Padding(20);
 
-        var child1 = new Node()
+        var child1 = new Div()
             .Size(Size.Grow)
             .Background(Color.Blue);
 
-        var child2 = new Node()
+        var child2 = new Div()
             .Size(Size.Grow)
             .Background(Color.Green);
 
-        var child3 = new Node()
+        var child3 = new Div()
             .Size(Size.Grow)
             .Background(Color.Yellow);
 

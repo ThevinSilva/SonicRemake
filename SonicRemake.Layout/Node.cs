@@ -5,34 +5,55 @@ using SFML.System;
 
 namespace SonicRemake.Layout;
 
-public class Node(string? id = null)
+public abstract class Node(string? id = null)
 {
-  public string? Id { get; } = id;
+	public string? Id { get; } = id;
 
-  public Node? Parent;
+	public Node? Parent;
 
-  public (int X, int Y) Position { get; internal set; } = (0, 0);
+	public (int X, int Y) Position { get; internal set; } = (0, 0);
 
-  public Sizing Width { get; internal set; } = new FitSizing();
-  public Sizing Height { get; internal set; } = new FitSizing();
+	public Sizing Width { get; internal set; } = new FitSizing();
+	public Sizing Height { get; internal set; } = new FitSizing();
 
-  public Flow Flow { get; internal set; } = Flow.Horizontal;
+	public Flow Flow { get; internal set; } = Flow.Horizontal;
 
-  public Sizing Axis => Flow == Flow.Horizontal ? Width : Height;
-  public Sizing CrossAxis => Flow == Flow.Horizontal ? Height : Width;
+	public Sizing Axis => Flow == Flow.Horizontal ? Width : Height;
+	public Sizing CrossAxis => Flow == Flow.Horizontal ? Height : Width;
 
-  public Color Background { get; internal set; } = Color.Transparent;
-  public Color Foreground { get; internal set; } = Color.White;
+	public (Align Horizontal, Align Vertical) Alignment { get; internal set; } = (Layout.Align.Start, Layout.Align.Start);
 
-  public (int Left, int Top, int Right, int Bottom) Padding { get; internal set; }
+	public Color Background { get; internal set; } = Color.Transparent;
+	public Color Foreground { get; internal set; } = Color.White;
 
-  public int Gap { get; internal set; }
+	public (int Left, int Top, int Right, int Bottom) Padding { get; internal set; }
 
-  public IList<Node> Children { get; internal set; } = [];
+	public Gapping Gap { get; internal set; } = new FixedGapping(0);
+
+	public IList<Node> Children { get; internal set; } = [];
+
+	public abstract bool WorthRendering { get; }
+}
+
+public class Div(string? id = null) : Node(id)
+{
+	public override bool WorthRendering => Background != Color.Transparent;
 }
 
 public enum Size
 {
-  Fit,
-  Grow
+	Fit,
+	Grow
+}
+
+public enum Gap
+{
+	Grow
+}
+
+public enum Align
+{
+	Start,
+	Center,
+	End
 }

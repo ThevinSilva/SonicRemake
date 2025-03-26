@@ -15,7 +15,7 @@ public static class UI
 
 	public static void Init(uint rootWidth, uint rootHeight)
 	{
-		_root = new Node("__ROOT__").Size((int)rootWidth, (int)rootHeight);
+		_root = new Div("__ROOT__").Size((int)rootWidth, (int)rootHeight);
 		_current = _root;
 	}
 
@@ -62,7 +62,7 @@ public static class UI
 			var remaningWidth = parent.Axis.Calculated
 				- parent.Padding.Left - parent.Padding.Right
 				- parent.Children.Sum(c => c.Width.Calculated)
-				- (parent.Children.Count - 1) * parent.Gap;
+				- (parent.Children.Count - 1) * parent.Gap.Calculated;
 
 			var growables = parent.Children
 				.Where(c => c.Axis is GrowSizing)
@@ -133,12 +133,12 @@ public static class UI
 			if (parent.Flow == Flow.Horizontal)
 			{
 				position.X += parent.Children.TakeWhile(x => x != div).Sum(x => x.Width.Calculated);
-				position.X += nthChild * parent.Gap;
+				position.X += nthChild * parent.Gap.Calculated;
 			}
 			else
 			{
 				position.Y += parent.Children.TakeWhile(x => x != div).Sum(x => x.Height.Calculated);
-				position.Y += nthChild * parent.Gap;
+				position.Y += nthChild * parent.Gap.Calculated;
 			}
 
 			div.Position = position;

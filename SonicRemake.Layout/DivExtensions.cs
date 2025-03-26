@@ -12,7 +12,7 @@ public static class DivExtensions
 
     return node;
   }
-  
+
   public static Node Size(this Node node, int size)
   {
     node.Width = new FixedSizing(size);
@@ -26,7 +26,7 @@ public static class DivExtensions
     node.Height = sizing == Layout.Size.Grow ? new GrowSizing() : new FitSizing();
     return node;
   }
-  
+
   public static Node Size(this Node node, int width, Size height)
   {
     node.Width = new FixedSizing(width);
@@ -80,7 +80,13 @@ public static class DivExtensions
 
   public static Node Gap(this Node node, int gap)
   {
-    node.Gap = gap;
+    node.Gap = new FixedGapping(gap);
+    return node;
+  }
+
+  public static Node Gap(this Node node, Gap gap)
+  {
+    node.Gap = new GrowGapping();
     return node;
   }
 
@@ -89,14 +95,26 @@ public static class DivExtensions
     node.Flow = flow;
     return node;
   }
-  
+
+  public static Node Align(this Node node, Align alignment)
+  {
+    node.Alignment = (alignment, alignment);
+    return node;
+  }
+
+  public static Node Align(this Node node, Align horizontal, Align vertical)
+  {
+    node.Alignment = (horizontal, vertical);
+    return node;
+  }
+
   public static Node Children(this Node node, params Node[] children)
   {
     foreach (var child in children)
     {
       if (child.Parent != null)
         throw new Exception("Div already has a parent");
-      
+
       node.Children.Add(child);
       child.Parent = node;
     }

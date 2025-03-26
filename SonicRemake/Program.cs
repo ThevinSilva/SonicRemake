@@ -78,8 +78,6 @@ LevelManager.LoadLevel(gameLevel);
 // 	new Sprite("Green Hill Zone/Scene1-BG Outside.png")
 // );
 
-
-
 while (window.IsOpen)
 {
 	float deltaTime = clock.Restart().AsSeconds();
