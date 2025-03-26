@@ -7,7 +7,7 @@ using SFML.System;
 using SonicRemake.Components;
 using SonicRemake.Maps;
 
-namespace SonicRemake.Systems.Sensors;
+namespace SonicRemake.Systems.Sensor;
 
 enum Dimension
 {

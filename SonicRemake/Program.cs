@@ -1,7 +1,6 @@
 ﻿using SFML.Graphics;
 using SFML.Window;
 using SonicRemake.Inputs;
-using SonicRemake.Movement;
 using Arch.Core;
 using SonicRemake.Components;
 using Sprite = SonicRemake.Components.Sprite;
@@ -18,7 +17,7 @@ using SonicRemake.Systems.Rendering.Characters;
 using SonicRemake.Systems.Rendering.Camera;
 using SonicRemake.Levels;
 using SonicRemake.Maps;
-using SonicRemake.Systems.Sensors;
+using SonicRemake.Systems.Sensor;
 
 AnimationHelper.LoadAnimationsFromYaml("Assets/Animations/sonic_mania.yaml");
 
@@ -27,7 +26,7 @@ gameLevel.AddSystems(new TileManagementSystem(),
 	new TextureLoaderSystem(),
 	new RectangleLoaderSystem(),
 	new SensorSystem(),
- 	new Movement(),
+ 	new MovementSystem(),
 	new AnimationSystem(),
 	new AnimationLoadSystem(),
 	new SonicAnimationSystem(),
