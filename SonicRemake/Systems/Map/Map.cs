@@ -27,6 +27,25 @@ public class TileManagementSystem : GameSystem
 
 	public override void OnStart(World world)
 	{
+		FileSystemWatcher watcher = new(Path.GetDirectoryName("./Assets/Sprites/") ?? throw new ArgumentNullException(), "Loop.tmj")
+		{
+			NotifyFilter = NotifyFilters.LastWrite | NotifyFilters.FileName | NotifyFilters.DirectoryName | NotifyFilters.Size | NotifyFilters.Attributes | NotifyFilters.Security | NotifyFilters.CreationTime | NotifyFilters.LastAccess,
+			EnableRaisingEvents = true,
+		};
+
+		_log.Information("Watching for changes in", watcher.Path, watcher.Filter);
+
+		watcher.Changed += (sender, e) =>
+		{
+			_log.Information("Map file changed, reloading map.");
+			LoadMap(world);
+		};
+
+		LoadMap(world);
+	}
+
+	private void LoadMap(World world)
+	{
 		world.Query(in Query, (ref SolidTiles map) =>
 		{
 			using var stream = File.OpenRead(FILENAME);
@@ -69,8 +88,11 @@ public class TileManagementSystem : GameSystem
 
 	public void CreateDrawableEntities(World world)
 	{
+		// Clear old tiles
+		entities.ForEach(e => world.Destroy(e));
 		entities.Clear();
 
+		// Create new tiles
 		for (int y = 0; y < TileMap.GetLength(0); y++)
 		{
 			for (int x = 0; x < TileMap.GetLength(1); x++)
