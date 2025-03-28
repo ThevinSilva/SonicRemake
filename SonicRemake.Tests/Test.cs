@@ -30,10 +30,10 @@ public class Tests
         UI.Close();
         UI.Close();
 
-        var result = UI.BreadthFirst().Select(div => div.Id).ToArray();
+        var result = UI.BreadthFirst().Select(div => div.Id).Skip(1).ToArray();
         result.Should().NotBeNullOrEmpty();
-        result.Should().HaveCount(6);
-        result.Should().ContainInOrder("__ROOT__", "1", "2", "3", "4", "5");
+        result.Should().HaveCount(5);
+        result.Should().ContainInOrder("1", "2", "3", "4", "5");
     }
 
     [Test]
@@ -60,10 +60,10 @@ public class Tests
         UI.Close();
         UI.Close();
 
-        var result = UI.ReverseBreadthFirst().Select(div => div.Id).ToArray();
+        var result = UI.ReverseBreadthFirst().Select(div => div.Id).SkipLast(1).ToArray();
         result.Should().NotBeNullOrEmpty();
-        result.Should().HaveCount(6);
-        result.Should().ContainInOrder("5", "4", "3", "2", "1", "__ROOT__");
+        result.Should().HaveCount(5);
+        result.Should().ContainInOrder("5", "4", "3", "2", "1");
     }
 
     [Test]
@@ -358,19 +358,25 @@ public class Tests
     [Test]
     public void PositionStatic()
     {
-        var a = new Div("a");
-        var b = new Div("b").Size(200);
-        var c = new Div("c").Size(200).Position(Position.Absolute);
+        var a = new Div("a").Size(Size.Grow);
+        var b = new Div("b").Size(Size.Grow);
+        var c = new Div("c").Size(Size.Grow).Position(Position.Absolute);
 
         a.Children(b, c);
 
-        UI.Init(1000, 1000);
+        UI.Init(10, 10);
         UI.Open(a);
         UI.Close();
         UI.Calculate();
 
         a.Position.Calculated.Should().Be((0, 0));
+        a.Width.Calculated.Should().Be(10);
+        a.Height.Calculated.Should().Be(10);
         b.Position.Calculated.Should().Be((0, 0));
+        b.Width.Calculated.Should().Be(10);
+        b.Height.Calculated.Should().Be(10);
         c.Position.Calculated.Should().Be((0, 0));
+        c.Width.Calculated.Should().Be(10);
+        c.Height.Calculated.Should().Be(10);
     }
 }

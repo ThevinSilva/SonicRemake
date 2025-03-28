@@ -108,16 +108,16 @@ public class MovementSystem : GameSystem
             sonic.Facing = Facing.Right;
         else if (velocity.Speed.X < 0)
             sonic.Facing = Facing.Left;
-        else if (velocity.Speed.X == 0 && Input.IsKeyPressed(Direction.Forward))
+        else if (velocity.Speed.X == 0 && Input.IsKeyPressed(Input.DirectionToKey(Direction.Forward)))
             sonic.Facing = Facing.Right;
-        else if (velocity.Speed.X == 0 && Input.IsKeyPressed(Direction.Backward))
+        else if (velocity.Speed.X == 0 && Input.IsKeyPressed(Input.DirectionToKey(Direction.Backward)))
             sonic.Facing = Facing.Left;
     }
 
     private void HandleHorizontalMovement(ref Velocity velocity, ref Sonic sonic)
     {
-        var forward = Input.IsKeyPressed(Direction.Forward);
-        var backward = Input.IsKeyPressed(Direction.Backward);
+        var forward = Input.IsKeyPressed(Input.DirectionToKey(Direction.Forward));
+        var backward = Input.IsKeyPressed(Input.DirectionToKey(Direction.Backward));
 
         if (Math.Abs(velocity.GroundSpeed) > 0 && sonic.IsOnGround)
             sonic.State = SonicState.Running;
@@ -172,9 +172,9 @@ public class MovementSystem : GameSystem
 
     private void HandleVerticalMovement(ref Transform transform, ref Velocity velocity, ref Sonic sonic)
     {
-        var forward = Input.IsKeyPressed(Direction.Forward);
-        var backward = Input.IsKeyPressed(Direction.Backward);
-        var space = Input.IsKeyStarted(Direction.Space);
+        var forward = Input.IsKeyPressed(Input.DirectionToKey(Direction.Forward));
+        var backward = Input.IsKeyPressed(Input.DirectionToKey(Direction.Backward));
+        var space = Input.IsKeyStarted(Input.DirectionToKey(Direction.Space));
 
         var vX = velocity.Speed.X;
         var vY = velocity.Speed.Y;
@@ -212,8 +212,8 @@ public class MovementSystem : GameSystem
 
     private void HandleSpinDashCharge(ref Transform transform, ref Velocity velocity, ref Sonic sonic)
     {
-        var space = Input.IsKeyStarted(Direction.Space);
-        var down = Input.IsKeyPressed(Direction.Down);
+        var space = Input.IsKeyStarted(Input.DirectionToKey(Direction.Space));
+        var down = Input.IsKeyPressed(Input.DirectionToKey(Direction.Down));
 
         if (space && sonic.IsOnGround && velocity.GroundSpeed == 0 && sonic.SpinRef == 0 && sonic.State == SonicState.Crouching)
             sonic.State = SonicState.Charging;
@@ -241,7 +241,7 @@ public class MovementSystem : GameSystem
 
     private void HandleCrouch(ref Sonic sonic, ref Velocity velocity)
     {
-        var down = Input.IsKeyPressed(Direction.Down);
+        var down = Input.IsKeyPressed(Input.DirectionToKey(Direction.Down));
 
         if (down && sonic.IsOnGround && velocity.GroundSpeed == 0 && sonic.State != SonicState.Charging)
             sonic.State = SonicState.Crouching;

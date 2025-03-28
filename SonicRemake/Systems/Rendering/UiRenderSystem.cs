@@ -8,6 +8,7 @@ namespace SonicRemake.Systems.Rendering;
 
 public class UiRenderSystem : GameSystem
 {
+    private readonly Log log = new(typeof(UiRenderSystem));
     private readonly Font _monocraft = new("Assets/Fonts/Monocraft.ttf");
 
     public UiRenderSystem()
@@ -45,6 +46,8 @@ public class UiRenderSystem : GameSystem
                     Size = new Vector2f(node.Width.Calculated, node.Height.Calculated),
                     Position = new Vector2f(node.Position.Calculated.X, node.Position.Calculated.Y),
                     Scale = new Vector2f(1, 1),
+                    OutlineColor = div.Border.Color,
+                    OutlineThickness = div.Border.Thickness,
                 };
 
                 window.Draw(rect);

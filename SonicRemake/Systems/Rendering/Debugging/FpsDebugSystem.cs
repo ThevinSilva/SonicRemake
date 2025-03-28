@@ -13,12 +13,13 @@ namespace SonicRemake.Systems.Rendering.Debugging
 
 		public override void OnRender(World world, RenderWindow window, GameContext context)
 		{
-			var wrapper = new Layout.Div()
+			var wrapper = new Layout.Div("fps wrapper")
 					.Padding(20)
+					.Position(Position.Absolute)
 					.Background(new Color(0, 0, 0, 150))
 					.Gap(20);
 
-			var text = new Layout.Text()
+			var text = new Layout.Text("fps counter")
 					   .Content($"{MathF.Round(1f / _smoothDeltaTime)}fps Δ{MathF.Round(_smoothDeltaTime * 100, 2)}ms")
 					   .Size(Size.Grow)
 					   .Foreground(Color.Yellow);

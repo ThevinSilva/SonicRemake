@@ -6,14 +6,14 @@ namespace SonicRemake.Inputs
     {
         private static Log _log = new(typeof(Input));
 
-        // Mapping directions to keys
-        public static Dictionary<Direction, Keyboard.Key[]> Map = new()
+        private static HashSet<Keyboard.Key> Keys = new()
         {
-            { Direction.Up, new Keyboard.Key[] { Keyboard.Key.W } },
-            { Direction.Backward, new Keyboard.Key[] { Keyboard.Key.A } },
-            { Direction.Down, new Keyboard.Key[] { Keyboard.Key.S } },
-            { Direction.Forward, new Keyboard.Key[] { Keyboard.Key.D } },
-            { Direction.Space, new Keyboard.Key[] { Keyboard.Key.Space } },
+            Keyboard.Key.W,
+            Keyboard.Key.A,
+            Keyboard.Key.S,
+            Keyboard.Key.D,
+            Keyboard.Key.Space,
+            Keyboard.Key.Escape,
         };
 
         // Sets to store current and previous key states
@@ -30,14 +30,11 @@ namespace SonicRemake.Inputs
             currentPressedKeys.Clear();
 
             // Check all keys in the map and update the currentPressedKeys
-            foreach (var keys in Map.Values)
+            foreach (Keyboard.Key key in Keys)
             {
-                foreach (Keyboard.Key key in keys)
+                if (Keyboard.IsKeyPressed(key))
                 {
-                    if (Keyboard.IsKeyPressed(key))
-                    {
-                        currentPressedKeys.Add(key);
-                    }
+                    currentPressedKeys.Add(key);
                 }
             }
         }
@@ -48,32 +45,10 @@ namespace SonicRemake.Inputs
             return currentPressedKeys.Contains(key);
         }
 
-        // Overload method to check if any key in a direction is being held down
-        public static bool IsKeyPressed(Direction direction)
-        {
-            foreach (Keyboard.Key key in Map[direction])
-            {
-                if (IsKeyPressed(key))
-                    return true;
-            }
-            return false;
-        }
-
         // Base method to check if a key started being pressed this frame (new press)
         public static bool IsKeyStarted(Keyboard.Key key)
         {
             return currentPressedKeys.Contains(key) && !previousPressedKeys.Contains(key);
-        }
-
-        // Overload method to check if any key in a direction started being pressed this frame
-        public static bool IsKeyStarted(Direction direction)
-        {
-            foreach (Keyboard.Key key in Map[direction])
-            {
-                if (IsKeyStarted(key))
-                    return true;
-            }
-            return false;
         }
 
         // Base method to check if a key was released this frame
@@ -82,15 +57,17 @@ namespace SonicRemake.Inputs
             return !currentPressedKeys.Contains(key) && previousPressedKeys.Contains(key);
         }
 
-        // Overload method to check if any key in a direction was released this frame
-        public static bool IsKeyEnded(Direction direction)
+        public static Keyboard.Key DirectionToKey(Direction direction)
         {
-            foreach (Keyboard.Key key in Map[direction])
+            return direction switch
             {
-                if (IsKeyEnded(key))
-                    return true;
-            }
-            return false;
+                Direction.Up => Keyboard.Key.W,
+                Direction.Forward => Keyboard.Key.D,
+                Direction.Backward => Keyboard.Key.A,
+                Direction.Down => Keyboard.Key.S,
+                Direction.Space => Keyboard.Key.Space,
+                _ => throw new ArgumentOutOfRangeException(nameof(direction), direction, null),
+            };
         }
     }
 }

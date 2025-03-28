@@ -27,6 +27,8 @@ public abstract class Node(string? id = null)
   public Color Background { get; internal set; } = Color.Transparent;
   public Color Foreground { get; internal set; } = Color.White;
 
+  public Border Border { get; internal set; } = new Border(Color.Transparent, 0);
+
   public (int Left, int Top, int Right, int Bottom) Padding { get; internal set; }
 
   public Gapping Gap { get; internal set; } = new FixedGapping(0);
@@ -39,14 +41,21 @@ public abstract class Node(string? id = null)
 
 public class Div(string? id = null) : Node(id)
 {
-  public override bool WorthRendering => Background != Color.Transparent;
+  public override bool WorthRendering => Background.A > 0 || Border.WorthRendering;
 }
 
 public class Text(string? id = null) : Node(id)
 {
   public override bool WorthRendering => true;
 
-  public string Content { get; set; } = string.Empty;
+  public string Content { get; internal set; } = string.Empty;
+}
+
+public class Border(Color color, int thickness)
+{
+  public Color Color { get; internal set; } = color;
+  public int Thickness { get; internal set; } = thickness;
+  public bool WorthRendering => Thickness > 0 && Color.A > 0;
 }
 
 public enum Size

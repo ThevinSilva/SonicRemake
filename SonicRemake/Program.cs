@@ -36,8 +36,8 @@ gameLevel.AddSystems(new TileManagementSystem(),
 	new SolidTilesDebugSystem(),
 	// new GridDebugSystem(),
 	new RenderSystem(),
-	new LogDebugSystem(),
-	new FpsDebugSystem(),
+	//new LogDebugSystem(),
+	//new FpsDebugSystem(),
 	new UiRenderSystem(),
 	new MenuSystem()
 );

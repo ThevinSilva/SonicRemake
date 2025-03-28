@@ -10,21 +10,21 @@ namespace SonicRemake.Systems.Rendering.Debugging
 
     public override void OnRender(World world, RenderWindow window, GameContext context)
     {
-      var grid = new Layout.Div()
+      var grid = new Layout.Div("log grid")
                 .Background(new Color(0, 0, 0, 150))
-                //.Background(Color.Red)
+                .Position(Position.Absolute)
                 .Flow(Flow.Horizontal)
-                .Padding(20)
+                .Padding(20, 50, 20, 20)
                 .Gap(25);
 
-      var keys = new Layout.Div()
+      var keys = new Layout.Div("log keys")
                 .Flow(Flow.Vertical)
-                .Size(200, Size.Fit)
+                .Size(Size.Fit)
                 .Gap(25);
 
-      var values = new Layout.Div()
+      var values = new Layout.Div("log values")
                 .Flow(Flow.Vertical)
-                .Size(200, Size.Fit)
+                .Size(Size.Fit)
                 .Gap(25);
 
       grid.Children(keys, values);
@@ -34,11 +34,11 @@ namespace SonicRemake.Systems.Rendering.Debugging
         var key = Log.Values.Keys.ElementAt(i);
         var value = Log.Values.Values.ElementAt(i);
 
-        var keyText = new Layout.Text()
+        var keyText = new Layout.Text($"{i}: {key}")
           .Content(key)
           .Foreground(Color.White);
 
-        var valueText = new Layout.Text()
+        var valueText = new Layout.Text($"{i}: {value}")
           .Content(value.ToString() ?? "")
           .Foreground(Color.White);
 

@@ -10,18 +10,18 @@ public static class UI
 {
 	private static readonly Log Log = new(typeof(UI));
 
-	internal static Node? _root;
+	public static Node? Document { get; private set; }
 	private static Node? _current;
 
 	public static void Init(uint rootWidth, uint rootHeight)
 	{
-		_root = new Div("__ROOT__").Size((int)rootWidth, (int)rootHeight).Flow(Flow.Vertical).Position(Position.Absolute);
-		_current = _root;
+		Document = new Div("__DOCUMENT__").Size((int)rootWidth, (int)rootHeight).Flow(Flow.Vertical).Position(Position.Absolute);
+		_current = Document;
 	}
 
 	public static void Calculate()
 	{
-		if (_root == null)
+		if (Document == null)
 			return;
 
 		// Fit pass
@@ -58,10 +58,17 @@ public static class UI
 			if (div.Parent == null)
 				continue;
 
+			if (div.Position.Type == Position.Absolute)
+			{
+				div.Width.Calculated = div.Width is GrowSizing ? div.Parent.Width.Calculated - div.Padding.Left - div.Padding.Right : div.Width.Calculated;
+				div.Height.Calculated = div.Height is GrowSizing ? div.Parent.Height.Calculated - div.Padding.Top - div.Padding.Bottom : div.Height.Calculated;
+				continue;
+			}
+
 			var parent = div.Parent!;
 
 			// Grow cross axis
-			foreach (Node child in parent.Children.Where(x => x.CrossAxis is GrowSizing))
+			foreach (Node child in parent.Children.Where(x => x.CrossAxis is GrowSizing).Where(x => x.Position.Type != Position.Absolute))
 				child.CrossAxis.Calculated += parent.CrossAxis.Calculated - child.CrossAxis.Calculated;
 
 			// Grow axis
@@ -131,7 +138,7 @@ public static class UI
 			var parent = div.Parent!;
 			var position = div.Position.Calculated;
 
-			var nthChild = parent.Children.IndexOf(div);
+			var nthChild = parent.Children.ToList().IndexOf(div);
 
 			if (div.Position.Type == Position.Absolute)
 			{
@@ -142,6 +149,25 @@ public static class UI
 			{
 				position.X = parent.Position.Calculated.X + parent.Padding.Left;
 				position.Y = parent.Position.Calculated.Y + parent.Padding.Top;
+
+				var offsetX = parent.Align.Horizontal switch
+				{
+					Align.Start => 0,
+					Align.Center => (parent.Width.Calculated - div.Width.Calculated) / 2,
+					Align.End => parent.Width.Calculated - div.Width.Calculated,
+					_ => throw new ArgumentOutOfRangeException()
+				};
+
+				var offsetY = parent.Align.Vertical switch
+				{
+					Align.Start => 0,
+					Align.Center => (parent.Height.Calculated - div.Height.Calculated) / 2,
+					Align.End => parent.Height.Calculated - div.Height.Calculated,
+					_ => throw new ArgumentOutOfRangeException()
+				};
+
+				position.X += offsetX;
+				position.Y += offsetY;
 
 				if (parent.Flow == Flow.Horizontal)
 				{
@@ -161,11 +187,11 @@ public static class UI
 
 	public static IEnumerable<Node> BreadthFirst()
 	{
-		if (_root == null)
+		if (Document == null)
 			yield break;
 
 		var queue = new Queue<Node>();
-		queue.Enqueue(_root);
+		queue.Enqueue(Document);
 
 		while (queue.Count > 0)
 		{
@@ -174,16 +200,17 @@ public static class UI
 
 			foreach (var child in div.Children)
 				queue.Enqueue(child);
+
 		}
 	}
 
 	public static IEnumerable<Node> ReverseBreadthFirst()
 	{
-		if (_root == null)
+		if (Document == null)
 			yield break;
 
 		var queue = new Queue<Node>();
-		queue.Enqueue(_root);
+		queue.Enqueue(Document);
 
 		var stack = new Stack<Node>();
 		while (queue.Count > 0)
@@ -210,7 +237,7 @@ public static class UI
 			return node;
 
 		_current.Children(node);
-		node.Parent = node.Position.Type == Position.Absolute ? _root : _current;
+		node.Parent = node.Position.Type == Position.Absolute ? Document : _current;
 
 		_current = node;
 		return node;

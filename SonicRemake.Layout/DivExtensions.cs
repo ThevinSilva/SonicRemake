@@ -108,12 +108,19 @@ public static class DivExtensions
 		return node;
 	}
 
-
 	public static Node Position(this Node node, Position position)
 	{
 		node.Position.Type = position;
 		return node;
 	}
+
+	public static Node Border(this Node node, Color color, int thickness = 1)
+	{
+		node.Border.Color = color;
+		node.Border.Thickness = thickness;
+		return node;
+	}
+
 
 	public static Node Children(this Node node, params Node[] children)
 	{
@@ -123,7 +130,7 @@ public static class DivExtensions
 				throw new Exception("Div already has a parent");
 
 			node._children.Add(child);
-			child.Parent = child.Position.Type == Layout.Position.Absolute ? UI._root : node;
+			child.Parent = child.Position.Type == Layout.Position.Absolute ? UI.Document : node;
 		}
 
 		return node;
