@@ -123,7 +123,7 @@ public static class DivExtensions
 				throw new Exception("Div already has a parent");
 
 			node._children.Add(child);
-			child.Parent = node;
+			child.Parent = child.Position.Type == Layout.Position.Absolute ? UI._root : node;
 		}
 
 		return node;

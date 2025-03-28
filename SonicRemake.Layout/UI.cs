@@ -10,12 +10,12 @@ public static class UI
 {
 	private static readonly Log Log = new(typeof(UI));
 
-	private static Node? _root;
+	internal static Node? _root;
 	private static Node? _current;
 
 	public static void Init(uint rootWidth, uint rootHeight)
 	{
-		_root = new Div("__ROOT__").Size((int)rootWidth, (int)rootHeight).Flow(Flow.Vertical);
+		_root = new Div("__ROOT__").Size((int)rootWidth, (int)rootHeight).Flow(Flow.Vertical).Position(Position.Absolute);
 		_current = _root;
 	}
 
@@ -210,7 +210,7 @@ public static class UI
 			return node;
 
 		_current.Children(node);
-		node.Parent = _current;
+		node.Parent = node.Position.Type == Position.Absolute ? _root : _current;
 
 		_current = node;
 		return node;
