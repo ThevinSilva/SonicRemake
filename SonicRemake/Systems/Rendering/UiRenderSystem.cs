@@ -29,7 +29,7 @@ public class UiRenderSystem : GameSystem
                 var textObject = new SFML.Graphics.Text(textNode.Content, _monocraft)
                 {
                     FillColor = node.Foreground,
-                    Position = new Vector2f(node.Position.X, node.Position.Y),
+                    Position = new Vector2f(node.Position.Calculated.X, node.Position.Calculated.Y),
                     Scale = new Vector2f(1, 1),
                 };
 
@@ -43,7 +43,7 @@ public class UiRenderSystem : GameSystem
                 {
                     FillColor = node.Background,
                     Size = new Vector2f(node.Width.Calculated, node.Height.Calculated),
-                    Position = new Vector2f(node.Position.X, node.Position.Y),
+                    Position = new Vector2f(node.Position.Calculated.X, node.Position.Calculated.Y),
                     Scale = new Vector2f(1, 1),
                 };
 

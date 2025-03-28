@@ -14,3 +14,10 @@ public record FixedSizing : Sizing
         Calculated = Size;
     }
 }
+
+public record Positioning
+{
+    public (int X, int Y) Calculated { get; internal set; } = (0, 0);
+
+    public Position Type { get; internal set; } = Position.Relative;
+}

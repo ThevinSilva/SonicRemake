@@ -259,7 +259,7 @@ public class Tests
         UI.Close();
         UI.Calculate();
 
-        a.Position.Should().Be((0, 0));
+        a.Position.Calculated.Should().Be((0, 0));
     }
 
     [Test]
@@ -275,8 +275,8 @@ public class Tests
         UI.Close();
         UI.Calculate();
 
-        a.Position.Should().Be((0, 0));
-        b.Position.Should().Be((0, 0));
+        a.Position.Calculated.Should().Be((0, 0));
+        b.Position.Calculated.Should().Be((0, 0));
     }
 
     [Test]
@@ -293,9 +293,9 @@ public class Tests
         UI.Close();
         UI.Calculate();
 
-        a.Position.Should().Be((0, 0));
-        b.Position.Should().Be((0, 0));
-        c.Position.Should().Be((50, 0));
+        a.Position.Calculated.Should().Be((0, 0));
+        b.Position.Calculated.Should().Be((0, 0));
+        c.Position.Calculated.Should().Be((50, 0));
     }
 
     [Test]
@@ -312,9 +312,9 @@ public class Tests
         UI.Close();
         UI.Calculate();
 
-        a.Position.Should().Be((0, 0));
-        b.Position.Should().Be((0, 0));
-        c.Position.Should().Be((60, 0));
+        a.Position.Calculated.Should().Be((0, 0));
+        b.Position.Calculated.Should().Be((0, 0));
+        c.Position.Calculated.Should().Be((60, 0));
     }
 
     [Test]
@@ -331,9 +331,9 @@ public class Tests
         UI.Close();
         UI.Calculate();
 
-        a.Position.Should().Be((0, 0));
-        b.Position.Should().Be((5, 5));
-        c.Position.Should().Be((65, 5));
+        a.Position.Calculated.Should().Be((0, 0));
+        b.Position.Calculated.Should().Be((5, 5));
+        c.Position.Calculated.Should().Be((65, 5));
     }
 
     [Test]
@@ -350,8 +350,27 @@ public class Tests
         UI.Close();
         UI.Calculate();
 
-        a.Position.Should().Be((0, 0));
-        b.Position.Should().Be((0, 0));
-        c.Position.Should().Be((55, 0));
+        a.Position.Calculated.Should().Be((0, 0));
+        b.Position.Calculated.Should().Be((0, 0));
+        c.Position.Calculated.Should().Be((55, 0));
+    }
+
+    [Test]
+    public void PositionStatic()
+    {
+        var a = new Div("a");
+        var b = new Div("b").Size(200);
+        var c = new Div("c").Size(200).Position(Position.Absolute);
+
+        a.Children(b, c);
+
+        UI.Init(1000, 1000);
+        UI.Open(a);
+        UI.Close();
+        UI.Calculate();
+
+        a.Position.Calculated.Should().Be((0, 0));
+        b.Position.Calculated.Should().Be((0, 0));
+        c.Position.Calculated.Should().Be((0, 0));
     }
 }

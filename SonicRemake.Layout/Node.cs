@@ -12,7 +12,7 @@ public abstract class Node(string? id = null)
 
   public Node? Parent;
 
-  public (int X, int Y) Position { get; internal set; } = (0, 0);
+  public Positioning Position { get; internal set; } = new Positioning();
 
   public Sizing Width { get; internal set; } = new FitSizing();
   public Sizing Height { get; internal set; } = new FitSizing();
@@ -65,4 +65,10 @@ public enum Align
   Start,
   Center,
   End
+}
+
+public enum Position
+{
+  Relative,
+  Absolute
 }

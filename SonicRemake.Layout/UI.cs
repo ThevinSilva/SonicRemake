@@ -129,25 +129,33 @@ public static class UI
 				continue;
 
 			var parent = div.Parent!;
-			var position = div.Position;
+			var position = div.Position.Calculated;
 
 			var nthChild = parent.Children.IndexOf(div);
 
-			position.X = parent.Position.X + parent.Padding.Left;
-			position.Y = parent.Position.Y + parent.Padding.Top;
-
-			if (parent.Flow == Flow.Horizontal)
+			if (div.Position.Type == Position.Absolute)
 			{
-				position.X += parent.Children.TakeWhile(x => x != div).Sum(x => x.Width.Calculated);
-				position.X += nthChild * parent.Gap.Calculated;
+				position.X = parent.Padding.Left;
+				position.Y = parent.Padding.Top;
 			}
-			else
+			else if (div.Position.Type == Position.Relative)
 			{
-				position.Y += parent.Children.TakeWhile(x => x != div).Sum(x => x.Height.Calculated);
-				position.Y += nthChild * parent.Gap.Calculated;
+				position.X = parent.Position.Calculated.X + parent.Padding.Left;
+				position.Y = parent.Position.Calculated.Y + parent.Padding.Top;
+
+				if (parent.Flow == Flow.Horizontal)
+				{
+					position.X += parent.Children.TakeWhile(x => x != div).Sum(x => x.Width.Calculated);
+					position.X += nthChild * parent.Gap.Calculated;
+				}
+				else
+				{
+					position.Y += parent.Children.TakeWhile(x => x != div).Sum(x => x.Height.Calculated);
+					position.Y += nthChild * parent.Gap.Calculated;
+				}
 			}
 
-			div.Position = position;
+			div.Position.Calculated = position;
 		}
 	}
 
