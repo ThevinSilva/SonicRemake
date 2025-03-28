@@ -39,7 +39,8 @@ public class MenuSystem : GameSystem
         var title = new Layout.Text("menu title")
             .Content("GAME PAUSED")
             .Size(Size.Grow)
-            .Foreground(Color.White);
+            .Border(Color.White, 2)
+            .Foreground(Color.Blue);
 
         wrapper.Children(background.Children(title));
 

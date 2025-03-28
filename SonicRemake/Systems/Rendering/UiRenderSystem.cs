@@ -32,6 +32,8 @@ public class UiRenderSystem : GameSystem
                     FillColor = node.Foreground,
                     Position = new Vector2f(node.Position.Calculated.X, node.Position.Calculated.Y),
                     Scale = new Vector2f(1, 1),
+                    OutlineColor = textNode.Border.Color,
+                    OutlineThickness = textNode.Border.Thickness,
                 };
 
                 textObject.CharacterSize = 20;
