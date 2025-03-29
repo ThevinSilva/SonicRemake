@@ -65,8 +65,14 @@ gameLevel.Entities.Create(
 const float tickTimeStep = 1.0f / 60.0f;
 float tickTimeStepAccumulator = 0.0f;
 
-var window = new RenderWindow(new VideoMode(400, 400), "Sonic");
+var window = new RenderWindow(new VideoMode(400, 400), "Sonic Remake");
 window.SetFramerateLimit(120);
+
+var hudHandle = TextureHelper.CreateHandle("hud.png", new Color(147, 187, 236));
+var iconHandle = TextureHelper.CreateHandle(hudHandle, 1, 243, 18, 18);
+var icon = TextureHelper.FromHandle(iconHandle).CopyToImage();
+
+window.SetIcon(icon.Size.X, icon.Size.Y, icon.Pixels);
 
 var clock = new Clock();
 clock.Restart();
