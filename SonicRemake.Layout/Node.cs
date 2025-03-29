@@ -24,9 +24,8 @@ public abstract class Node(string? id = null)
 
   public (Align Horizontal, Align Vertical) Align { get; internal set; } = (Layout.Align.Start, Layout.Align.Start);
 
-  public Color Background { get; internal set; } = Color.Transparent;
+  public Texturing Background { get; internal set; } = new ColorTexturing(Color.Transparent);
   public Color Foreground { get; internal set; } = Color.White;
-
   public Border Border { get; internal set; } = new Border(Color.Transparent, 0);
 
   public (int Left, int Top, int Right, int Bottom) Padding { get; internal set; }
@@ -41,7 +40,7 @@ public abstract class Node(string? id = null)
 
 public class Div(string? id = null) : Node(id)
 {
-  public override bool WorthRendering => Background.A > 0 || Border.WorthRendering;
+  public override bool WorthRendering => Background is not ColorTexturing ct || ct.Color.A > 0 || Border.WorthRendering;
 }
 
 public class Text(string? id = null) : Node(id)
@@ -57,6 +56,8 @@ public class Border(Color color, int thickness)
   public int Thickness { get; internal set; } = thickness;
   public bool WorthRendering => Thickness > 0 && Color.A > 0;
 }
+
+
 
 public enum Size
 {

@@ -1,6 +1,7 @@
 using SFML.Graphics;
 using SFML.System;
 using SonicRemake.Animations;
+using SonicRemake.Common;
 using SonicRemake.Maps;
 
 namespace SonicRemake.Components;
@@ -13,7 +14,7 @@ public record struct Transform(Vector2f Position, Vector2f Scale, float Rotation
 
 public record struct Velocity(Vector2f Speed, float GroundSpeed);
 
-public record struct Sprite(string SpriteId, params Color[] MaskColors);
+public record struct Sprite(TextureHandle TextureHandle);
 
 public record struct SpriteTexture(Texture Texture);
 

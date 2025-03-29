@@ -1,6 +1,7 @@
 using Arch.Core;
 using SFML.Graphics;
 using SFML.System;
+using SonicRemake.Common;
 using SonicRemake.Layout;
 
 namespace SonicRemake.Systems.Rendering;
@@ -44,13 +45,23 @@ public class UiRenderSystem : GameSystem
             {
                 var rect = new RectangleShape()
                 {
-                    FillColor = node.Background,
                     Size = new Vector2f(node.Width.Calculated, node.Height.Calculated),
                     Position = new Vector2f(node.Position.Calculated.X, node.Position.Calculated.Y),
                     Scale = new Vector2f(1, 1),
                     OutlineColor = div.Border.Color,
                     OutlineThickness = div.Border.Thickness,
                 };
+
+                if (div.Background is ColorTexturing ct)
+                {
+                    rect.FillColor = ct.Color;
+                }
+                else if (div.Background is SpriteTexturing st)
+                {
+                    var texture = TextureHelper.FromHandle(st.TextureHandle);
+                    texture.Repeated = false;
+                    rect.Texture = texture;
+                }
 
                 window.Draw(rect);
             }

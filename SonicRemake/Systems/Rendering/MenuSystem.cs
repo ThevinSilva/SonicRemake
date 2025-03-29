@@ -1,5 +1,6 @@
 using Arch.Core;
 using SFML.Graphics;
+using SonicRemake.Common;
 using SonicRemake.Inputs;
 using SonicRemake.Layout;
 using static SFML.Window.Keyboard;
@@ -9,6 +10,7 @@ namespace SonicRemake.Systems.Rendering;
 public class MenuSystem : GameSystem
 {
     private bool _isMenuOpen = false;
+    private readonly TextureHandle _backgroundTexture = TextureHelper.CreateHandle("sonic_mania_general.png", new Color(38, 123, 218));
 
     public override void OnTick(World world, GameContext context)
     {
@@ -31,18 +33,10 @@ public class MenuSystem : GameSystem
             .Align(Align.Center);
 
         var background = new Div("menu background")
-            .Size(400, 200)
-            .Padding(20)
-            .Border(new Color(255, 255, 255, 100), 3)
-            .Background(new Color(0, 0, 0, 240));
-
-        var title = new Layout.Text("menu title")
-            .Content("GAME PAUSED")
-            .Size(Size.Grow)
-            .Border(Color.White, 2)
-            .Foreground(Color.Blue);
-
-        wrapper.Children(background.Children(title));
+            .Size(127 * 4, 91 * 4)
+            .Background(TextureHelper.CreateHandle(_backgroundTexture, 2, 3366, 127, 91));
+        ;
+        wrapper.Children(background);
 
         UI.Open(wrapper);
         UI.Close();

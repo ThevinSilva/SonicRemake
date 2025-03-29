@@ -18,6 +18,7 @@ using SonicRemake.Systems.Rendering.Camera;
 using SonicRemake.Levels;
 using SonicRemake.Maps;
 using SonicRemake.Systems.Sensor;
+using SonicRemake.Common;
 
 AnimationHelper.LoadAnimationsFromYaml("Assets/Animations/sonic_mania.yaml");
 
@@ -45,7 +46,7 @@ gameLevel.AddSystems(new TileManagementSystem(),
 gameLevel.Entities.Create(
 		new Transform(new Vector2f(0, 0), new Vector2f(1, 1)),
 		new Velocity(),
-		new Sprite("sonic_mania.png", new Color(0, 240, 0), new Color(0, 170, 0), new Color(0, 138, 0), new Color(0, 111, 0)),
+		new Sprite(TextureHelper.CreateHandle("sonic_mania.png", new Color(0, 240, 0), new Color(0, 170, 0), new Color(0, 138, 0), new Color(0, 111, 0))),
 		new SpriteSheet(1, 13, 48),
 		new SpriteAnimator(),
 		new SpriteAnimation(),

@@ -1,5 +1,6 @@
 using System;
 using SFML.Graphics;
+using SonicRemake.Common;
 
 namespace SonicRemake.Layout;
 
@@ -50,7 +51,13 @@ public static class DivExtensions
 
 	public static Node Background(this Node node, Color color)
 	{
-		node.Background = color;
+		node.Background = new ColorTexturing(color);
+		return node;
+	}
+
+	public static Node Background(this Node node, TextureHandle texture)
+	{
+		node.Background = new SpriteTexturing(texture);
 		return node;
 	}
 
