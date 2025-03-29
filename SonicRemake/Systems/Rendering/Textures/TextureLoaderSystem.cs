@@ -1,6 +1,7 @@
 using Arch.Core;
 using SFML.Graphics;
 using SonicRemake.Components;
+using SonicRemake.Textures;
 using Sprite = SonicRemake.Components.Sprite;
 
 namespace SonicRemake.Systems.Rendering.Textures
@@ -13,15 +14,7 @@ namespace SonicRemake.Systems.Rendering.Textures
     {
       world.Query(in Query, (Entity entity, ref Renderer renderer, ref Sprite sprite) =>
       {
-        if (renderer.Drawable == null)
-        {
-          var image = new Image($"Assets/Sprites/{sprite.SpriteId}");
-
-          foreach (var color in sprite.MaskColors)
-            image.CreateMaskFromColor(color);
-
-          renderer.Drawable = new SFML.Graphics.Sprite() { Texture = new Texture(image) };
-        }
+        renderer.Drawable ??= new SFML.Graphics.Sprite() { Texture = SonicRemake.Textures.Texture.FromSprite(sprite.SpriteId, sprite.MaskColors) };
       });
     }
   }
