@@ -1,10 +1,5 @@
-using System;
 using Arch.Core;
-using SFML.Graphics;
-using SFML.Window;
 using SonicRemake.Components;
-using SonicRemake.Inputs;
-using SonicRemake.Systems.Sensor;
 using Transform = SonicRemake.Components.Transform;
 
 namespace SonicRemake.Systems.Rendering.Characters;

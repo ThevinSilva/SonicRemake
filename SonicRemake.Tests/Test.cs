@@ -1,5 +1,4 @@
 using FluentAssertions;
-using SFML.Graphics;
 using SonicRemake.Layout;
 using SonicRemake.Layout.Engine;
 

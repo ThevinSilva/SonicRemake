@@ -1,8 +1,6 @@
-
-
 using SFML.System;
 
-namespace SonicRemake.Maps;
+namespace SonicRemake.Systems.Maps;
 
 public static class MapUtil
 {

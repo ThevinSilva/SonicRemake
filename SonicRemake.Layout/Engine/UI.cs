@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using SFML.System;
 using SonicRemake.Layout.Engine;
 
 namespace SonicRemake.Layout;

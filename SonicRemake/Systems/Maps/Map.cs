@@ -1,15 +1,12 @@
-using System.Numerics;
 using Arch.Core;
 using Newtonsoft.Json;
 using SFML.Graphics;
 using SFML.System;
 using SonicRemake.Components;
-using SonicRemake.Systems;
 using TiledLib;
 using TiledLib.Layer;
 
-
-namespace SonicRemake.Maps;
+namespace SonicRemake.Systems.Maps;
 
 public class TileManagementSystem : GameSystem
 {

@@ -1,4 +1,3 @@
-using System.Diagnostics;
 using Arch.Core;
 using SFML.Graphics;
 

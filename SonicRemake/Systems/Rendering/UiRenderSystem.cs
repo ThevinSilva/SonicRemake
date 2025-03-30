@@ -7,7 +7,6 @@ using SonicRemake.Layout.Engine;
 
 namespace SonicRemake.Systems.Rendering;
 
-
 public class UiRenderSystem : GameSystem
 {
     private readonly Log log = new(typeof(UiRenderSystem));

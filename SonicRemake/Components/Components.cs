@@ -2,14 +2,14 @@ using SFML.Graphics;
 using SFML.System;
 using SonicRemake.Animations;
 using SonicRemake.Common;
-using SonicRemake.Maps;
+using SonicRemake.Systems.Maps;
 
 namespace SonicRemake.Components;
 
 public record struct Transform(Vector2f Position, Vector2f Scale, float Rotation = 0, ushort GroundAngle = 0)
 {
-  // Set scale to (1, 1) with an empty constructor
-  public Transform() : this(new Vector2f(0, 0), new Vector2f(1, 1)) { }
+    // Set scale to (1, 1) with an empty constructor
+    public Transform() : this(new Vector2f(0, 0), new Vector2f(1, 1)) { }
 }
 
 public record struct Velocity(Vector2f Speed, float GroundSpeed);
@@ -35,10 +35,10 @@ public record struct Sensors(SensorData UpperLeft, SensorData UpperRight, Sensor
 
 public struct SensorData
 {
-  public Vector2f Position;
-  public float Distance;
-  public Vector2f? Intersection;
-  public Vector2i? DetectedTile;
+    public Vector2f Position;
+    public float Distance;
+    public Vector2f? Intersection;
+    public Vector2i? DetectedTile;
 
 
 }
@@ -49,29 +49,29 @@ public record struct Camera(float Zoom = 4f);
 
 public enum SonicState
 {
-  Idle,
-  Running,
-  Skidding,
-  Jumping,
-  Falling,
-  Charging,
-  SpinRoll,
-  Crouching
+    Idle,
+    Running,
+    Skidding,
+    Jumping,
+    Falling,
+    Charging,
+    SpinRoll,
+    Crouching
 }
 
 public enum Facing
 {
-  Right,
-  Left
+    Right,
+    Left
 }
 
 public enum Layer
 {
-  Debug,
-  UI,
-  ForegroundTiles,
-  Characters,
-  BackgroundTiles,
-  Objects,
-  Background
+    Debug,
+    UI,
+    ForegroundTiles,
+    Characters,
+    BackgroundTiles,
+    Objects,
+    Background
 }

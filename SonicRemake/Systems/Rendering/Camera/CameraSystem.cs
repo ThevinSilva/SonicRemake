@@ -1,7 +1,4 @@
-using System;
-using System.ComponentModel;
 using Arch.Core;
-using SFML.Graphics;
 using SFML.System;
 using SonicRemake.Components;
 using Transform = SonicRemake.Components.Transform;

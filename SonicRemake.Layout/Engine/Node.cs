@@ -1,8 +1,6 @@
 using System.Collections.Generic;
 using System.Collections.Immutable;
-using System.Numerics;
 using SFML.Graphics;
-using SFML.System;
 
 namespace SonicRemake.Layout.Engine;
 

@@ -1,11 +1,8 @@
-using System.ComponentModel;
-using System.Numerics;
-using System.Security.Cryptography.X509Certificates;
 using Arch.Core;
 using CommunityToolkit.HighPerformance;
 using SFML.System;
 using SonicRemake.Components;
-using SonicRemake.Maps;
+using SonicRemake.Systems.Maps;
 
 namespace SonicRemake.Systems.Sensor;
 
