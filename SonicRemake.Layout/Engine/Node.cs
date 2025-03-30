@@ -4,7 +4,7 @@ using SFML.Graphics;
 
 namespace SonicRemake.Layout.Engine;
 
-public abstract class Node(string? id = null)
+public class Node(string? id = null)
 {
   public string? Id { get; } = id;
 
@@ -33,19 +33,7 @@ public abstract class Node(string? id = null)
   public ImmutableList<Node> Children => [.. _children];
   internal List<Node> _children = new();
 
-  public abstract bool WorthRendering { get; }
-}
-
-public class Div(string? id = null) : Node(id)
-{
-  public override bool WorthRendering => Background is not ColorTexturing ct || ct.Color.A > 0 || Border.WorthRendering;
-}
-
-public class Text(string? id = null) : Node(id)
-{
-  public override bool WorthRendering => true;
-
-  public string Content { get; internal set; } = string.Empty;
+  public bool WorthRendering => Background is not ColorTexturing ct || ct.Color.A > 0 || Border.WorthRendering;
 }
 
 public class Border(Color color, int thickness)

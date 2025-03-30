@@ -19,6 +19,9 @@ public class UiRenderSystem : GameSystem
 
     public override void OnRender(World world, RenderWindow window, GameContext context)
     {
+        // scale the UI
+        UI.Scale = Math.Max(window.Size.X, window.Size.Y) / 480f;
+
         UI.Calculate();
 
         foreach (var node in UI.BreadthFirst())

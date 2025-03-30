@@ -13,16 +13,30 @@ public static class UI
 	public static Node? Document { get; private set; }
 	private static Node? _current;
 
+	public static float Scale { get; set; } = 3f;
+
 	public static void Init(uint rootWidth, uint rootHeight)
 	{
-		Document = new Div("__DOCUMENT__").Size((int)rootWidth, (int)rootHeight).Flow(Flow.Vertical).Position(Position.Absolute);
+		Document = new Node("__DOCUMENT__").Size((int)rootWidth, (int)rootHeight).Flow(Flow.Vertical).Position(Position.Absolute);
 		_current = Document;
 	}
+
+	private static int Scaled(int value) => (int)Math.Round(value * Scale);
 
 	public static void Calculate()
 	{
 		if (Document == null)
 			return;
+
+		// initial pass: scale fixed sizes
+		foreach (var node in BreadthFirst())
+		{
+			// if the node's width/height are fixed, apply the scale factor
+			if (!(node.Width is FitSizing || node.Width is GrowSizing))
+				node.Width.Calculated = Scaled(node.Width.Calculated);
+			if (!(node.Height is FitSizing || node.Height is GrowSizing))
+				node.Height.Calculated = Scaled(node.Height.Calculated);
+		}
 
 		// Fit pass
 		foreach (var div in ReverseBreadthFirst())
@@ -34,16 +48,16 @@ public static class UI
 			var parent = div.Parent!;
 
 			if (div.Width is FitSizing)
-				div.Width.Calculated += div.Padding.Left + div.Padding.Right;
+				div.Width.Calculated += Scaled(div.Padding.Left) + Scaled(div.Padding.Right);
 
 			if (div.Height is FitSizing)
-				div.Height.Calculated += div.Padding.Top + div.Padding.Bottom;
+				div.Height.Calculated += Scaled(div.Padding.Top + div.Padding.Bottom);
 
 			if (parent.Axis is FitSizing)
 			{
 				var index = parent.Children.IndexOf(div);
 				if (index > 0)
-					parent.Axis.Calculated += parent.Gap.Calculated;
+					parent.Axis.Calculated += Scaled(parent.Gap.Calculated);
 
 				parent.Axis.Calculated += div.Axis.Calculated;
 			}
@@ -60,8 +74,8 @@ public static class UI
 
 			if (div.Position.Type == Position.Absolute)
 			{
-				div.Width.Calculated = div.Width is GrowSizing ? div.Parent.Width.Calculated - div.Padding.Left - div.Padding.Right : div.Width.Calculated;
-				div.Height.Calculated = div.Height is GrowSizing ? div.Parent.Height.Calculated - div.Padding.Top - div.Padding.Bottom : div.Height.Calculated;
+				div.Width.Calculated = div.Width is GrowSizing ? div.Parent.Width.Calculated - Scaled(div.Padding.Left) - Scaled(div.Padding.Right) : div.Width.Calculated;
+				div.Height.Calculated = div.Height is GrowSizing ? div.Parent.Height.Calculated - Scaled(div.Padding.Top) - Scaled(div.Padding.Bottom) : div.Height.Calculated;
 				continue;
 			}
 
@@ -73,9 +87,9 @@ public static class UI
 
 			// Grow axis
 			var remaningWidth = parent.Axis.Calculated
-				- parent.Padding.Left - parent.Padding.Right
+				- parent.Padding.Left - Scaled(parent.Padding.Right)
 				- parent.Children.Sum(c => c.Width.Calculated)
-				- (parent.Children.Count - 1) * parent.Gap.Calculated;
+				- (parent.Children.Count - 1) * Scaled(parent.Gap.Calculated);
 
 			var growables = parent.Children
 				.Where(c => c.Axis is GrowSizing)
@@ -142,13 +156,13 @@ public static class UI
 
 			if (div.Position.Type == Position.Absolute)
 			{
-				position.X = parent.Padding.Left;
-				position.Y = parent.Padding.Top;
+				position.X = Scaled(parent.Padding.Left);
+				position.Y = Scaled(parent.Padding.Top);
 			}
 			else if (div.Position.Type == Position.Relative)
 			{
-				position.X = parent.Position.Calculated.X + parent.Padding.Left;
-				position.Y = parent.Position.Calculated.Y + parent.Padding.Top;
+				position.X = parent.Position.Calculated.X + Scaled(parent.Padding.Left);
+				position.Y = parent.Position.Calculated.Y + Scaled(parent.Padding.Top);
 
 				var offsetX = parent.Align.Horizontal switch
 				{
