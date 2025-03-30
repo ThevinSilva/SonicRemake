@@ -3,6 +3,7 @@ using SFML.Graphics;
 using SFML.System;
 using SonicRemake.Common;
 using SonicRemake.Layout;
+using SonicRemake.Layout.Engine;
 
 namespace SonicRemake.Systems.Rendering;
 
@@ -26,7 +27,7 @@ public class UiRenderSystem : GameSystem
             if (!node.WorthRendering || node.Parent == null)
                 continue;
 
-            if (node is Layout.Text textNode)
+            if (node is Layout.Engine.Text textNode)
             {
                 var textObject = new SFML.Graphics.Text(textNode.Content, _monocraft)
                 {

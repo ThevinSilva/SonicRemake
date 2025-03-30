@@ -2,7 +2,7 @@ using System;
 using SFML.Graphics;
 using SonicRemake.Common;
 
-namespace SonicRemake.Layout;
+namespace SonicRemake.Layout.Engine;
 
 public static class DivExtensions
 {
@@ -23,29 +23,29 @@ public static class DivExtensions
 
 	public static Node Size(this Node node, Size sizing)
 	{
-		node.Width = sizing == Layout.Size.Grow ? new GrowSizing() : new FitSizing();
-		node.Height = sizing == Layout.Size.Grow ? new GrowSizing() : new FitSizing();
+		node.Width = sizing == Engine.Size.Grow ? new GrowSizing() : new FitSizing();
+		node.Height = sizing == Engine.Size.Grow ? new GrowSizing() : new FitSizing();
 		return node;
 	}
 
 	public static Node Size(this Node node, int width, Size height)
 	{
 		node.Width = new FixedSizing(width);
-		node.Height = height == Layout.Size.Grow ? new GrowSizing() : new FitSizing();
+		node.Height = height == Engine.Size.Grow ? new GrowSizing() : new FitSizing();
 		return node;
 	}
 
 	public static Node Size(this Node node, Size width, int height)
 	{
-		node.Width = width == Layout.Size.Grow ? new GrowSizing() : new FitSizing();
+		node.Width = width == Engine.Size.Grow ? new GrowSizing() : new FitSizing();
 		node.Height = new FixedSizing(height);
 		return node;
 	}
 
 	public static Node Size(this Node node, Size width, Size height)
 	{
-		node.Width = width == Layout.Size.Grow ? new GrowSizing() : new FitSizing();
-		node.Height = height == Layout.Size.Grow ? new GrowSizing() : new FitSizing();
+		node.Width = width == Engine.Size.Grow ? new GrowSizing() : new FitSizing();
+		node.Height = height == Engine.Size.Grow ? new GrowSizing() : new FitSizing();
 		return node;
 	}
 
@@ -137,7 +137,7 @@ public static class DivExtensions
 				throw new Exception("Div already has a parent");
 
 			node._children.Add(child);
-			child.Parent = child.Position.Type == Layout.Position.Absolute ? UI.Document : node;
+			child.Parent = child.Position.Type == Engine.Position.Absolute ? UI.Document : node;
 		}
 
 		return node;

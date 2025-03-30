@@ -1,4 +1,4 @@
-namespace SonicRemake.Layout;
+namespace SonicRemake.Layout.Engine;
 
 public abstract record Gapping
 {

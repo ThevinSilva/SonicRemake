@@ -4,7 +4,7 @@ using System.Numerics;
 using SFML.Graphics;
 using SFML.System;
 
-namespace SonicRemake.Layout;
+namespace SonicRemake.Layout.Engine;
 
 public abstract class Node(string? id = null)
 {
@@ -22,7 +22,7 @@ public abstract class Node(string? id = null)
   public Sizing Axis => Flow == Flow.Horizontal ? Width : Height;
   public Sizing CrossAxis => Flow == Flow.Horizontal ? Height : Width;
 
-  public (Align Horizontal, Align Vertical) Align { get; internal set; } = (Layout.Align.Start, Layout.Align.Start);
+  public (Align Horizontal, Align Vertical) Align { get; internal set; } = (Engine.Align.Start, Engine.Align.Start);
 
   public Texturing Background { get; internal set; } = new ColorTexturing(Color.Transparent);
   public Color Foreground { get; internal set; } = Color.White;

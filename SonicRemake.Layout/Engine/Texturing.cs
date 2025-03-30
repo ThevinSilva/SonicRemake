@@ -1,7 +1,7 @@
 using SFML.Graphics;
 using SonicRemake.Common;
 
-namespace SonicRemake.Layout;
+namespace SonicRemake.Layout.Engine;
 
 public abstract record Texturing;
 public record ColorTexturing(Color Color) : Texturing;
