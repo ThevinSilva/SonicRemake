@@ -13,7 +13,7 @@ public static class UI
 	public static Node? Document { get; private set; }
 	private static Node? _current;
 
-	public static float Scale { get; set; } = 3f;
+	public static float Scale { get; set; } = 1f;
 
 	public static void Init(uint rootWidth, uint rootHeight)
 	{
