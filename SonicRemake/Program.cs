@@ -36,9 +36,9 @@ gameLevel.AddSystems(new TileManagementSystem(),
 	// new GridDebugSystem(),
 	new RenderSystem(),
 	//new LogDebugSystem(),
-	//new FpsDebugSystem(),
-	new UiRenderSystem(),
-	new MenuSystem()
+	new FpsDebugSystem(),
+	new UiRenderSystem()
+//	new MenuSystem()
 );
 
 gameLevel.Entities.Create(
@@ -63,7 +63,7 @@ gameLevel.Entities.Create(
 const float tickTimeStep = 1.0f / 60.0f;
 float tickTimeStepAccumulator = 0.0f;
 
-var window = new RenderWindow(new VideoMode(400, 400), "Sonic Remake");
+var window = new RenderWindow(new VideoMode(800, 400), "Sonic Remake");
 window.SetFramerateLimit(120);
 
 var hudHandle = TextureHelper.CreateHandle("hud.png", new Color(147, 187, 236));

@@ -26,45 +26,27 @@ public class UiRenderSystem : GameSystem
             if (!node.WorthRendering || node.Parent == null)
                 continue;
 
-            if (node is Layout.Engine.Text textNode)
+            var rect = new RectangleShape()
             {
-                var textObject = new SFML.Graphics.Text(textNode.Content, _monocraft)
-                {
-                    FillColor = node.Foreground,
-                    Position = new Vector2f(node.Position.Calculated.X, node.Position.Calculated.Y),
-                    Scale = new Vector2f(1, 1),
-                    OutlineColor = textNode.Border.Color,
-                    OutlineThickness = textNode.Border.Thickness,
-                };
+                Size = new Vector2f(node.Width.Calculated, node.Height.Calculated),
+                Position = new Vector2f(node.Position.Calculated.X, node.Position.Calculated.Y),
+                Scale = new Vector2f(1, 1),
+                OutlineColor = node.Border.Color,
+                OutlineThickness = node.Border.Thickness,
+            };
 
-                textObject.CharacterSize = 20;
-
-                window.Draw(textObject);
-            }
-            else if (node is Div div)
+            if (node.Background is ColorTexturing ct)
             {
-                var rect = new RectangleShape()
-                {
-                    Size = new Vector2f(node.Width.Calculated, node.Height.Calculated),
-                    Position = new Vector2f(node.Position.Calculated.X, node.Position.Calculated.Y),
-                    Scale = new Vector2f(1, 1),
-                    OutlineColor = div.Border.Color,
-                    OutlineThickness = div.Border.Thickness,
-                };
-
-                if (div.Background is ColorTexturing ct)
-                {
-                    rect.FillColor = ct.Color;
-                }
-                else if (div.Background is SpriteTexturing st)
-                {
-                    var texture = TextureHelper.FromHandle(st.TextureHandle);
-                    texture.Repeated = false;
-                    rect.Texture = texture;
-                }
-
-                window.Draw(rect);
+                rect.FillColor = ct.Color;
             }
+            else if (node.Background is SpriteTexturing st)
+            {
+                var texture = TextureHelper.FromHandle(st.TextureHandle);
+                texture.Repeated = false;
+                rect.Texture = texture;
+            }
+
+            window.Draw(rect);
         }
 
         UI.Init(window.Size.X, window.Size.Y);

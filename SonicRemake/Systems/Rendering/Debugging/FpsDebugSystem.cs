@@ -13,20 +13,15 @@ public class FpsDebugSystem : GameSystem
 
 	public override void OnRender(World world, RenderWindow window, GameContext context)
 	{
-		var wrapper = new Div("fps wrapper")
-				.Padding(20)
-				.Position(Position.Absolute)
-				.Background(new Color(0, 0, 0, 150))
-				.Gap(20);
+		UI.Open(new Node("fps debug")
+			.Size(200, 50)
+			.Position(Position.Absolute)
+			.Flow(Flow.Vertical)
+			.Padding(10)
+		);
 
-		var text = new Layout.Engine.Text("fps counter")
-				   .Content($"{MathF.Round(1f / _smoothDeltaTime)}fps Δ{MathF.Round(_smoothDeltaTime * 100, 2)}ms")
-				   .Size(Size.Grow)
-				   .Foreground(Color.Yellow);
+		Tails.Text($"{MathF.Round(1f / _smoothDeltaTime)}fps, {MathF.Round(_smoothDeltaTime * 100, 2)}ms");
 
-		wrapper.Children(text);
-
-		UI.Open(wrapper);
 		UI.Close();
 	}
 

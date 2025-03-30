@@ -27,13 +27,13 @@ public class MenuSystem : GameSystem
         if (!_isMenuOpen)
             return;
 
-        var wrapper = new Div("menu wrapper")
+        var wrapper = new Node("menu wrapper")
             .Size(Size.Grow)
             .Position(Position.Absolute)
             .Padding(20)
             .Align(Align.Center);
 
-        var background = new Div("menu background")
+        var background = new Node("menu background")
             .Size(127 * 4, 91 * 4)
             .Background(TextureHelper.CreateHandle(_backgroundTexture, 2, 3366, 127, 91));
         ;
