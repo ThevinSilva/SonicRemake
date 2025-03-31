@@ -3,6 +3,7 @@ using Arch.Core;
 using SFML.System;
 using SonicRemake.Components;
 using SonicRemake.Inputs;
+using SonicRemake.Systems.Sensor;
 
 namespace SonicRemake.Systems;
 
@@ -45,6 +46,7 @@ public class MovementSystem : GameSystem
         // {
         //     transform.Rotation = 0;
         // }
+        // _log.Information(sonic.BoredCount);
 
         var position = sensors.LowerRight.Position;
         var intersection = new[] { sensors.LowerLeft, sensors.LowerRight }
@@ -82,6 +84,9 @@ public class MovementSystem : GameSystem
         HandleSpinDashCharge(ref transform, ref velocity, ref sonic);
         HandleHorizontalMovement(ref velocity, ref sonic);
         HandleVerticalMovement(ref transform, ref velocity, ref sonic);
+        HandleBored(ref sonic);
+        HandleBalance(ref sonic, ref sensors, ref velocity);
+        HandlePush(ref sonic, ref sensors, ref velocity);
 
         if (velocity.Speed.X > 0 && sensors.HorizontalRight.Distance < 2 || velocity.Speed.X < 0 && sensors.HorizontalLeft.Distance < 2)
         {
@@ -112,6 +117,15 @@ public class MovementSystem : GameSystem
             sonic.Facing = Facing.Right;
         else if (velocity.Speed.X == 0 && Input.IsKeyPressed(Input.DirectionToKey(Direction.Backward)))
             sonic.Facing = Facing.Left;
+    }
+
+    private void HandlePush(ref Sonic sonic, ref Sensors sensors, ref Velocity velocity)
+    {
+        if ((Input.IsKeyPressed(Input.DirectionToKey(Direction.Forward)) && Math.Abs(sensors.HorizontalRight.Distance) <= 2)
+        || (Input.IsKeyPressed(Input.DirectionToKey(Direction.Backward)) && Math.Abs(sensors.HorizontalLeft.Distance) <= 2))
+        {
+            sonic.State = SonicState.Push;
+        }
     }
 
     private void HandleHorizontalMovement(ref Velocity velocity, ref Sonic sonic)
@@ -166,8 +180,6 @@ public class MovementSystem : GameSystem
             }
         }
         // no horizontal movement
-
-
     }
 
     private void HandleVerticalMovement(ref Transform transform, ref Velocity velocity, ref Sonic sonic)
@@ -239,7 +251,32 @@ public class MovementSystem : GameSystem
         }
     }
 
-    private void HandleCrouch(ref Sonic sonic, ref Velocity velocity)
+    private static void HandleBored(ref Sonic sonic)
+    {
+        if (Input.IsAnyKeyPressed())
+        {
+            sonic.BoredCount = 0;
+            return;
+        }
+
+        if (sonic.BoredCount > 200)
+            sonic.State = SonicState.Bored;
+
+        sonic.BoredCount++;
+    }
+
+    private static void HandleBalance(ref Sonic sonic, ref Sensors sensors, ref Velocity velocity)
+    {
+        if (velocity.GroundSpeed != 0) return;
+
+        if (sensors.LowerLeft.DetectedTile is null && sensors.LowerRight.DetectedTile is not null)
+            sonic.State = SonicState.BalanceBackward;
+
+        if (sensors.LowerLeft.DetectedTile is not null && sensors.LowerRight.DetectedTile is null)
+            sonic.State = SonicState.BalanceForward;
+    }
+
+    private static void HandleCrouch(ref Sonic sonic, ref Velocity velocity)
     {
         var down = Input.IsKeyPressed(Input.DirectionToKey(Direction.Down));
 

@@ -3,15 +3,22 @@
 #   - animation: start frame X, start frame Y, <number of sprites>, <amount of loops>
 
 idle: 1, 13
-bored_1: 
-  - transition: 50, 13, 5, 9999999999
-  - main: 295, 13
 
-bored_2:
-  - transition: 540, 13, 6
-  - transition_2: 1, 84, 2
-  - main: 99, 84, 7
-  - end: 442, 84, 4
+# Bored
+boredOne:
+    - transition: 50, 13, 5
+    - main: 295, 13, 5
+
+boredTwo:
+    - transition: 540, 13, 6
+    - transition_2: 1, 84, 2
+    - main: 99, 84, 7
+    - end: 442, 84, 4
+
+# Balance
+BalanceOne: 1, 580, 8 # broken for some reason it's not evenly split
+
+BalanceTwo: 455, 583, 8 # broken for some reason it's not evenly split
 
 # Running
 walk: 1, 142, 12
@@ -19,6 +26,7 @@ jog: 1, 210, 10
 run: 491, 210, 8
 dash: 932, 210, 4
 peelout: 1, 270, 4
+push: 1, 515, 10
 
 # Jumping
 jump: 197, 270, 16

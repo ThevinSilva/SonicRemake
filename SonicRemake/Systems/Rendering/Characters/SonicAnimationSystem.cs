@@ -8,11 +8,11 @@ public class SonicAnimationSystem : GameSystem
 {
     private static Log _log = new(typeof(SonicAnimationSystem));
 
-    private QueryDescription Query = new QueryDescription().WithAll<Sonic, SpriteAnimation, Velocity, Transform, Renderer, Components.Sensors>();
+    private QueryDescription Query = new QueryDescription().WithAll<Sonic, SpriteAnimation, Velocity, Transform, Renderer, Sensors, AnimationSequence>();
 
     public override void OnTick(World world, GameContext context)
     {
-        world.Query(in Query, (Entity entity, ref Sonic sonic, ref SpriteAnimation queue, ref Velocity velocity, ref Transform transform, ref Renderer renderer, ref Components.Sensors sensors) =>
+        world.Query(in Query, (Entity entity, ref Sonic sonic, ref SpriteAnimation queue, ref Velocity velocity, ref Transform transform, ref Renderer renderer, ref Components.Sensors sensors, ref AnimationSequence sequence) =>
         {
             if (sonic.Facing == Facing.Left)
                 renderer.FlipX = true;
@@ -50,6 +50,22 @@ public class SonicAnimationSystem : GameSystem
                             < 15 => "dash",
                             _ => "peelout",
                         };
+                        queue.Loop = true;
+                        break;
+                    case SonicState.Bored:
+                        sequence.Names = ["boredOne_transition", "boredOne_main"];
+                        sequence.Loop = true;
+                        break;
+                    case SonicState.BalanceBackward:
+                        queue.Animation = "BalanceTwo";
+                        queue.Loop = true;
+                        break;
+                    case SonicState.BalanceForward:
+                        queue.Animation = "BalanceTwo";
+                        queue.Loop = true;
+                        break;
+                    case SonicState.Push:
+                        queue.Animation = "push";
                         queue.Loop = true;
                         break;
                     case SonicState.Idle:

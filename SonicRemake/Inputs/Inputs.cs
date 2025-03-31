@@ -29,21 +29,23 @@ public static class Input
         // Clear and update the currently pressed keys
         currentPressedKeys.Clear();
 
-        // Check all keys in the map and update the currentPressedKeys
-        foreach (Keyboard.Key key in Keys)
-        {
-            if (Keyboard.IsKeyPressed(key))
+            // Check all keys in the map and update the currentPressedKeys
+            foreach (Keyboard.Key key in Keys)
             {
-                currentPressedKeys.Add(key);
+                if (Keyboard.IsKeyPressed(key))
+                {
+                    currentPressedKeys.Add(key);
+                }
             }
         }
-    }
+        
+        public static bool IsAnyKeyPressed() => currentPressedKeys.Count > 0; 
 
-    // Base method to check if a specific key is being held down
-    public static bool IsKeyPressed(Keyboard.Key key)
-    {
-        return currentPressedKeys.Contains(key);
-    }
+        // Base method to check if a specific key is being held down
+        public static bool IsKeyPressed(Keyboard.Key key)
+        {
+            return currentPressedKeys.Contains(key);
+        }
 
     // Base method to check if a key started being pressed this frame (new press)
     public static bool IsKeyStarted(Keyboard.Key key)

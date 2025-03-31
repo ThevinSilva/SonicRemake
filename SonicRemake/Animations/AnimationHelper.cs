@@ -17,10 +17,8 @@ public class AnimationHelper
 
         var rawData = deserializer.Deserialize<Dictionary<string, object>>(File.ReadAllText(yamlFile));
 
-        foreach (var keyValue in rawData)
-        {
-            ProcessYamlValue(keyValue.Key, keyValue.Value);
-        }
+      foreach (var keyValue in rawData)
+        ProcessYamlValue(keyValue.Key, keyValue.Value);
     }
 
     private static void ProcessYamlValue(string key, object value)
