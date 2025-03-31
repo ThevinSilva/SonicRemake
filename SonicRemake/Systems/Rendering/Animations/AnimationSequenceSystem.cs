@@ -9,8 +9,6 @@ namespace SonicRemake.Systems.Rendering.Animations
 		private static readonly Log _log = new(typeof(AnimationSequenceSystem));
 		private QueryDescription Query = new QueryDescription().WithAll<AnimationSequence, SpriteAnimation>();
 
-		public int Time { get; set; }
-
 		public override void OnTick(World world, GameContext context)
 		{
 			world.Query(in Query, (Entity entity, ref AnimationSequence sequence, ref SpriteAnimation queue) =>
