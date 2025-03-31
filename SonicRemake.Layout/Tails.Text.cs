@@ -18,7 +18,7 @@ public static partial class Tails
             (var width, var height) = TextTextureHelper.GetCharacterSize(c);
             var texture = TextTextureHelper.GetCharacterTexture(c);
             var charNode = new Node(c.ToString())
-                .Size(width, height)
+                .Size(width * 2, height * 2)
                 .Background(texture);
             textWrapper.Children(charNode);
         }

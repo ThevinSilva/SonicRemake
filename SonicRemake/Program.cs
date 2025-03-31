@@ -38,6 +38,7 @@ gameLevel.AddSystems(new TileManagementSystem(),
 	new RenderSystem(),
 	//new LogDebugSystem(),
 	new FpsDebugSystem(),
+	new SpeedometerDebugSystem(),
 	new UiRenderSystem()
 //	new MenuSystem()
 );

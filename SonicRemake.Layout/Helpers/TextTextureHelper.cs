@@ -8,7 +8,7 @@ internal static class TextTextureHelper
 {
     private static readonly Log log = new(typeof(TextTextureHelper));
     private static readonly TextureHandle _font = TextureHelper.CreateHandle("font.png", new Color(38, 123, 218));
-    private static readonly Dictionary<string, TextureHandle> _fontMap = [];
+    private static Dictionary<string, TextureHandle> _fontMap = [];
 
     internal const int FONT_WIDTH = 8;
     internal const int FONT_HEIGHT = 11;
@@ -26,7 +26,9 @@ internal static class TextTextureHelper
         { "\"", 6 },
         { ".", 5 },
         { "!", 5 },
-        { ",", 3 }
+        { ",", 3 },
+        { "/", 7 },
+        { "UNKNOWN", 7 }
     };
 
     static TextTextureHelper()
@@ -44,6 +46,10 @@ internal static class TextTextureHelper
             // There's a gap between characters
             x += width + 1;
         }
+
+        // Add slash
+        (var slashWidth, var slashHeight) = GetCharacterSize("/");
+        _fontMap.Add("/", TextureHelper.CreateHandle(_font, 100, 68, slashWidth, slashHeight));
 
         // Add unknown character
         (var unknownWidth, var unknownHeight) = GetCharacterSize("UNKNOWN");

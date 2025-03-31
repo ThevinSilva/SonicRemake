@@ -15,7 +15,6 @@ public class FpsDebugSystem : GameSystem
 	{
 		UI.Open(new Node("fps debug")
 			.Size(200, 50)
-			.Position(Position.Absolute)
 			.Flow(Flow.Vertical)
 			.Padding(10)
 		);
