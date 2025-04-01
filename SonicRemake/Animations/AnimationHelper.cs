@@ -17,8 +17,8 @@ public class AnimationHelper
 
         var rawData = deserializer.Deserialize<Dictionary<string, object>>(File.ReadAllText(yamlFile));
 
-      foreach (var keyValue in rawData)
-        ProcessYamlValue(keyValue.Key, keyValue.Value);
+        foreach (var keyValue in rawData)
+            ProcessYamlValue(keyValue.Key, keyValue.Value);
     }
 
     private static void ProcessYamlValue(string key, object value)
@@ -70,7 +70,7 @@ public class AnimationHelper
             throw new Exception("Could not parse startFrameY") { Data = { { "name", name }, { "yamlString", yamlString } } };
 
         var numberOfSprites = values.Count() > 2 && int.TryParse(values.ElementAt(2), out int sprites) ? sprites : 1;
-        var loops = values.Count() > 3 && int.TryParse(values.ElementAt(3), out int loopCount) ? loopCount : 0;
+        var loops = values.Count() > 3 && int.TryParse(values.ElementAt(3), out int loopCount) ? loopCount : 1;
 
         return new AnimationData
         {

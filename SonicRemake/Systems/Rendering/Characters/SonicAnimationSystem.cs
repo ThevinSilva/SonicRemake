@@ -53,7 +53,7 @@ public class SonicAnimationSystem : GameSystem
                         queue.Loop = true;
                         break;
                     case SonicState.Bored:
-                        sequence.Names = ["boredOne_transition", "boredOne_main"];
+                        sequence.Names = ["boredOne_transition", "boredOne_main", "boredTwo_transition", "boredTwo_transition_2", "boredTwo_main", "borderTwo_end"];
                         sequence.Loop = true;
                         break;
                     case SonicState.BalanceBackward:
