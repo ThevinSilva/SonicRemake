@@ -6,14 +6,14 @@ idle: 1, 13
 
 # Bored
 boredOne:
-    - transition: 50, 13, 5
+    - transition: 50, 13, 5, 1
     - main: 295, 13, 5, 5
 
 boredTwo:
     - transition: 540, 13, 6
     - transition_2: 1, 84, 2
     - main: 99, 84, 7
-    - end: 442, 84, 4
+    - end: 442, 84, 4, 1
 
 # Balance
 BalanceOne: 1, 580, 8 # broken for some reason it's not evenly split
